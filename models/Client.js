@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
+const clientSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -44,12 +44,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.pre("validate", function (next) {
-  if (!this.email && !this.telephone) {
-    this.invalidate("email", "Either email or telephone must be provided");
-    this.invalidate("telephone", "Either email or telephone must be provided");
-  }
-  next();
-});
-
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Client", clientSchema);
