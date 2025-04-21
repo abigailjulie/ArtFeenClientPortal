@@ -1,7 +1,9 @@
 const allowedOrigins = [
   "http://localhost:5000",
-  "https://www.artfeenclientportal.com",
-  "https://artfeenclientportal.com",
+  "https://www.thearchway.com",
+  "https://thearchway.com",
+  "https://archway.vercel.app",
+  "https://thearchway.vercel.app",
 ];
 
 module.exports = allowedOrigins;

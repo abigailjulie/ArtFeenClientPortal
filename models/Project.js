@@ -11,7 +11,11 @@ const projectSchema = new mongoose.Schema(
       default: "Active",
     },
     number: { type: String, unique: true, sparse: true },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Client",
+      required: true,
+    },
 
     timeline: {
       currentTick: {

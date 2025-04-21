@@ -27,11 +27,6 @@ const clientSchema = new mongoose.Schema(
     telephone: {
       type: String,
     },
-    logo: {
-      data: Buffer,
-      contentType: String,
-      filename: String,
-    },
     company: {
       name: { type: String, required: true },
       address: { type: String, required: true },

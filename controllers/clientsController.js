@@ -19,7 +19,6 @@ const getAllClients = asyncHandler(async (req, res) => {
 // access Private
 const createNewClient = asyncHandler(async (req, res) => {
   const { username, password, roles, email, telephone, company } = req.body;
-
   if (!username || !password || !Array.isArray(roles) || !roles.length) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -44,7 +43,7 @@ const createNewClient = asyncHandler(async (req, res) => {
   const client = await Client.create(clientObject);
 
   if (client) {
-    res.status(201).json({ message: `New client ${username} create!` });
+    res.status(201).json({ message: `New client ${username} created!` });
   } else {
     res.status(400).json({ message: "Invalid client data recieved" });
   }
@@ -107,9 +106,9 @@ const deleteClient = asyncHandler(async (req, res) => {
     return res.status(409).json({ message: "Client not found" });
   }
 
-  const result = await Client.deleteOne({ _id: id });
+  await Client.deleteOne({ _id: id });
 
-  const reply = `Username ${result.username} with ID ${result._id} deleted`;
+  const reply = `Username ${client.username} with ID ${client._id} deleted`;
 
   res.json(reply);
 });

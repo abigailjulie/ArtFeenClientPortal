@@ -27,6 +27,10 @@ app.use("/", require("./routes/root"));
 
 app.use("/clients", require("./routes/clientRoutes"));
 
+app.use("/clients/projects", require("./routes/projectRoutes"));
+
+app.use("/clients/:id/projects", require("./routes/clientProjectRoutes"));
+
 app.all("*", (req, res) => {
   res.status(404);
   if (req.accepts("html")) {
