@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -21,10 +22,17 @@ export default function DashHeader() {
   }
 
   return (
-    <section className="dash-Header">
+    <header className="dash-header">
+      <div className="dash-container">
+        <p>Current User:</p>
+        <p>Phase:</p>
+        <p>Status:</p>
+        <p>Outstanding Balance:</p>
+        <Link to="/dash/profile">
+          <h3>Client Profile</h3>
+        </Link>
+      </div>
       {homeBtn}
-      <p>Current User:</p>
-      <p>Status:</p>
-    </section>
+    </header>
   );
 }
