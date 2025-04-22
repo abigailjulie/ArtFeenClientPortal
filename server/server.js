@@ -21,9 +21,7 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.use("/", express.static(path.join(__dirname, "public")));
-
-app.use("/", require("./routes/root"));
+app.use("/", express.static(path.join(__dirname, "../public")));
 
 app.use("/clients", require("./routes/clientRoutes"));
 
@@ -34,7 +32,7 @@ app.use("/clients/:id/projects", require("./routes/clientProjectRoutes"));
 app.all("*", (req, res) => {
   res.status(404);
   if (req.accepts("html")) {
-    res.sendFile(path.join(__dirname, "views", "404.html"));
+    res.sendFile(path.join(__dirname, "..", "views", "404.html"));
   } else if (req.accepts("json")) {
     res.json({ message: "404 not Found" });
   } else {

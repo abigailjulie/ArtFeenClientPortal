@@ -9,13 +9,12 @@ const logEvents = async (message, logfileName) => {
   const logItem = `${dateTime}\t${uuid()}\t${message}\n`;
 
   try {
-    if (!fs.existsSync(path.join(__dirname, "..", "logs"))) {
-      await fsPromises.mkdir(path.join(__dirname, "..", "logs"));
+    const logsDir = path.join(__dirname, "../../logs");
+    if (!fs.existsSync(logsDir)) {
+      await fsPromises.mkdir(logsDir);
     }
-    await fsPromises.appendFile(
-      path.join(__dirname, "..", "logs", logfileName),
-      logItem
-    );
+
+    await fsPromises.appendFile(path.join(logsDir, logfileName), logItem);
   } catch (error) {
     console.log(error);
   }
@@ -30,7 +29,7 @@ const allowedOriginsToIgnore = ["http://localhost:5000"];
 const logger = (req, res, next) => {
   const origin = req.headers.origin;
 
-  if (!allowedOriginsToIgnore) {
+  if (!allowedOriginsToIgnore.includes(origin)) {
     logEvents(`${req.method}\t${req.url}\t${origin}`, reqLog.log);
     console.log(`${req.method} ${req.path}`);
   }

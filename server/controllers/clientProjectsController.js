@@ -23,7 +23,9 @@ const createNewClientProject = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const duplicate = await Project.findOne({ name, client }).lean().exec();
+  const duplicate = await Project.findOne({ name, client: clientId })
+    .lean()
+    .exec();
 
   if (duplicate) {
     return res
