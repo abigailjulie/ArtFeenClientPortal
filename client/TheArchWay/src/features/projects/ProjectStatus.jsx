@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Home() {
+export default function ProjectStatus() {
   return (
     <section className="">
       <h2 className="text-center">Project Status</h2>

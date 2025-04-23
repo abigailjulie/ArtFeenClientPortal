@@ -5,7 +5,7 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function DashHeader() {
-  const navigate = useNavigate;
+  const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const handleGoHome = () => {
@@ -28,6 +28,9 @@ export default function DashHeader() {
         <p>Phase:</p>
         <p>Status:</p>
         <p>Outstanding Balance:</p>
+        <Link to="/dash">
+          <h1>The ArchWay</h1>
+        </Link>
         <Link to="/dash/profile">
           <h3>Client Profile</h3>
         </Link>

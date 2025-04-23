@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Public from "./features/public/Public";
 import DashLayout from "./features/clients/DashLayout";
-import Home from "./pages/Home";
+import Profile from "./features/projects/Profile";
 import Login from "./features/auth/Login";
 import Welcome from "./features/auth/Welcome";
 import ClientsList from "./features/clients/ClientsList";
@@ -18,8 +18,13 @@ export default function App() {
 
         <Route path="dash" element={<DashLayout />}>
           <Route index element={<Welcome />} />
+
           <Route path="clients">
             <Route index element={<ClientsList />} />
+          </Route>
+
+          <Route path="profile">
+            <Route index element={<Profile />} />
           </Route>
 
           <Route path="projects">

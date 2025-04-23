@@ -11,7 +11,7 @@ export default function Welcome() {
       <p>{today}</p>
       <h1>Welcome</h1>
       <p>
-        <Link to="/home/clients">View User Settings</Link>
+        <Link to="/dash/clients">View client Settings</Link>
       </p>
     </section>
   );

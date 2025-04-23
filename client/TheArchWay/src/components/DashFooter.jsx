@@ -10,13 +10,31 @@ export default function DashFooter() {
         <h2 className="fw-bold">Resources</h2>
         <ul>
           <li>
-            <a href="https://www.abigaildesigns.org">Portfolio</a>
+            <a
+              href="https://www.abigaildesigns.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Portfolio
+            </a>
           </li>
           <li>
-            <a href="https://www.linkedin.com/in/abigailfigaro">LinkedIn</a>
+            <a
+              href="https://www.linkedin.com/in/abigailfigaro"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn
+            </a>
           </li>
           <li>
-            <a href="https://github.com/abigailjulie">GitHub</a>
+            <a
+              href="https://github.com/abigailjulie"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
           </li>
         </ul>
       </section>
