@@ -21,14 +21,13 @@ export default function App() {
 
           <Route path="clients">
             <Route index element={<ClientsList />} />
+            <Route path="projects">
+              <Route index element={<ProjectsList />} />
+            </Route>
           </Route>
 
           <Route path="profile">
             <Route index element={<Profile />} />
-          </Route>
-
-          <Route path="projects">
-            <Route index element={<ProjectsList />} />
           </Route>
         </Route>
       </Route>

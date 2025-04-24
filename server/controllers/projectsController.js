@@ -5,7 +5,7 @@ const asyncHandler = require("express-async-handler");
 // route GET /projects
 // access Private
 const getAllProjects = asyncHandler(async (req, res) => {
-  const projects = await Project.find().lean();
+  const projects = await Project.find().populate("client", "username").lean();
   if (!projects?.length) {
     return res.status(400).json({ message: "No projects found" });
   }
