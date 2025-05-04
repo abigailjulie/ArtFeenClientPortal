@@ -7,7 +7,9 @@ export default function DashFooter() {
       <section className="pt-5 mb-4 d-flex align-items-center justify-content-around">
         <article>
           <h2 className="abigail-designs-heading-font mb-0">Abigail Designs</h2>
-          <p className="mb-0 fs-5">Reaching Higher</p>
+          <p className="mb-3 ft-small text-center line-height-min letter-spacing-mid">
+            REACHING HIGHER
+          </p>
           <p className="mb-0">
             Copyright 2025 Abigail Design LLC. All Rights Reserved.
           </p>

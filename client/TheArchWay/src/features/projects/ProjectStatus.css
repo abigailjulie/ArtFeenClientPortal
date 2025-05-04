@@ -1,0 +1,14 @@
+.no-underline-hover {
+  text-decoration: none;
+  color: black;
+  font-weight: 600;
+  font-style: normal;
+  transition: all 0.2s ease;
+}
+
+.no-underline-hover:hover {
+  font-weight: 700;
+  font-style: italic;
+  text-decoration: none;
+  color: black;
+}

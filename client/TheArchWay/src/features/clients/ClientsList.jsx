@@ -24,7 +24,7 @@ export default function ClientsList() {
       : null;
 
     return (
-      <table>
+      <table className="w-100">
         <thead>
           <tr>
             <th scope="col">Username</th>
