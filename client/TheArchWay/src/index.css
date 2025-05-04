@@ -1,3 +1,6 @@
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Oi&display=swap");
+
 /* Box sizing rules */
 *,
 *::before,
@@ -89,6 +92,11 @@ body > :not(.carousel) {
   /* Neutral */
   --White: hsl(0, 0%, 100%);
   --Black-75opacity: rgba(0, 0, 0, 0.75);
+  --Dark-Grey: rgb(144, 144, 144);
+  /* Fonts */
+  --Abigail-Designs-Heading-Font: "Oi", serif;
+  --ft-large: 3rem;
+  --line-height-min: 1;
 }
 
 html body {

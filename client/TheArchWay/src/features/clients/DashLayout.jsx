@@ -5,12 +5,12 @@ import DashFooter from "../../components/DashFooter";
 
 export default function DashLayout() {
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <DashHeader />
-      <div className="dash-container">
+      <main className="dash-container flex-grow-1">
         <Outlet />
-      </div>
+      </main>
       <DashFooter />
-    </>
+    </div>
   );
 }

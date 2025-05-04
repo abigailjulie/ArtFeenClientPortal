@@ -1,0 +1,7 @@
+.line-height-min {
+  line-height: var(--line-height-min);
+}
+
+.ft-large {
+  font-size: var(--ft-large);
+}

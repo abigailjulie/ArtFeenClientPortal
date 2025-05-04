@@ -1,0 +1,9 @@
+.bg-custom-dark-grey {
+  background-color: var(--Dark-Grey);
+}
+
+.abigail-designs-heading-font {
+  font-family: var(--Abigail-Designs-Heading-Font);
+  font-weight: 400;
+  font-style: normal;
+}

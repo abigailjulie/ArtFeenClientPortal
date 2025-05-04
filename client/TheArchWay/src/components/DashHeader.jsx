@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
+import "./DashHeader.css";
 
 export default function DashHeader() {
   const navigate = useNavigate();
@@ -21,20 +22,38 @@ export default function DashHeader() {
     );
   }
 
+  const date = new Date();
+  const today = new Intl.DateTimeFormat("en-us", {
+    dateStyle: "long",
+  }).format(date);
+
   return (
-    <header className="dash-header">
-      <div className="dash-container">
-        <p>Current User:</p>
-        <p>Phase:</p>
-        <p>Status:</p>
-        <p>Outstanding Balance:</p>
-        <Link to="/dash">
-          <h1>The ArchWay</h1>
-        </Link>
-        <Link to="/dash/profile">
-          <h3>Client Profile</h3>
-        </Link>
-      </div>
+    <header className="dash-header mt-3">
+      <main className="ms-4 dash-container">
+        <div className="d-flex flex-row align-items-center">
+          <p className="mb-0">
+            Client Name:
+            <strong className="ms-2">
+              <Link
+                className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
+                to="/dash/profile"
+              >
+                Client Name
+              </Link>
+            </strong>
+            <span className="mx-2">X</span>
+            <Link
+              className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
+              to="/dash"
+            >
+              The ArchWay
+            </Link>
+          </p>
+        </div>
+        <p className="mb-0">Phase: Programming</p>
+        <p className="ft-large fw-bold mb-0 line-height-min">$17,490</p>
+        <p>Outstanding balance as of {today}</p>
+      </main>
       {homeBtn}
     </header>
   );
