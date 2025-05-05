@@ -1,5 +1,6 @@
 /* Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Oi&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 
 /* Box sizing rules */
 *,
@@ -92,18 +93,22 @@ body > :not(.carousel) {
   /* Neutral */
   --White: hsl(0, 0%, 100%);
   --Black-75opacity: rgba(0, 0, 0, 0.75);
+  --Light-Grey: rgb(247, 247, 247);
   --Dark-Grey: rgb(144, 144, 144);
   /* Fonts */
   --Abigail-Designs-Heading-Font: "Oi", serif;
+  --ft-Heading: "Playfair Display", serif;
+  --ft-Body: "Lato", sans-serif;
   --ft-large: 3rem;
+  --ft-medium: 2rem;
   --ft-small: 0.7rem;
   --line-height-min: 1;
   --letter-spacing-mid: 0.2rem;
 }
 
 html body {
-  background-color: var(--White);
-  font-family: "Kumbh Sans", serif;
+  background-color: var(--Light-Grey);
+  font-family: "Lato", sans-serif;
   font-size: 16px;
 }
 

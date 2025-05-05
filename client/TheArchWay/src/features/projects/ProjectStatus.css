@@ -12,3 +12,9 @@
   text-decoration: none;
   color: black;
 }
+
+.lato-bold {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}

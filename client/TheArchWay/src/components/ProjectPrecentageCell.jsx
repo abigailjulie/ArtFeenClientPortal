@@ -1,11 +1,17 @@
 import React from "react";
 
-export default function ProjectPrecentageCell({ phase, phaseNum }) {
+export default function ProjectPrecentageCell({
+  phase,
+  phaseNum,
+  phaseBudget,
+}) {
   return (
-    <div className="d-flex flex-column">
-      <p className="mb-0">{phase}</p>
-      <p className="mb-0 fs-4 fw-bold">$10,000</p>
-      <p className="mb-0">{phaseNum}</p>
+    <div className="d-flex align-items-center px-2">
+      <p className="mb-0 me-3 fw-bolder">{phaseNum}</p>
+      <div className="d-flex flex-column">
+        <span className="mb-0 fw-light">{phase}</span>
+        <span className="mb-0 fs-4 fw-bold">{phaseBudget}</span>
+      </div>
     </div>
   );
 }

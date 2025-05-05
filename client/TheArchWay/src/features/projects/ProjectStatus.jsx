@@ -8,8 +8,8 @@ export default function ProjectStatus() {
     e.target.value = "";
   };
   return (
-    <section>
-      <h2 className="text-center">Project Status</h2>
+    <section className="py-5">
+      <h2 className="lato-bold ft-large text-center mb-5">Project Status</h2>
       <article className="d-flex w-75 mx-auto align-items-center justify-content-between">
         <div className="w-50 pe-4">
           <ProjectPrecentage />
@@ -19,7 +19,7 @@ export default function ProjectStatus() {
           <article className="d-flex flex-column">
             <button
               onClick={handleEdit}
-              className="btn btn-link w-auto ms-auto no-underline-hover pe-0"
+              className="btn btn-link w-auto ms-auto no-underline-hover pe-0 text-black"
             >
               $10,000
             </button>
@@ -29,7 +29,7 @@ export default function ProjectStatus() {
           <article className="d-flex flex-column">
             <button
               onClick={handleEdit}
-              className="btn btn-link w-auto ms-auto no-underline-hover pe-0"
+              className="btn btn-link w-auto ms-auto no-underline-hover pe-0 text-black"
             >
               CD
             </button>
@@ -39,7 +39,7 @@ export default function ProjectStatus() {
           <article className="d-flex flex-column">
             <button
               onClick={handleEdit}
-              className="btn btn-link w-auto ms-auto no-underline-hover pe-0"
+              className="btn btn-link w-auto ms-auto no-underline-hover pe-0 text-black"
             >
               August 2026
             </button>
