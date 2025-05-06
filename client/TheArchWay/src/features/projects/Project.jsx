@@ -25,16 +25,27 @@ export default function Project({ projectId }) {
 
     const handleEdit = () => navigate(`/dash/clients/projects/${projectId}`);
 
+    const rowStatusClass = (() => {
+      switch (project.status) {
+        case "Completed":
+          return "bg-dark-subtle opacity-50";
+        case "Paused":
+          return "bg-warning-subtle opacity-50";
+        case "Cancelled":
+          return "bg-danger-subtle opacity-50";
+        default:
+          return "";
+      }
+    })();
+
     return (
-      <tr>
-        <td>
-          {project.completed ? <span>Completed</span> : <span>Open</span>}
-        </td>
-        <td>{created}</td>
-        <td>{updated}</td>
-        <td>{project.name}</td>
-        <td>{project.client?.username}</td>
-        <td>
+      <tr className={`bg-body-tertiary shadow mb-3 ${rowStatusClass}`}>
+        <td className="p-3">{project.status}</td>
+        <td className="p-3">{created}</td>
+        <td className="p-3">{updated}</td>
+        <td className="p-3">{project.name}</td>
+        <td className="p-3">{project.client?.username}</td>
+        <td className="p-3 d-flex justify-content-center">
           <button onClick={handleEdit}>
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>

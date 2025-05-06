@@ -56,28 +56,40 @@ const createNewProject = asyncHandler(async (req, res) => {
 const updateProject = asyncHandler(async (req, res) => {
   const { id, name, number, address, telephone, status, client } = req.body;
 
-  if (!id || !name || !client) {
-    return res.status(400).json({ message: "All fields are required" });
+  if (!id) {
+    return res.status(400).json({ message: "Project ID is required" });
   }
 
   const project = await Project.findById(id).exec();
 
   if (!project) {
-    return res.status(409).json({ message: "Project not found" });
+    return res.status(404).json({ message: "Project not found" });
   }
 
-  const duplicate = await Project.findOne({ name }).lean().exec();
+  if (name && name !== project.name) {
+    const duplicate = await Project.findOne({ name }).lean().exec();
 
-  if (duplicate && duplicate?._id.toString() !== id) {
-    return res.status(409).json({ message: "Duplicate project" });
+    if (duplicate && duplicate?._id.toString() !== id) {
+      return res.status(409).json({ message: "Duplicate project name" });
+    }
   }
 
-  project.name = name;
-  project.client = client;
-  project.number = number;
-  project.address = address;
-  project.telephone = telephone;
-  project.status = status;
+  if (number && number !== project.number) {
+    const duplicateNumber = await Project.findOne({ number }).lean().exec();
+
+    if (duplicateNumber && duplicateNumber._id.toString() !== id) {
+      return res.status(409).json({ message: "Duplicate project number" });
+    }
+  }
+
+  if (name && name !== project.name) project.name = name;
+  if (client && client?.toString() !== project.client.toString())
+    project.client = client;
+  if (number && number !== project.number) project.number = number;
+  if (address && address !== project.address) project.address = address;
+  if (telephone && telephone !== project.telephone)
+    project.telephone = telephone;
+  if (status && status !== project.status) project.status = status;
 
   const updatedProject = await project.save();
 

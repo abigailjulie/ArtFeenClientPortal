@@ -1,0 +1,12 @@
+.table-spaced {
+  border-collapse: separate;
+  border-spacing: 0 1rem;
+}
+
+.w-33 {
+  width: 33%;
+}
+
+.w-5 {
+  width: 5%;
+}

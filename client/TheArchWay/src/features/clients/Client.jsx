@@ -17,13 +17,17 @@ export default function Client({ clientId }) {
 
     const clientRoleString = client.roles.toString().replaceAll(",", ", ");
 
-    const cellStatus = client.active ? "" : "disable";
+    const rowStatus = client.active ? "" : "opacity-50";
 
     return (
-      <tr>
-        <td className={cellStatus}>{client.username}</td>
-        <td className={cellStatus}>{clientRoleString}</td>
-        <td className={cellStatus}>
+      <tr className={`bg-body-tertiary shadow mb-3 ${rowStatus}`}>
+        <td className="p-3">
+          <span>{client.username}</span>
+        </td>
+        <td className="p-3">
+          <span>{clientRoleString}</span>
+        </td>
+        <td className="p-3 d-flex justify-content-center">
           <button onClick={handleEdit}>
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>

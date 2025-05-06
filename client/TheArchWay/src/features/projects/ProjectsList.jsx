@@ -2,6 +2,7 @@ import React from "react";
 import { useGetProjectsQuery } from "./projectsApiSlice";
 import Spinner from "react-bootstrap/Spinner";
 import Project from "./Project";
+import "../../components/TableStyles.css";
 
 export default function ProjectsList() {
   const {
@@ -26,19 +27,35 @@ export default function ProjectsList() {
       : null;
 
     return (
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Status</th>
-            <th scope="col">Created</th>
-            <th scope="col">Updated</th>
-            <th scope="col">Title</th>
-            <th scope="col">Owner</th>
-            <th scope="col">Edit</th>
-          </tr>
-        </thead>
-        <tbody>{tableContent}</tbody>
-      </table>
+      <div className="mx-5">
+        <section className="w-100 px-4 py-2">
+          <table className="w-100 align-items-between table-spaced">
+            <thead className="w-100">
+              <tr>
+                <th className="fs-3 ps-3 pb-3" scope="col">
+                  Status
+                </th>
+                <th className="fs-3 ps-3 pb-3" scope="col">
+                  Created
+                </th>
+                <th className="fs-3 ps-3 pb-3" scope="col">
+                  Updated
+                </th>
+                <th className="fs-3 ps-3 pb-3" scope="col">
+                  Title
+                </th>
+                <th className="fs-3 ps-3 pb-3" scope="col">
+                  Owner
+                </th>
+                <th className="fs-3 ps-3 pb-3 w-5" scope="col">
+                  Edit
+                </th>
+              </tr>
+            </thead>
+            <tbody>{tableContent}</tbody>
+          </table>
+        </section>
+      </div>
     );
   }
 }
