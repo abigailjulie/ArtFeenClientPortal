@@ -29,10 +29,43 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
         } else return [{ type: "Client", id: "LIST" }];
       },
     }),
+    addNewClient: builder.mutation({
+      query: (initialClientData) => ({
+        url: "/clients",
+        method: "POST",
+        body: {
+          ...initialClientData,
+        },
+      }),
+      invalidatesTags: [{ type: "Client", id: "LIST" }],
+    }),
+    updateClient: builder.mutation({
+      query: (initialClientData) => ({
+        url: "/clients",
+        method: "PATCH",
+        body: {
+          ...initialClientData,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Client", id: arg.id }],
+    }),
+    deleteClient: builder.mutation({
+      query: ({ id }) => ({
+        url: "/clients",
+        method: "DELETE",
+        body: { id },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Client", id: arg.id }],
+    }),
   }),
 });
 
-export const { useGetClientsQuery } = clientsApiSlice;
+export const {
+  useGetClientsQuery,
+  useAddNewClientMutation,
+  useUpdateClientMutation,
+  useDeleteClientMutation,
+} = clientsApiSlice;
 
 export const selectClientsResult =
   clientsApiSlice.endpoints.getClients.select();

@@ -32,10 +32,47 @@ export const projectsApiSlice = apiSlice.injectEndpoints({
         } else return [{ type: "Project", id: "LIST" }];
       },
     }),
+    addNewProject: builder.mutation({
+      query: (initialProjectData) => ({
+        url: "/clients/projects",
+        method: "POST",
+        body: {
+          ...initialProjectData,
+        },
+      }),
+      invalidatesTags: [{ type: "Project", id: "LIST" }],
+    }),
+    updateProject: builder.mutation({
+      query: (initialProjectData) => ({
+        url: "/clients/projects",
+        method: "PATCH",
+        body: {
+          ...initialProjectData,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Project", id: arg.id },
+      ],
+    }),
+    deleteProject: builder.mutation({
+      query: ({ id }) => ({
+        url: "/clients/projects",
+        method: "Delete",
+        body: { id },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Project", id: arg.id },
+      ],
+    }),
   }),
 });
 
-export const { useGetProjectsQuery } = projectsApiSlice;
+export const {
+  useGetProjectsQuery,
+  useAddNewProjectMutation,
+  useUpdateProjectMutation,
+  useDeleteProjectMutation,
+} = projectsApiSlice;
 
 export const selectProjectsResult =
   projectsApiSlice.endpoints.getProjects.select();
