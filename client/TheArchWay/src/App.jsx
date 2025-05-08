@@ -28,11 +28,12 @@ export default function App() {
             <Route index element={<ClientsList />} />
             <Route path=":id" element={<EditClient />} />
             <Route path="new" element={<NewClientForm />} />
-            <Route path="projects">
-              <Route index element={<ProjectsList />} />
-              <Route path=":id" element={<EditProject />} />
-              <Route path="new" element={<NewProject />} />
-            </Route>
+          </Route>
+
+          <Route path="projects">
+            <Route index element={<ProjectsList />} />
+            <Route path=":id" element={<EditProject />} />
+            <Route path="new" element={<NewProject />} />
           </Route>
 
           <Route path="profile">

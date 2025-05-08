@@ -11,7 +11,7 @@ const initialState = projectsAdapter.getInitialState();
 export const projectsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProjects: builder.query({
-      query: () => "/clients/projects",
+      query: () => "/projects",
       validateStatus: (response, result) => {
         return response.status === 200 && !result.isError;
       },
@@ -34,7 +34,7 @@ export const projectsApiSlice = apiSlice.injectEndpoints({
     }),
     addNewProject: builder.mutation({
       query: (initialProjectData) => ({
-        url: "/clients/projects",
+        url: "/projects",
         method: "POST",
         body: {
           ...initialProjectData,
@@ -44,7 +44,7 @@ export const projectsApiSlice = apiSlice.injectEndpoints({
     }),
     updateProject: builder.mutation({
       query: (initialProjectData) => ({
-        url: "/clients/projects",
+        url: "/projects",
         method: "PATCH",
         body: {
           ...initialProjectData,
@@ -56,7 +56,7 @@ export const projectsApiSlice = apiSlice.injectEndpoints({
     }),
     deleteProject: builder.mutation({
       query: ({ id }) => ({
-        url: "/clients/projects",
+        url: "/projects",
         method: "Delete",
         body: { id },
       }),

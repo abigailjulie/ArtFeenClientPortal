@@ -2,11 +2,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectClientsById } from "./clientsApiSlice";
+import { selectClientById } from "./clientsApiSlice";
 import React from "react";
 
 export default function Client({ clientId }) {
-  const client = useSelector((state) => selectClientsById(state, clientId));
+  const client = useSelector((state) => selectClientById(state, clientId));
 
   const navigate = useNavigate();
 

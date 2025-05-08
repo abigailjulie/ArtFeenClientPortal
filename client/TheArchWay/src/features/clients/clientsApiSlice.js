@@ -77,7 +77,7 @@ const selectClientsData = createSelector(
 
 export const {
   selectAll: selectAllClients,
-  selectById: selectClientsById,
+  selectById: selectClientById,
   selectIds: selectClientIds,
 } = clientsAdapter.getSelectors(
   (state) => selectClientsData(state) ?? initialState

@@ -1,25 +1,35 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useAddNewClientMutation } from "./clientsApiSlice";
+import {
+  useUpdateClientMutation,
+  useDeleteClientMutation,
+} from "./clientsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../config/roles";
 
 const CLIENT_REGEX =
   /^[A-Za-z](?!.*[.-]{2})(?:[A-Za-z]|[.-](?=[A-Za-z])){1,18}[A-Za-z]$/;
 const PWD_REGEX = /^[A-Za-z0-9!@#$%]{4,12}$/;
-export default function NewClientForm() {
-  const [addNewClient, { isLoading, isSuccess, isError, error }] =
-    useAddNewClientMutation();
+
+export default function EditClientForm({ client }) {
+  const [updateClient, { isLoading, isSuccess, isError, error }] =
+    useUpdateClientMutation();
+
+  const [
+    deleteClient,
+    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
+  ] = useDeleteClientMutation();
 
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(client.username);
   const [validUsername, setValidUsername] = useState(false);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(client.password);
   const [validPassword, setValidPassword] = useState(false);
-  const [roles, setRoles] = useState(["Client"]);
+  const [roles, setRoles] = useState(client.roles);
+  const [active, setActive] = useState(client.active);
 
   useEffect(() => {
     setValidUsername(CLIENT_REGEX.test(username));
@@ -30,13 +40,13 @@ export default function NewClientForm() {
   }, [password]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || isDelSuccess) {
       setUsername("");
       setPassword("");
       setRoles([]);
       navigate("/dash/clients");
     }
-  }, [isSuccess, navigate]);
+  }, [isSuccess, isDelSuccess, navigate]);
 
   const onUsernameChanged = (e) => {
     setUsername(e.target.value);
@@ -54,35 +64,45 @@ export default function NewClientForm() {
     setRoles(values);
   };
 
-  const canSave =
-    [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+  const onActiveChanged = () => {
+    setActive((prev) => !prev);
+  };
 
   const onSaveClientClicked = async (e) => {
-    e.preventDefault();
-    if (canSave) {
-      await addNewClient({ username, password, roles });
+    if (password) {
+      await updateClient({ id: client.id, username, password, roles, active });
+    } else {
+      await updateClient({ id: client.id, username, roles, active });
     }
   };
 
-  const options = Object.values(ROLES).map((role) => {
-    return (
-      <option key={role} value={role}>
-        {role}
-      </option>
-    );
-  });
+  const onDeleteClientClicked = async (e) => {
+    await deleteClient({ id: client.id });
+  };
 
-  const errClass = isError ? "errmsg" : "offscreen";
+  let canSave;
+  if (password) {
+    canSave =
+      [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+  } else {
+    canSave = [roles.length, validUsername].every(Boolean) && !isLoading;
+  }
+
+  const errClass = isError || isDelError ? "errmsg" : "offscreen";
   const validClientClass = !validUsername ? "border border-danger" : "";
-  const validPwdClass = !validPassword ? "border border-danger" : "";
+  const validPwdClass =
+    password && !validPassword ? "border border-danger" : "";
   const validRolesClass = !Boolean(roles.length) ? "border border-danger" : "";
+
+  const errContent = (error?.data?.message || delError?.data?.message) ?? "";
 
   return (
     <>
-      <p className={errClass}>{error?.data?.message}</p>
-      <form onSubmit={onSaveClientClicked}>
+      <p className={errClass}>{errContent}</p>
+
+      <form onSubmit={(e) => e.preventDefault()}>
         <div>
-          <h2>New Client</h2>
+          <h2>Edit Client</h2>
           <div>
             <button
               className="btn"
@@ -91,6 +111,13 @@ export default function NewClientForm() {
               disabled={!canSave}
             >
               <FontAwesomeIcon icon={faSave} />
+            </button>
+            <button
+              className="btn"
+              title="Delete"
+              onClick={onDeleteClientClicked}
+            >
+              <FontAwesomeIcon icon={faTrashCan} />
             </button>
           </div>
         </div>
@@ -134,6 +161,15 @@ export default function NewClientForm() {
         >
           {options}
         </select>
+
+        <label htmlFor="clientActive">ACTIVE:</label>
+        <input
+          id="clientActive"
+          name="clientActive"
+          type="checkbox"
+          checked={active}
+          onChange={onActiveChanged}
+        />
       </form>
     </>
   );
