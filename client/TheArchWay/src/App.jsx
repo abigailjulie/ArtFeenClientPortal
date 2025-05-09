@@ -18,26 +18,31 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Public />} />
-        <Route path="/login" element={<Login />} />
+        <Route index element={<Welcome />} />
+        <Route path="login" element={<Login />} />
 
         <Route path="dash" element={<DashLayout />}>
-          <Route index element={<Welcome />} />
+          {/* <Route index element={<Public />} /> */}
 
           <Route path="clients">
             <Route index element={<ClientsList />} />
-            <Route path=":id" element={<EditClient />} />
             <Route path="new" element={<NewClientForm />} />
+            <Route path=":clientId" element={<ClientProfile />}>
+              <Route index element={<EditClientProfile />} />
+              <Route path="projects">
+                <Route index element={<ClientProjectsList />} />
+                <Route path="new" element={<NewProject />} />
+                <Route
+                  path=":projectId/profile"
+                  element={<ProjectProfileForm />}
+                />
+              </Route>
+            </Route>
           </Route>
 
           <Route path="projects">
             <Route index element={<ProjectsList />} />
-            <Route path=":id" element={<EditProject />} />
-            <Route path="new" element={<NewProject />} />
-          </Route>
-
-          <Route path="profile">
-            <Route index element={<Profile />} />
+            <Route path=":projectId" element={<EditProject />} />
           </Route>
         </Route>
       </Route>
