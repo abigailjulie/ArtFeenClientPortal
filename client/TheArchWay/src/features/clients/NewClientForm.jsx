@@ -92,7 +92,6 @@ export default function NewClientForm() {
   const onSaveClientClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      console.log("Submitting new client:", { username, password, roles });
       try {
         const result = await addNewClient({
           username,
@@ -132,7 +131,7 @@ export default function NewClientForm() {
         onSubmit={onSaveClientClicked}
       >
         <div>
-          <h2>New Client Information</h2>
+          <h2>New Client Information:</h2>
           <div>
             <button
               className="btn"

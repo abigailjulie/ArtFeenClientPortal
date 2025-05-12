@@ -11,7 +11,11 @@ export default function ClientsList() {
     isSuccess,
     isError,
     error,
-  } = useGetClientsQuery();
+  } = useGetClientsQuery(undefined, {
+    pollingInterval: 60000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
   if (isLoading) return <Spinner animation="border" />;
 

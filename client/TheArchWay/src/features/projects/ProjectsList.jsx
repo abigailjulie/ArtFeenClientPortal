@@ -11,7 +11,11 @@ export default function ProjectsList() {
     isSuccess,
     isError,
     error,
-  } = useGetProjectsQuery();
+  } = useGetProjectsQuery(undefined, {
+    pollingInterval: 15000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
   if (isLoading) return <Spinner animation="border" />;
 

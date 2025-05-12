@@ -10,6 +10,7 @@ export default function Welcome() {
         <Link to="/login">Login</Link>
         <Link to="/dash/projects">View projects</Link>
         <Link to="/dash/clients">View clients</Link>
+        <Link to="/dash/clients/:clientId/projects/new">Add New Project</Link>
       </p>
     </section>
   );

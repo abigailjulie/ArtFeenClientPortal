@@ -172,9 +172,7 @@ export default function EditClientForm({ client }) {
           {options}
         </select>
 
-        <label htmlFor="clientActive" style={{ border: "1px solid red" }}>
-          ACTIVE:
-        </label>
+        <label htmlFor="clientActive">ACTIVE:</label>
         <input
           id="clientActive"
           name="clientActive"
