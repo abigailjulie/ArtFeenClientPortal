@@ -26,7 +26,7 @@ export default function EditClientForm({ client }) {
 
   const [username, setUsername] = useState(client.username);
   const [validUsername, setValidUsername] = useState(false);
-  const [password, setPassword] = useState(client.password);
+  const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
   const [roles, setRoles] = useState(client.roles);
   const [active, setActive] = useState(client.active);
@@ -76,9 +76,17 @@ export default function EditClientForm({ client }) {
     }
   };
 
-  const onDeleteClientClicked = async (e) => {
+  const onDeleteClientClicked = async () => {
     await deleteClient({ id: client.id });
   };
+
+  const options = Object.values(ROLES).map((role) => {
+    return (
+      <option key={role} value={role}>
+        {role}
+      </option>
+    );
+  });
 
   let canSave;
   if (password) {
@@ -89,10 +97,12 @@ export default function EditClientForm({ client }) {
   }
 
   const errClass = isError || isDelError ? "errmsg" : "offscreen";
-  const validClientClass = !validUsername ? "border border-danger" : "";
+  const validClientClass = !validUsername ? "border" : "border border-danger";
   const validPwdClass =
-    password && !validPassword ? "border border-danger" : "";
-  const validRolesClass = !Boolean(roles.length) ? "border border-danger" : "";
+    password && !validPassword ? "border" : "border border-danger";
+  const validRolesClass = !Boolean(roles.length)
+    ? "border"
+    : "border border-danger";
 
   const errContent = (error?.data?.message || delError?.data?.message) ?? "";
 
@@ -155,14 +165,16 @@ export default function EditClientForm({ client }) {
           id="roles"
           name="roles"
           multiple={true}
-          size={3}
+          size="3"
           value={roles}
           onChange={onRolesChanged}
         >
           {options}
         </select>
 
-        <label htmlFor="clientActive">ACTIVE:</label>
+        <label htmlFor="clientActive" style={{ border: "1px solid red" }}>
+          ACTIVE:
+        </label>
         <input
           id="clientActive"
           name="clientActive"

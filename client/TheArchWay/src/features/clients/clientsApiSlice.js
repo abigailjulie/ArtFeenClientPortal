@@ -12,7 +12,6 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
       validateStatus: (response, result) => {
         return response.status === 200 && !result.isError;
       },
-      keepUnusedDataFor: 5,
       transformResponse: (responseData) => {
         const loadedClients = responseData.map((client) => {
           client.id = client._id;

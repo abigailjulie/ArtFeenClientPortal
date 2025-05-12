@@ -5,9 +5,9 @@ import { selectClientById } from "./clientsApiSlice";
 import { Spinner } from "react-bootstrap";
 import EditClientForm from "./EditClientForm";
 
-export default function EditClient() {
-  const { id } = useParams();
-  const client = useSelector((state) => selectClientById(state, id));
+export default function EditClientProfile() {
+  const { clientId } = useParams();
+  const client = useSelector((state) => selectClientById(state, clientId));
 
   return client ? (
     <EditClientForm client={client} />

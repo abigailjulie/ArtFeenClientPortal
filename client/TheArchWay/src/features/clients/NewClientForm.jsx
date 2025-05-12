@@ -20,6 +20,11 @@ export default function NewClientForm() {
   const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
   const [roles, setRoles] = useState(["Client"]);
+  const [telephone, setTelephone] = useState("");
+  const [email, setEmail] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [companyAddress, setCompanyAddress] = useState("");
+  const [companyNumber, setCompanyNumber] = useState("");
 
   useEffect(() => {
     setValidUsername(CLIENT_REGEX.test(username));
@@ -54,13 +59,55 @@ export default function NewClientForm() {
     setRoles(values);
   };
 
+  const onCompanyNameChanged = (e) => {
+    setCompanyName(e.target.value);
+  };
+
+  const onCompanyAddressChanged = (e) => {
+    setCompanyAddress(e.target.value);
+  };
+
+  const onCompanyNumberChanged = (e) => {
+    setCompanyNumber(e.target.value);
+  };
+
+  const onTelephoneChanged = (e) => {
+    setTelephone(e.target.value);
+  };
+
+  const onEmailChanged = (e) => {
+    setEmail(e.target.value);
+  };
+
   const canSave =
-    [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+    [
+      roles.length,
+      validUsername,
+      validPassword,
+      companyName,
+      companyAddress,
+      companyNumber,
+    ].every(Boolean) && !isLoading;
 
   const onSaveClientClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      await addNewClient({ username, password, roles });
+      console.log("Submitting new client:", { username, password, roles });
+      try {
+        const result = await addNewClient({
+          username,
+          password,
+          roles,
+          company: {
+            name: companyName,
+            address: companyAddress,
+            telephone: companyNumber,
+          },
+        });
+        console.log("Result of addNewClient:", result);
+      } catch (err) {
+        console.error("Error adding new client:", err);
+      }
     }
   };
 
@@ -80,9 +127,12 @@ export default function NewClientForm() {
   return (
     <>
       <p className={errClass}>{error?.data?.message}</p>
-      <form onSubmit={onSaveClientClicked}>
+      <form
+        className="h-100 d-flex flex-column justify-content-center align-items-center"
+        onSubmit={onSaveClientClicked}
+      >
         <div>
-          <h2>New Client</h2>
+          <h2>New Client Information</h2>
           <div>
             <button
               className="btn"
@@ -122,6 +172,24 @@ export default function NewClientForm() {
           onChange={onPasswordChanged}
         />
 
+        <label htmlFor="telephone">Telephone:</label>
+        <input
+          id="telephone"
+          name="telephone"
+          type="text"
+          value={telephone}
+          onChange={onTelephoneChanged}
+        />
+
+        <label htmlFor="email">Email:</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          value={email}
+          onChange={onEmailChanged}
+        />
+
         <label htmlFor="roles">ASSIGNED ROLES:</label>
         <select
           className={validRolesClass}
@@ -134,6 +202,34 @@ export default function NewClientForm() {
         >
           {options}
         </select>
+
+        <h2>Company Information</h2>
+        <label htmlFor="companyName">Company Name:</label>
+        <input
+          id="companyName"
+          name="companyName"
+          type="text"
+          value={companyName}
+          onChange={onCompanyNameChanged}
+        />
+
+        <label htmlFor="companyAddress">Company Address:</label>
+        <input
+          id="companyAddress"
+          name="companyAddress"
+          type="text"
+          value={companyAddress}
+          onChange={onCompanyAddressChanged}
+        />
+
+        <label htmlFor="companyNumber">Company Number:</label>
+        <input
+          id="companyNumber"
+          name="companyNumber"
+          type="text"
+          value={companyNumber}
+          onChange={onCompanyNumberChanged}
+        />
       </form>
     </>
   );

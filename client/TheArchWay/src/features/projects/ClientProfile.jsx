@@ -1,11 +1,9 @@
 import React from "react";
 import ProjectStatus from "./ProjectStatus";
 
-export default function Profile() {
+export default function ClientProfile() {
   return (
     <div>
-      <h1>Client Profile</h1>
-      <p>Client Status</p>
       <ProjectStatus />
     </div>
   );
