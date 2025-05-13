@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { selectAllClients } from "./clientsApiSlice";
+import { selectAllClients } from "../clients/clientsApiSlice";
 import { Spinner } from "react-bootstrap";
 import NewProjectForm from "./NewProjectForm";
 

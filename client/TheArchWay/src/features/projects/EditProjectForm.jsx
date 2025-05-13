@@ -25,15 +25,25 @@ export default function EditProjectForm({ project, clients }) {
   const [projectTelephone, setProjectTelephone] = useState(project.telephone);
   const [clientId, setClientId] = useState(project.client);
   const [status, setStatus] = useState(project.status);
+  const [timelineTick, setTimelineTick] = useState(
+    project.timeline.currentTick
+  );
+  const [expectedCompletionDate, setExpectedCompletionDate] = useState(
+    project.timeline.expectedCompletionDate &&
+      new Date(project.timeline.expectedCompletionDate)
+        .toISOString()
+        .split("T")[0]
+  );
+  const [financesTick, setFinancesTick] = useState(
+    project.finances.currentTick
+  );
+  const [budget, setBudget] = useState(project.finances.budget);
+  const [spent, setSpent] = useState(project.finances.spent);
+  const [phaseName, setPhaseName] = useState(project.phase.name);
+  const [phaseTick, setPhaseTick] = useState(project.phase.currentTick);
 
   useEffect(() => {
     if (isSuccess || isDelSuccess) {
-      setProjectName("");
-      setProjectAddress("");
-      setProjectNumber("");
-      setProjectTelephone("");
-      setClientId("");
-      setStatus("");
       navigate("/dash/projects");
     }
   }, [isSuccess, isDelSuccess, navigate]);
@@ -56,6 +66,27 @@ export default function EditProjectForm({ project, clients }) {
   const onStatusChanged = (e) => {
     setStatus(e.target.value);
   };
+  const onTimelineTickChanged = (e) => {
+    setTimelineTick(e.target.value);
+  };
+  const onExpectedCompletionDateChanged = (e) => {
+    setExpectedCompletionDate(e.target.value);
+  };
+  const onFinancesTickChanged = (e) => {
+    setFinancesTick(e.target.value);
+  };
+  const onBudgetChanged = (e) => {
+    setBudget(e.target.value);
+  };
+  const onSpentChanged = (e) => {
+    setSpent(e.target.value);
+  };
+  const onPhaseNameChanged = (e) => {
+    setPhaseName(e.target.value);
+  };
+  const onPhaseTickChanged = (e) => {
+    setPhaseTick(e.target.value);
+  };
 
   const onSaveProjectClicked = async (e) => {
     e.preventDefault();
@@ -67,6 +98,21 @@ export default function EditProjectForm({ project, clients }) {
       telephone: projectTelephone,
       status,
       client: clientId,
+      timeline: {
+        currentTick: timelineTick,
+        expectedCompletionDate: expectedCompletionDate
+          ? new Date(expectedCompletionDate)
+          : project.timeline.expectedCompletionDate,
+      },
+      finances: {
+        currentTick: financesTick,
+        budget,
+        spent,
+      },
+      phase: {
+        name: phaseName,
+        currentTick: phaseTick,
+      },
     });
   };
 
@@ -91,7 +137,7 @@ export default function EditProjectForm({ project, clients }) {
     second: "numeric",
   });
 
-  const options = clients.map((client) => {
+  const clientOptions = clients.map((client) => {
     return (
       <option key={client.id} value={client.id}>
         {client.username}
@@ -135,7 +181,6 @@ export default function EditProjectForm({ project, clients }) {
             </button>
           </div>
         </div>
-        id, name, number, address, telephone, status, client
         <label htmlFor="name">Project Name:</label>
         <input
           type="text"
@@ -172,23 +217,115 @@ export default function EditProjectForm({ project, clients }) {
           value={projectTelephone}
           onChange={onTelephoneChanged}
         />
-        <label htmlFor="projectActive">ACTIVE:</label>
-        <input
-          id="projectActive"
-          name="projectActive"
-          type="checkbox"
-          checked={active}
+        <label htmlFor="projectStatus">Status:</label>
+        <select
+          id="projectStatus"
+          name="projectStatus"
+          value={status}
           onChange={onStatusChanged}
-        />
-        <label htmlFor="projectUsername">ASSIGNED TO:</label>
+        >
+          <option value="Active">Active</option>
+          <option value="Paused">Paused</option>
+          <option value="Completed">Completed</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <label htmlFor="projectUsername">Assigned to:</label>
         <select
           id="projectUsername"
           name="username"
           value={clientId}
           onChange={onClientIdChanged}
         >
-          {options}
+          {clientOptions}
         </select>
+        <fieldset>
+          <legend>Project Timeline Tick:</legend>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((tick) => (
+            <label key={tick}>
+              <input
+                type="radio"
+                name="timelineTick"
+                value={tick}
+                checked={Number(timelineTick) === tick}
+                onChange={onTimelineTickChanged}
+              />
+              {tick}
+            </label>
+          ))}
+        </fieldset>
+        <label htmlFor="expectedCompletionDate">
+          Project Expected Completion Date:
+        </label>
+        <input
+          type="date"
+          name="expectedCompletionDate"
+          id="expectedCompletionDate"
+          value={expectedCompletionDate}
+          onChange={onExpectedCompletionDateChanged}
+        />
+        <fieldset>
+          <legend>Project Finances Tick:</legend>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((tick) => (
+            <label key={tick}>
+              <input
+                type="radio"
+                name="financesTick"
+                value={tick}
+                checked={Number(financesTick) === tick}
+                onChange={onFinancesTickChanged}
+              />
+              {tick}
+            </label>
+          ))}
+        </fieldset>
+        <label htmlFor="budget">Project Budget:</label>
+        <input
+          type="number"
+          name="budget"
+          id="budget"
+          value={budget}
+          onChange={onBudgetChanged}
+        />
+        <label htmlFor="spent">Project Spent:</label>
+        <input
+          type="number"
+          name="spent"
+          id="spent"
+          value={spent}
+          onChange={onSpentChanged}
+        />
+        <label htmlFor="phaseName">Project Phase Name:</label>
+        <select
+          id="PhaseName"
+          name="PhaseName"
+          value={phaseName}
+          onChange={onPhaseNameChanged}
+        >
+          <option value="Predevelopment">Predevelopment</option>
+          <option value="Programming">Programming</option>
+          <option value="Schematic Design">Schematic Design</option>
+          <option value="Design Development">Design Development</option>
+          <option value="Construction Documents">Construction Documents</option>
+          <option value="Construction Administration">
+            Construction Administration
+          </option>
+          <option value="Project Close-out">Project Close-out</option>
+        </select>
+        <fieldset>
+          <legend>Project Phase Tick:</legend>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((tick) => (
+            <label key={tick}>
+              <input
+                type="radio"
+                name="phaseTick"
+                value={tick}
+                checked={Number(phaseTick) === tick}
+                onChange={onPhaseTickChanged}
+              />
+              {tick}
+            </label>
+          ))}
+        </fieldset>
         <div>
           <p>Created: {created}</p>
           <p>Updated: {updated}</p>

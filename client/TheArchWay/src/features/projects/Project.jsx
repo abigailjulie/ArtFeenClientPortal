@@ -23,7 +23,7 @@ export default function Project({ projectId }) {
       year: "numeric",
     });
 
-    const handleEdit = () => navigate(`/dash/clients/projects/${projectId}`);
+    const handleEdit = () => navigate(`/dash/projects/${projectId}`);
 
     const rowStatusClass = (() => {
       switch (project.status) {
@@ -46,7 +46,11 @@ export default function Project({ projectId }) {
         <td className="p-3">{project.name}</td>
         <td className="p-3">{project.client?.username}</td>
         <td className="p-3 d-flex justify-content-center">
-          <button onClick={handleEdit}>
+          <button
+            onClick={handleEdit}
+            title="Edit Project"
+            className="btn btn-sm"
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
         </td>

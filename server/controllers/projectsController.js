@@ -54,7 +54,18 @@ const createNewProject = asyncHandler(async (req, res) => {
 // route PATCH /projects
 // access Private
 const updateProject = asyncHandler(async (req, res) => {
-  const { id, name, number, address, telephone, status, client } = req.body;
+  const {
+    id,
+    name,
+    number,
+    address,
+    telephone,
+    status,
+    client,
+    timeline,
+    finances,
+    phase,
+  } = req.body;
 
   if (!id) {
     return res.status(400).json({ message: "Project ID is required" });
@@ -90,6 +101,55 @@ const updateProject = asyncHandler(async (req, res) => {
   if (telephone && telephone !== project.telephone)
     project.telephone = telephone;
   if (status && status !== project.status) project.status = status;
+  if (timeline) {
+    if (
+      timeline.currentTick !== undefined &&
+      timeline.currentTick !== project.timeline.currentTick
+    ) {
+      project.timeline.currentTick = timeline.currentTick;
+    }
+    if (
+      timeline.expectedCompletionDate !== undefined &&
+      timeline.expectedCompletionDate !==
+        project.timeline.expectedCompletionDate
+    ) {
+      project.timeline.expectedCompletionDate = timeline.expectedCompletionDate;
+    }
+    if (finances) {
+      if (
+        finances.currentTick !== undefined &&
+        finances.currentTick !== project.finances.currentTick
+      ) {
+        project.finances.currentTick = finances.currentTick;
+      }
+      if (
+        finances.budget !== undefined &&
+        finances.budget !== project.finances.budget
+      ) {
+        project.finances.budget = finances.budget;
+      }
+      if (
+        finances.spent !== undefined &&
+        finances.spent !== project.finances.spent
+      ) {
+        project.finances.spent = finances.spent;
+      }
+    }
+    if (phase) {
+      if (
+        phase.currentTick !== undefined &&
+        phase.currentTick !== project.phase.currentTick
+      ) {
+        project.phase.currentTick = phase.currentTick;
+      }
+      if (phase.budget !== undefined && phase.budget !== project.phase.budget) {
+        project.phase.budget = phase.budget;
+      }
+      if (phase.spent !== undefined && phase.spent !== project.phase.spent) {
+        project.phase.spent = phase.spent;
+      }
+    }
+  }
 
   const updatedProject = await project.save();
 
