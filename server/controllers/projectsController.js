@@ -16,8 +16,8 @@ const getAllProjects = asyncHandler(async (req, res) => {
 // route POST /projects
 // access Private
 const createNewProject = asyncHandler(async (req, res) => {
-  const { name, number, address, telephone, client } = req.body;
-  if (!name || !address || !client || !number) {
+  const { name, address, telephone, client } = req.body;
+  if (!name || !address || !client || !telephone) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -33,7 +33,6 @@ const createNewProject = asyncHandler(async (req, res) => {
 
   const projectObject = {
     name,
-    number,
     address,
     client,
     telephone,
