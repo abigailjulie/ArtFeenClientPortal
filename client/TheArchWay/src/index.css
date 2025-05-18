@@ -90,8 +90,9 @@ body > :not(.carousel) {
 :root {
   /* Primary */
   --Salmon: rgb(255, 126, 112);
+  --Forest: rgb(48, 69, 41);
   /* Neutral */
-  --White: hsl(0, 0%, 100%);
+  --White: rgb(250, 249, 246);
   --Black-75opacity: rgba(0, 0, 0, 0.75);
   --Light-Grey: rgb(247, 247, 247);
   --Dark-Grey: rgb(144, 144, 144);
@@ -99,6 +100,7 @@ body > :not(.carousel) {
   --Abigail-Designs-Heading-Font: "Oi", serif;
   --ft-Heading: "Playfair Display", serif;
   --ft-Body: "Lato", sans-serif;
+  --ft-Exlarge: 7rem;
   --ft-large: 3rem;
   --ft-medium: 2rem;
   --ft-small: 0.7rem;

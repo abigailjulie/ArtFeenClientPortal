@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../config/roles";
 
-export default function NewProjectForm({ project, clients }) {
+export default function NewProjectForm({ project, client }) {
   const [addNewProject, { isLoading, isSuccess, isError, error }] =
     useAddNewProjectMutation();
 
@@ -15,7 +15,7 @@ export default function NewProjectForm({ project, clients }) {
   const [projectName, setProjectName] = useState("");
   const [projectAddress, setProjectAddress] = useState("");
   const [projectTelephone, setProjectTelephone] = useState("");
-  const [clientId, setClientId] = useState(clients.id);
+  const [clientId, setClientId] = useState(client.id);
 
   useEffect(() => {
     if (isSuccess) {

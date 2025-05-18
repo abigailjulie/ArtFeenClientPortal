@@ -23,11 +23,11 @@ app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "../public")));
 
+app.use("/auth", require("./routes/authRoutes"));
+
 app.use("/clients", require("./routes/clientRoutes"));
 
 app.use("/projects", require("./routes/projectRoutes"));
-
-// app.use("/auth", require("./routes/authRoutes"));
 
 app.all("*", (req, res) => {
   res.status(404);

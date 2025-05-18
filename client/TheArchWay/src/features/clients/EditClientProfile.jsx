@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectClientById } from "./clientsApiSlice";
 import { Spinner } from "react-bootstrap";
@@ -10,7 +10,10 @@ export default function EditClientProfile() {
   const client = useSelector((state) => selectClientById(state, clientId));
 
   return client ? (
-    <EditClientForm client={client} />
+    <>
+      <EditClientForm client={client} />
+      <Outlet />
+    </>
   ) : (
     <Spinner animation="border" role="status">
       <span className="visually-hidden">Loading...</span>
