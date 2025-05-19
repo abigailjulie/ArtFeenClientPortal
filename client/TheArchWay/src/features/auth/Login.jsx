@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setCredentials } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
 import Spinner from "react-bootstrap/Spinner";
+import usePersist from "../../hooks/usePersist";
 
 export default function Login() {
   const clientRef = useRef();
@@ -11,6 +12,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [persist, setPersist] = usePersist();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,12 +45,15 @@ export default function Login() {
       } else {
         setErrMsg(error.data?.message);
       }
-      errRef.current.focus();
+      if (errRef.current) {
+        errRef.current.focus();
+      }
     }
   };
 
   const handleClientInput = (e) => setUsername(e.target.value);
   const handlePwdInput = (e) => setPassword(e.target.value);
+  const handleToggle = () => setPersist((prev) => !prev);
 
   const errClass = errMsg ? "errmsg" : "offscreen";
 
@@ -80,13 +85,23 @@ export default function Login() {
 
           <label htmlFor="password">Password:</label>
           <input
-            type="ppassword"
+            type="password"
             id="password"
             value={password}
             onChange={handlePwdInput}
             required
           />
           <button>Sign In</button>
+
+          <label htmlFor="persist">
+            <input
+              type="checkbox"
+              id="persist"
+              value={handleToggle}
+              checked={persist}
+            />
+            Trust This Device
+          </label>
         </form>
         <p className="d-flex flex-column">
           <Link to="/register/clients">Register clients</Link>

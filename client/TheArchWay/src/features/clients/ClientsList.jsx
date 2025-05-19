@@ -11,7 +11,7 @@ export default function ClientsList() {
     isSuccess,
     isError,
     error,
-  } = useGetClientsQuery(undefined, {
+  } = useGetClientsQuery("clientsList", {
     pollingInterval: 60000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,

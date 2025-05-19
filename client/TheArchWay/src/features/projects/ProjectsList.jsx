@@ -11,7 +11,7 @@ export default function ProjectsList() {
     isSuccess,
     isError,
     error,
-  } = useGetProjectsQuery(undefined, {
+  } = useGetProjectsQuery("projectsList", {
     pollingInterval: 15000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,

@@ -22,7 +22,7 @@ export default function DashHeader() {
 
   if (isLoading) return <p>Logging Out...</p>;
 
-  if (isError) return <p>Error: {error.data?.message}</p>;
+  if (isError) return <p>Error: {error?.data?.message}</p>;
 
   let dashClass = null;
   if (
@@ -47,7 +47,7 @@ export default function DashHeader() {
   }
 
   const logoutBtn = (
-    <button className="btn" title="Logout" onClick={sendLogout()}>
+    <button className="btn" title="Logout" onClick={sendLogout}>
       <FontAwesomeIcon icon={faRightFromBracket} />
     </button>
   );
