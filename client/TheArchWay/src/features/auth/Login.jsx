@@ -97,7 +97,7 @@ export default function Login() {
             <input
               type="checkbox"
               id="persist"
-              value={handleToggle}
+              onChange={handleToggle}
               checked={persist}
             />
             Trust This Device
