@@ -19,8 +19,6 @@ export default function Welcome() {
       <p>A smarter way to connect clients to the architecture process.</p>
       <p className="d-flex flex-column link-opacity-75 link-offset-2">
         <Link to="/login">Login</Link>
-        <Link to="/dash/projects">View projects</Link>
-        <Link to="/dash/clients">View clients</Link>
         <Link to="/dash/clients/:clientId/projects/new">Add New Project</Link>
       </p>
     </section>

@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-import Public from "./features/public/Public";
+import AdminWelcome from "./features/admin/AdminWelcome";
 import DashLayout from "./features/clients/DashLayout";
 import ClientProfile from "./features/projects/ClientProfile";
 import Login from "./features/auth/Login";
@@ -24,32 +24,34 @@ export default function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Welcome />} />
         <Route path="login" element={<Login />} />
-        <Route path="register/clients" element={<NewClientForm />} />
 
         <Route element={<PersistLogin />}>
           <Route element={<Prefetch />}>
             <Route path="dash" element={<DashLayout />}>
-              {/* <Route index element={<Public />} /> */}
+              <Route path="admin" element={<AdminWelcome />} />
 
               <Route path="clients">
                 <Route index element={<ClientsList />} />
-                <Route path=":clientId" element={<EditClientProfile />}>
-                  <Route index element={<ClientProfile />} />
-                  <Route path="projects">
-                    <Route index element={<ClientProjectsList />} />
-                    <Route path="new" element={<NewProject />} />
-                    <Route
-                      path=":projectId/profile"
-                      element={<ProjectProfileForm />}
-                    />
+                <Route path="new" element={<NewClientForm />} />
+                <Route path=":clientId">
+                  <Route path="edit" element={<EditClientProfile />}>
+                    <Route index element={<ClientProfile />} />
+                    <Route path="projects">
+                      <Route index element={<ClientProjectsList />} />
+                      <Route path="new" element={<NewProject />} />
+                      <Route
+                        path=":projectId/profile"
+                        element={<ProjectProfileForm />}
+                      />
+                    </Route>
                   </Route>
                 </Route>
-                <Route path="new" element={<NewClientForm />} />
-              </Route>
 
-              <Route path="projects">
-                <Route index element={<ProjectsList />} />
-                <Route path=":projectId" element={<EditProject />} />
+                <Route path="projects">
+                  <Route index element={<ProjectsList />} />
+                  <Route path=":projectId" element={<EditProject />} />
+                  <Route path="new" element={<NewProject />} />
+                </Route>
               </Route>
             </Route>
           </Route>
