@@ -1,14 +1,16 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectAllClients } from "../clients/clientsApiSlice";
+import { selectClientById } from "../clients/clientsApiSlice";
 import NewProjectForm from "./NewProjectForm";
 
 export default function NewProject() {
-  const clients = useSelector(selectAllClients);
+  const { clientId } = useParams();
+  const client = useSelector((state) => selectClientById(state, clientId));
 
-  if (!clients?.length) {
+  if (!client) {
     return <p>Not Currently Available</p>;
   }
 
-  return <NewProjectForm clients={clients} />;
+  return <NewProjectForm clientId={client.id} />;
 }

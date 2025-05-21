@@ -1,12 +1,10 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAddNewProjectMutation } from "./projectsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../config/roles";
 
-export default function NewProjectForm({ project, client }) {
+export default function NewProjectForm({ clientId }) {
   const [addNewProject, { isLoading, isSuccess, isError, error }] =
     useAddNewProjectMutation();
 
@@ -15,7 +13,6 @@ export default function NewProjectForm({ project, client }) {
   const [projectName, setProjectName] = useState("");
   const [projectAddress, setProjectAddress] = useState("");
   const [projectTelephone, setProjectTelephone] = useState("");
-  const [clientId, setClientId] = useState(client.id);
 
   useEffect(() => {
     if (isSuccess) {
@@ -35,12 +32,14 @@ export default function NewProjectForm({ project, client }) {
 
   const onSaveProjectClicked = async (e) => {
     e.preventDefault();
-    await addNewProject({
-      name: projectName,
-      address: projectAddress,
-      telephone: projectTelephone,
-      client: clientId,
-    });
+    if (canSave) {
+      await addNewProject({
+        name: projectName,
+        address: projectAddress,
+        telephone: projectTelephone,
+        client: clientId,
+      });
+    }
   };
 
   const canSave =

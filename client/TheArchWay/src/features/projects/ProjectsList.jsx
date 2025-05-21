@@ -3,8 +3,11 @@ import { useGetProjectsQuery } from "./projectsApiSlice";
 import Spinner from "react-bootstrap/Spinner";
 import Project from "./Project";
 import "../../components/TableStyles.css";
+import useAuth from "../../hooks/useAuth";
 
 export default function ProjectsList() {
+  const { username, isAdmin, isFounder } = useAuth();
+
   const {
     data: projects,
     isLoading,
@@ -22,13 +25,22 @@ export default function ProjectsList() {
   if (isError) return <p className="errmsg">{error?.data?.message}</p>;
 
   if (isSuccess) {
-    const { ids } = projects;
+    const { ids, entities } = projects;
 
-    const tableContent = ids?.length
-      ? ids.map((projectId) => (
-          <Project key={projectId} projectId={projectId} />
-        ))
-      : null;
+    let filteredIds;
+    if (isAdmin || isFounder) {
+      filteredIds = [...ids];
+    } else {
+      filteredIds = ids.filter(
+        (projectId) => entities[projectId].username === username
+      );
+    }
+
+    const tableContent =
+      ids?.length &&
+      filteredIds.map((projectId) => (
+        <Project key={projectId} projectId={projectId} />
+      ));
 
     return (
       <div className="mx-5">

@@ -12,7 +12,7 @@ export default function EditClientProfile() {
   return client ? (
     <>
       <EditClientForm client={client} />
-      <Outlet />
+      {/* <Outlet /> */}
     </>
   ) : (
     <Spinner animation="border" role="status">

@@ -1,15 +1,24 @@
 import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHouse,
+  faRightFromBracket,
+  faFileCirclePlus,
+  faFilePen,
+  faUserGear,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useSendLogoutMutation } from "../features/auth/authApiSlice";
 import "./DashHeader.css";
+import useAuth from "../hooks/useAuth";
 
 const DASH_REGEX = /^\/dash(\/)?$/;
 const PROJECTS_REGEX = /^\/dash\/projects(\/)?$/;
 const CLIENTS_REGEX = /^\/dash\/clients(\/)?$/;
 
 export default function DashHeader() {
+  const { username, isAdmin, isFounder, status } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -20,9 +29,18 @@ export default function DashHeader() {
     if (isSuccess) navigate("/");
   }, [isSuccess, navigate]);
 
-  if (isLoading) return <p>Logging Out...</p>;
-
-  if (isError) return <p>Error: {error?.data?.message}</p>;
+  const onNewProjectClicked = () => {
+    navigate("/dash/projects/new");
+  };
+  const onNewClientClicked = () => {
+    navigate("/dash/clients/new");
+  };
+  const onProjectsClicked = () => {
+    navigate("/dash/projects");
+  };
+  const onClientsClicked = () => {
+    navigate("/dash/clients");
+  };
 
   let dashClass = null;
   if (
@@ -37,17 +55,64 @@ export default function DashHeader() {
     navigate("/dash");
   };
 
+  const handleLogout = async () => {
+    try {
+      await sendLogout().unwrap();
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Logout failed", err);
+    }
+  };
+
+  let newProjectBtn = null;
+  if (!isAdmin && !isFounder && PROJECTS_REGEX.test(pathname)) {
+    newProjectBtn = (
+      <button className="btn" title="New Project" onClick={onNewProjectClicked}>
+        <FontAwesomeIcon icon={faFileCirclePlus} />
+      </button>
+    );
+  }
+
+  let newClientBtn = null;
+  if (CLIENTS_REGEX.test(pathname)) {
+    newClientBtn = (
+      <button className="btn" title="New Client" onClick={onNewClientClicked}>
+        <FontAwesomeIcon icon={faUserPlus} />
+      </button>
+    );
+  }
+
+  let projectsBtn = null;
+  if (!PROJECTS_REGEX.test(pathname) && pathname.includes("/dash")) {
+    projectsBtn = (
+      <button className="btn" title="View Projects" onClick={onProjectsClicked}>
+        <FontAwesomeIcon icon={faFilePen} />
+      </button>
+    );
+  }
+
+  let clientsBtn = null;
+  if (isAdmin || isFounder) {
+    if (!CLIENTS_REGEX.test(pathname) && pathname.includes("/dash")) {
+      clientsBtn = (
+        <button className="btn" title="View Clients" onClick={onClientsClicked}>
+          <FontAwesomeIcon icon={faUserGear} />
+        </button>
+      );
+    }
+  }
+
   let homeBtn = null;
   if (pathname !== "/dash") {
     homeBtn = (
-      <button className="homeBtn" title="Home" onClick={handleGoHome}>
+      <button className="btn" title="Home" onClick={handleGoHome}>
         <FontAwesomeIcon icon={faHouse} />
       </button>
     );
   }
 
   const logoutBtn = (
-    <button className="btn" title="Logout" onClick={sendLogout}>
+    <button className="btn" title="Logout" onClick={handleLogout}>
       <FontAwesomeIcon icon={faRightFromBracket} />
     </button>
   );
@@ -57,35 +122,57 @@ export default function DashHeader() {
     dateStyle: "long",
   }).format(date);
 
+  const errClass = isError ? "errmsg" : "";
+
+  let btnContent;
+  if (isLoading) {
+    btnContent = <p>Logging Out...</p>;
+  } else {
+    btnContent = (
+      <>
+        {newProjectBtn}
+        {newClientBtn}
+        {projectsBtn}
+        {clientsBtn}
+        {logoutBtn}
+      </>
+    );
+  }
+
   return (
-    <header className="dash-header mt-3">
-      <main className={`ms-4 dash-container ${dashClass}`}>
-        <div className="d-flex flex-row align-items-center">
-          <p className="mb-0">
-            Client Name:
-            <strong className="ms-2">
+    <>
+      <p className={errClass}>{error?.data?.message}</p>
+
+      <header className="dash-header mt-3">
+        <main className={`ms-4 dash-container ${dashClass}`}>
+          <div className="d-flex flex-row align-items-center">
+            <p className="mb-0">
+              Client Name:
+              <strong className="ms-2">
+                <Link
+                  className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
+                  to="/dash/profile"
+                >
+                  {username}
+                </Link>
+              </strong>
+              <span className="mx-2">X</span>
               <Link
                 className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
-                to="/dash/profile"
+                to="/dash"
               >
-                Client Name
+                The ArchWay
               </Link>
-            </strong>
-            <span className="mx-2">X</span>
-            <Link
-              className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
-              to="/dash"
-            >
-              The ArchWay
-            </Link>
-          </p>
-          <nav>{logoutBtn}</nav>
-        </div>
-        <p className="mb-0">Phase: Programming</p>
-        <p className="ft-large fw-bold mb-0 line-height-min">$17,490</p>
-        <p>Outstanding balance as of {today}</p>
-      </main>
-      {homeBtn}
-    </header>
+            </p>
+            <nav>{btnContent}</nav>
+          </div>
+          <p className="mb-0">Phase: Programming</p>
+          <p className="mb-0">Status: {status}</p>
+          <p className="ft-large fw-bold mb-0 line-height-min">$17,490</p>
+          <p>Outstanding balance as of {today}</p>
+        </main>
+        {homeBtn}
+      </header>
+    </>
   );
 }

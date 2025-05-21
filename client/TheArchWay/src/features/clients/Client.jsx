@@ -12,7 +12,7 @@ export default function Client({ clientId }) {
 
   if (client) {
     const handleEdit = () => {
-      navigate(`/dash/clients/${clientId}`);
+      navigate(`/dash/clients/${clientId}/edit`);
     };
 
     const clientRoleString = client.roles.toString().replaceAll(",", ", ");
