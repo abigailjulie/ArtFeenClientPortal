@@ -15,6 +15,8 @@ import EditProject from "./features/projects/EditProject";
 import ClientProjectsList from "./features/clients/ClientProjectsList";
 import ProjectProfileForm from "./features/projects/ProjectProfileForm";
 import PersistLogin from "./features/auth/PersistLogin";
+import RequireAuth from "./features/auth/RequireAuth";
+import { ROLES } from "./config/roles";
 
 import "./index.css";
 import Prefetch from "./features/auth/Prefetch";
@@ -24,42 +26,58 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        {/* Public Routes */}
         <Route index element={<Welcome />} />
         <Route path="login" element={<Login />} />
-
+        {/* Protected Routes */}
         <Route element={<PersistLogin />}>
-          <Route element={<Prefetch />}>
-            <Route path="dash" element={<DashLayout />}>
-              <Route index element={<Public />} />
-              <Route path="admin" element={<AdminWelcome />}>
-                <Route path="edit" element={<EditAdminCredentials />} />
-              </Route>
+          <Route
+            element={<RequireAuth allowedRoles={[...Object.values(ROLES)]} />}
+          >
+            <Route element={<Prefetch />}>
+              <Route path="dash" element={<DashLayout />}>
+                <Route index element={<Public />} />
+                <Route path="admin" element={<AdminWelcome />}>
+                  <Route path="edit" element={<EditAdminCredentials />} />
+                </Route>
 
-              <Route path="clients">
-                <Route index element={<ClientsList />} />
-                <Route path="new" element={<NewClientForm />} />
+                <Route path="clients">
+                  <Route index element={<ClientsList />} />
+                  <Route path="new" element={<NewClientForm />} />
 
-                <Route path=":clientId">
-                  <Route index element={<ClientProfile />} />
-                  <Route path="edit" element={<EditClientProfile />} />
-                  <Route path="projects">
-                    <Route index element={<ClientProjectsList />} />
-                    <Route path="new" element={<NewProject />} />
-                    <Route path=":projectId">
-                      <Route path="profile" element={<ProjectProfileForm />} />
-                      <Route path="edit" element={<EditProject />} />
+                  <Route path=":clientId">
+                    <Route index element={<ClientProfile />} />
+                    <Route path="edit" element={<EditClientProfile />} />
+                    <Route path="projects">
+                      <Route index element={<ProjectsList />} />
+                      <Route path="new" element={<NewProject />} />
+                      <Route path=":projectId">
+                        <Route
+                          path="profile"
+                          element={<ProjectProfileForm />}
+                        />
+                        <Route path="edit" element={<EditProject />} />
+                      </Route>
                     </Route>
                   </Route>
                 </Route>
-              </Route>
 
-              <Route path="projects">
-                <Route index element={<ProjectsList />} />
-                <Route path=":projectId" element={<EditProject />} />
+                <Route
+                  element={
+                    <RequireAuth allowedRoles={[ROLES.Admin, ROLES.Founder]} />
+                  }
+                >
+                  <Route path="projects">
+                    <Route index element={<ProjectsList />} />
+                    <Route path=":projectId" element={<EditProject />} />
+                  </Route>
+                </Route>
               </Route>
+              {/*End Dash*/}
             </Route>
           </Route>
         </Route>
+        {/*End Protected Routes*/}
       </Route>
     </Routes>
   );

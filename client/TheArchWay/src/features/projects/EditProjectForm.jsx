@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   useUpdateProjectMutation,
   useDeleteProjectMutation,
@@ -7,8 +6,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import useAuth from "../../hooks/useAuth";
 
 export default function EditProjectForm({ project, clients }) {
+  const { isAdmin, isFounder } = useAuth();
+
   const [updateProject, { isLoading, isSuccess, isError, error }] =
     useUpdateProjectMutation();
 
@@ -44,9 +46,13 @@ export default function EditProjectForm({ project, clients }) {
 
   useEffect(() => {
     if (isSuccess || isDelSuccess) {
-      navigate("/dash/projects");
+      if (clientId) {
+        navigate(`/dash/clients/${clientId}/projects`);
+      } else {
+        navigate("/dash/projects");
+      }
     }
-  }, [isSuccess, isDelSuccess, navigate]);
+  }, [isSuccess, isDelSuccess, navigate, clientId]);
 
   const onNameChanged = (e) => {
     setProjectName(e.target.value);
@@ -152,6 +158,15 @@ export default function EditProjectForm({ project, clients }) {
 
   const errContent = (error?.data?.message || delError?.data?.message) ?? "";
 
+  let deleteBtn = null;
+  if (isAdmin || isFounder) {
+    deleteBtn = (
+      <button className="btn" title="Delete" onClick={onDeleteProjectClicked}>
+        <FontAwesomeIcon icon={faTrashCan} />
+      </button>
+    );
+  }
+
   return (
     <>
       <p className={errClass}>{errContent}</p>
@@ -172,13 +187,7 @@ export default function EditProjectForm({ project, clients }) {
               <FontAwesomeIcon icon={faSave} />
             </button>
 
-            <button
-              className="btn"
-              title="Delete"
-              onClick={onDeleteProjectClicked}
-            >
-              <FontAwesomeIcon icon={faTrashCan} />
-            </button>
+            {deleteBtn}
           </div>
         </div>
         <label htmlFor="name">Project Name:</label>

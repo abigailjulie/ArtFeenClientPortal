@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
@@ -14,6 +14,7 @@ import useAuth from "../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { selectAllClients } from "../features/clients/clientsApiSlice";
 import "./DashHeader.css";
+import { selectAllProjects } from "../features/projects/projectsApiSlice";
 
 const DASH_REGEX = /^\/dash(\/)?$/;
 const PROJECTS_REGEX = /^\/dash\/projects(\/)?$/;
@@ -25,8 +26,23 @@ export default function DashHeader() {
   const { pathname } = useLocation();
 
   const clients = useSelector(selectAllClients);
+  const projects = useSelector(selectAllProjects);
+
   const client = clients?.find(
     (currentClient) => currentClient.username === username
+  );
+
+  const clientsProjects = projects?.filter(
+    (project) =>
+      project.client === client?._id || project.client?._id === client?._id
+  );
+
+  const [selectedProjectId, setSelectedProjectId] = useState(
+    clientsProjects?.[0]?._id || null
+  );
+
+  const selectedProject = clientsProjects?.find(
+    (project) => project._id === selectedProjectId
   );
 
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
@@ -35,6 +51,12 @@ export default function DashHeader() {
   useEffect(() => {
     if (isSuccess) navigate("/");
   }, [isSuccess, navigate]);
+
+  useEffect(() => {
+    if (!selectedProjectId && clientsProjects?.length) {
+      setSelectedProjectId(clientsProjects[0]._id);
+    }
+  }, [clientsProjects, selectedProjectId]);
 
   const onNewProjectClicked = () => {
     if (client?._id) {
@@ -47,7 +69,11 @@ export default function DashHeader() {
     navigate("/dash/clients/new");
   };
   const onProjectsClicked = () => {
-    navigate("/dash/projects");
+    if (client?._id) {
+      navigate(`/dash/clients/${client?._id}/projects`);
+    } else {
+      navigate("/dash/projects");
+    }
   };
   const onClientsClicked = () => {
     navigate("/dash/clients");
@@ -177,10 +203,34 @@ export default function DashHeader() {
             </p>
             <nav>{btnContent}</nav>
           </div>
-          <p className="mb-0">Phase: Programming</p>
-          <p className="mb-0">Status: {status}</p>
-          <p className="ft-large fw-bold mb-0 line-height-min">$17,490</p>
-          <p>Outstanding balance as of {today}</p>
+
+          {clientsProjects?.length > 1 && (
+            <select
+              className="form-select mt-2 mb-2"
+              value={selectedProjectId || ""}
+              onChange={(e) => setSelectedProjectId(e.target.value)}
+              style={{ maxWidth: "300px" }}
+            >
+              {clientsProjects.map((project) => (
+                <option key={project._id} value={project._id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {selectedProject ? (
+            <>
+              <p className="mb-0">Phase: {selectedProject.phase.name}</p>
+              <p className="mb-0">Status: {selectedProject.status}</p>
+              <p className="ft-large fw-bold mb-0 line-height-min">
+                ${selectedProject.finances.budget.toLocaleString()}
+              </p>
+              <p>Outstanding balance as of {today}</p>
+            </>
+          ) : (
+            <p className="text-muted mt-2">No project information available</p>
+          )}
         </main>
         {homeBtn}
       </header>

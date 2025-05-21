@@ -12,12 +12,16 @@ export default function Public() {
     (currentClient) => currentClient.username === username
   );
 
+  const projectsRoute = client?._id
+    ? `/dash/clients/${client._id}/projects`
+    : "/dash/projects";
+
   return (
     <section>
       <h1>Welcome {username}!</h1>
 
       <p>
-        <Link to="/dash/projects">View projects</Link>
+        <Link to={projectsRoute}>View projects</Link>
       </p>
 
       <p>

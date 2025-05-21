@@ -3,11 +3,16 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectProjectsById } from "./projectsApiSlice";
-import React from "react";
+import { selectAllClients } from "../clients/clientsApiSlice";
+import useAuth from "../../hooks/useAuth";
 
 export default function Project({ projectId }) {
   const project = useSelector((state) => selectProjectsById(state, projectId));
 
+  const { username, isAdmin, isFounder } = useAuth();
+
+  const clients = useSelector(selectAllClients);
+  const client = clients?.find((c) => c.username === username);
   const navigate = useNavigate();
 
   if (project) {
@@ -23,7 +28,13 @@ export default function Project({ projectId }) {
       year: "numeric",
     });
 
-    const handleEdit = () => navigate(`/dash/projects/${projectId}`);
+    const handleEdit = () => {
+      if (client?._id) {
+        navigate(`/dash/clients/${client._id}/projects/${projectId}/edit`);
+      } else {
+        navigate(`/dash/projects/${projectId}`);
+      }
+    };
 
     const rowStatusClass = (() => {
       switch (project.status) {
