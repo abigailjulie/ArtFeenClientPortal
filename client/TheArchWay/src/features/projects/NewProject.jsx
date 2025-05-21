@@ -12,5 +12,5 @@ export default function NewProject() {
     return <p>Not Currently Available</p>;
   }
 
-  return <NewProjectForm clientId={client.id} />;
+  return <NewProjectForm clientId={client?.id} />;
 }

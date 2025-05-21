@@ -40,15 +40,14 @@ export default function App() {
                 <Route path="new" element={<NewClientForm />} />
 
                 <Route path=":clientId">
-                  <Route path="edit" element={<EditClientProfile />}>
-                    <Route index element={<ClientProfile />} />
-                    <Route path="projects">
-                      <Route index element={<ClientProjectsList />} />
-                      <Route path="new" element={<NewProject />} />
-                      <Route
-                        path=":projectId/profile"
-                        element={<ProjectProfileForm />}
-                      />
+                  <Route index element={<ClientProfile />} />
+                  <Route path="edit" element={<EditClientProfile />} />
+                  <Route path="projects">
+                    <Route index element={<ClientProjectsList />} />
+                    <Route path="new" element={<NewProject />} />
+                    <Route path=":projectId">
+                      <Route path="profile" element={<ProjectProfileForm />} />
+                      <Route path="edit" element={<EditProject />} />
                     </Route>
                   </Route>
                 </Route>

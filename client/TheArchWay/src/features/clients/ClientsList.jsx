@@ -24,9 +24,9 @@ export default function ClientsList() {
   if (isSuccess) {
     const { ids } = clients;
 
-    const tableContent = ids?.length
-      ? ids.map((clientId) => <Client key={clientId} clientId={clientId} />)
-      : null;
+    const tableContent =
+      ids?.length &&
+      ids.map((clientId) => <Client key={clientId} clientId={clientId} />);
 
     return (
       <div className="mx-5">

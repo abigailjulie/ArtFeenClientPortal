@@ -32,7 +32,7 @@ export default function ProjectsList() {
       filteredIds = [...ids];
     } else {
       filteredIds = ids.filter(
-        (projectId) => entities[projectId].username === username
+        (projectId) => entities[projectId].client.username === username
       );
     }
 

@@ -10,8 +10,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useSendLogoutMutation } from "../features/auth/authApiSlice";
-import "./DashHeader.css";
 import useAuth from "../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { selectAllClients } from "../features/clients/clientsApiSlice";
+import "./DashHeader.css";
 
 const DASH_REGEX = /^\/dash(\/)?$/;
 const PROJECTS_REGEX = /^\/dash\/projects(\/)?$/;
@@ -22,6 +24,11 @@ export default function DashHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
+  const clients = useSelector(selectAllClients);
+  const client = clients?.find(
+    (currentClient) => currentClient.username === username
+  );
+
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
 
@@ -30,7 +37,11 @@ export default function DashHeader() {
   }, [isSuccess, navigate]);
 
   const onNewProjectClicked = () => {
-    navigate("/dash/projects/new");
+    if (client?._id) {
+      navigate(`/dash/clients/${client?._id}/projects/new`);
+    } else {
+      console.error("Client ID not found for user:", username);
+    }
   };
   const onNewClientClicked = () => {
     navigate("/dash/clients/new");

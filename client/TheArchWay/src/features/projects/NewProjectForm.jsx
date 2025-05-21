@@ -14,6 +14,8 @@ export default function NewProjectForm({ clientId }) {
   const [projectAddress, setProjectAddress] = useState("");
   const [projectTelephone, setProjectTelephone] = useState("");
 
+  const number = `TAW-${Date.now()}`;
+
   useEffect(() => {
     if (isSuccess) {
       navigate("/dash/projects");
@@ -33,11 +35,19 @@ export default function NewProjectForm({ clientId }) {
   const onSaveProjectClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
+      console.log({
+        clientId,
+        projectName,
+        projectAddress,
+        projectTelephone,
+        number,
+      });
       await addNewProject({
         name: projectName,
         address: projectAddress,
         telephone: projectTelephone,
         client: clientId,
+        number,
       });
     }
   };
@@ -99,10 +109,6 @@ export default function NewProjectForm({ clientId }) {
           value={projectTelephone}
           onChange={onTelephoneChanged}
         />
-
-        <div>
-          <p>Created: {created}</p>
-        </div>
       </form>
     </>
   );

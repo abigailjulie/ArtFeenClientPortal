@@ -1,9 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { selectAllClients } from "../features/clients/clientsApiSlice";
 
 export default function Public() {
   const { username, isAdmin, isFounder } = useAuth();
+
+  const clients = useSelector(selectAllClients);
+  const client = clients?.find(
+    (currentClient) => currentClient.username === username
+  );
 
   return (
     <section>
@@ -14,7 +21,9 @@ export default function Public() {
       </p>
 
       <p>
-        <Link to="/dash/projects/new">Add New project</Link>
+        <Link to={`/dash/clients/${client?._id}/projects/new`}>
+          Add New project
+        </Link>
       </p>
 
       {(isAdmin || isFounder) && (

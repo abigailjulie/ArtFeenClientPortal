@@ -44,7 +44,8 @@ export default function PersistLogin() {
   } else if (isError) {
     return (
       <p>
-        {error?.data?.message} <Link to="/login">Please log in again.</Link>
+        {`${error?.data?.message} - `}
+        <Link to="/login">Please log in again.</Link>
       </p>
     );
   } else if ((isSuccess && trueSuccess) || (token && isUninitialized)) {
