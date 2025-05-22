@@ -1,6 +1,6 @@
 import React from "react";
 import { useGetProjectsQuery } from "./projectsApiSlice";
-import Spinner from "react-bootstrap/Spinner";
+import PulseLoader from "react-spinners/PulseLoader";
 import Project from "./Project";
 import "../../components/TableStyles.css";
 import useAuth from "../../hooks/useAuth";
@@ -20,7 +20,7 @@ export default function ProjectsList() {
     refetchOnMountOrArgChange: true,
   });
 
-  if (isLoading) return <Spinner animation="border" />;
+  if (isLoading) return <PulseLoader color={"var(--Forest)"} />;
 
   if (isError) return <p className="errmsg">{error?.data?.message}</p>;
 

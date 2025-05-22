@@ -1,16 +1,18 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectClientById } from "../clients/clientsApiSlice";
+import { useGetClientsQuery } from "../clients/clientsApiSlice";
+import PulseLoader from "react-spinners/PulseLoader";
 import NewProjectForm from "./NewProjectForm";
 
 export default function NewProject() {
   const { clientId } = useParams();
-  const client = useSelector((state) => selectClientById(state, clientId));
+  const { client } = useGetClientsQuery("clientsList", {
+    selectFromResult: ({ data }) => ({
+      client: data?.entities[clientId],
+    }),
+  });
 
-  if (!client) {
-    return <p>Not Currently Available</p>;
-  }
+  if (!client) return <PulseLoader color={"var(--Forest)"} />;
 
-  return <NewProjectForm clientId={client?.id} />;
+  return <NewProjectForm clientId={client.id} />;
 }

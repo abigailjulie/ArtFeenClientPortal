@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
 
 export default function Welcome() {
   return (
@@ -17,11 +16,9 @@ export default function Welcome() {
       >
         The ArchWay
       </h1>
-      <p>A smarter way to connect clients to the architecture process.</p>
+      <p>One platform for architects and client from concept to completion.</p>
       <p className="d-flex flex-column link-opacity-75 link-offset-2">
         <Link to="/login">Login</Link>
-        <Link to="/clients">View All Clients</Link>
-        <Link to="/dash/clients/:clientId/projects/new">Add New Project</Link>
       </p>
     </section>
   );

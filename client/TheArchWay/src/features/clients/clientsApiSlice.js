@@ -8,10 +8,12 @@ const initialState = clientsAdapter.getInitialState();
 export const clientsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getClients: builder.query({
-      query: () => "/clients",
-      validateStatus: (response, result) => {
-        return response.status === 200 && !result.isError;
-      },
+      query: () => ({
+        url: "/clients",
+        validateStatus: (response, result) => {
+          return response.status === 200 && !result.isError;
+        },
+      }),
       transformResponse: (responseData) => {
         const loadedClients = responseData.map((client) => {
           client.id = client._id;

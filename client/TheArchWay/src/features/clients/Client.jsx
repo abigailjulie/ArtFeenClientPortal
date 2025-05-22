@@ -1,12 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectClientById } from "./clientsApiSlice";
-import React from "react";
+import { useGetClientsQuery } from "./clientsApiSlice";
+import React, { memo } from "react";
 
-export default function Client({ clientId }) {
-  const client = useSelector((state) => selectClientById(state, clientId));
+const Client = memo(function Client({ clientId }) {
+  const { client } = useGetClientsQuery("clientsList", {
+    selectFromResult: ({ data }) => ({
+      client: data?.entities[clientId],
+    }),
+  });
 
   const navigate = useNavigate();
 
@@ -35,4 +38,6 @@ export default function Client({ clientId }) {
       </tr>
     );
   } else return null;
-}
+});
+
+export default Client;

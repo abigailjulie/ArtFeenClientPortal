@@ -6,19 +6,16 @@ import { useEffect } from "react";
 
 export default function Prefetch() {
   useEffect(() => {
-    console.log("Subscribing");
-    const clients = store.dispatch(
-      clientsApiSlice.endpoints.getClients.initiate()
+    store.dispatch(
+      projectsApiSlice.util.prefetch("getProjects", "projectsList", {
+        force: true,
+      })
     );
-    const projects = store.dispatch(
-      projectsApiSlice.endpoints.getProjects.initiate()
+    store.dispatch(
+      clientsApiSlice.util.prefetch("getClients", "clientsList", {
+        force: true,
+      })
     );
-
-    return () => {
-      console.log("Unsubscribing");
-      clients.unsubscribe();
-      projects.unsubscribe();
-    };
   }, []);
 
   return <Outlet />;

@@ -8,7 +8,9 @@ export default function DashLayout() {
     <div className="d-flex flex-column min-vh-100">
       <DashHeader />
       <main className="dash-container flex-grow-1">
-        <Outlet />
+        <div>
+          <Outlet />
+        </div>
       </main>
       <DashFooter />
     </div>

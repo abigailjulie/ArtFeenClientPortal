@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
-import Spinner from "react-bootstrap/Spinner";
+import PulseLoader from "react-spinners/PulseLoader";
 import usePersist from "../../hooks/usePersist";
 
 export default function Login() {
@@ -57,7 +57,7 @@ export default function Login() {
 
   const errClass = errMsg ? "errmsg" : "offscreen";
 
-  if (isLoading) return <Spinner animation="border" />;
+  if (isLoading) return <PulseLoader color={"var(--Forest)"} />;
 
   return (
     <section className="h-100 d-flex flex-column justify-content-center align-items-center">
@@ -103,10 +103,6 @@ export default function Login() {
             Trust This Device
           </label>
         </form>
-        <p className="d-flex flex-column">
-          <Link to="/register/clients">Register clients</Link>
-          <Link to="/register/admin">Register Admin</Link>
-        </p>
       </main>
 
       <footer>

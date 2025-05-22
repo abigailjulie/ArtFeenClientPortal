@@ -1,6 +1,6 @@
 import React from "react";
 import { useGetClientsQuery } from "./clientsApiSlice";
-import Spinner from "react-bootstrap/Spinner";
+import PulseLoader from "react-spinners/PulseLoader";
 import Client from "./Client";
 import "../../components/TableStyles.css";
 
@@ -17,7 +17,7 @@ export default function ClientsList() {
     refetchOnMountOrArgChange: true,
   });
 
-  if (isLoading) return <Spinner animation="border" />;
+  if (isLoading) return <PulseLoader color={"var(--Forest)"} />;
 
   if (isError) return <p className="errmsg">{error?.data?.message}</p>;
 

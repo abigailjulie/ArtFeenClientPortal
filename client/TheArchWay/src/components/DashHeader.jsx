@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { selectAllClients } from "../features/clients/clientsApiSlice";
 import "./DashHeader.css";
 import { selectAllProjects } from "../features/projects/projectsApiSlice";
+import PulseLoader from "react-spinners/PulseLoader";
 
 const DASH_REGEX = /^\/dash(\/)?$/;
 const PROJECTS_REGEX = /^\/dash\/projects(\/)?$/;
@@ -163,7 +164,7 @@ export default function DashHeader() {
 
   let btnContent;
   if (isLoading) {
-    btnContent = <p>Logging Out...</p>;
+    btnContent = <PulseLoader color={"var(--Forest)"} />;
   } else {
     btnContent = (
       <>

@@ -12,17 +12,17 @@ import NewClientForm from "./features/clients/NewClientForm";
 import EditClientProfile from "./features/clients/EditClientProfile";
 import NewProject from "./features/projects/NewProject";
 import EditProject from "./features/projects/EditProject";
-import ClientProjectsList from "./features/clients/ClientProjectsList";
 import ProjectProfileForm from "./features/projects/ProjectProfileForm";
 import PersistLogin from "./features/auth/PersistLogin";
 import RequireAuth from "./features/auth/RequireAuth";
 import { ROLES } from "./config/roles";
-
+import useTitle from "./hooks/useTitle";
 import "./index.css";
 import Prefetch from "./features/auth/Prefetch";
 import EditAdminCredentials from "./features/admin/EditAdminCredentials";
 
 export default function App() {
+  useTitle("The ArchWay | Every Phase. One Platform");
   return (
     <Routes>
       <Route path="/" element={<Layout />}>

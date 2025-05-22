@@ -1,18 +1,26 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectProjectsById } from "./projectsApiSlice";
-import { selectAllClients } from "../clients/clientsApiSlice";
+import { useGetProjectsQuery } from "./projectsApiSlice";
+import { useGetClientsQuery } from "../clients/clientsApiSlice";
 import useAuth from "../../hooks/useAuth";
 
-export default function Project({ projectId }) {
-  const project = useSelector((state) => selectProjectsById(state, projectId));
+const Project = memo(function Project({ projectId }) {
+  const { project } = useGetProjectsQuery("projectsList", {
+    selectFromResult: ({ data }) => ({
+      project: data?.entities[projectId],
+    }),
+  });
 
   const { username, isAdmin, isFounder } = useAuth();
 
-  const clients = useSelector(selectAllClients);
-  const client = clients?.find((c) => c.username === username);
+  const { clientList } = useGetClientsQuery("clientsList", {
+    selectFromResult: ({ data }) => ({
+      clientList: data ? Object.values(data.entities) : [],
+    }),
+  });
+  const client = clientList?.find((c) => c.username === username);
   const navigate = useNavigate();
 
   if (project) {
@@ -36,18 +44,12 @@ export default function Project({ projectId }) {
       }
     };
 
-    const rowStatusClass = (() => {
-      switch (project.status) {
-        case "Completed":
-          return "bg-dark-subtle opacity-50";
-        case "Paused":
-          return "bg-warning-subtle opacity-50";
-        case "Cancelled":
-          return "bg-danger-subtle opacity-50";
-        default:
-          return "";
-      }
-    })();
+    const statusClassMap = {
+      Completed: "bg-dark-subtle opacity-50",
+      Paused: "bg-warning-subtle opacity-50",
+      Cancelled: "bg-danger-subtle opacity-50",
+    };
+    const rowStatusClass = statusClassMap[project.status] || "";
 
     return (
       <tr className={`bg-body-tertiary shadow mb-3 ${rowStatusClass}`}>
@@ -68,4 +70,6 @@ export default function Project({ projectId }) {
       </tr>
     );
   } else return null;
-}
+});
+
+export default Project;

@@ -4,7 +4,7 @@ import { useRefreshMutation } from "./authApiSlice";
 import usePersist from "../../hooks/usePersist";
 import { useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
-import { Spinner } from "react-bootstrap";
+import PulseLoader from "react-spinners/PulseLoader";
 
 export default function PersistLogin() {
   const [persist] = usePersist();
@@ -38,7 +38,7 @@ export default function PersistLogin() {
   } else if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center">
-        <Spinner animation="border" />
+        <PulseLoader color={"var(--Forest)"} />;
       </div>
     );
   } else if (isError) {

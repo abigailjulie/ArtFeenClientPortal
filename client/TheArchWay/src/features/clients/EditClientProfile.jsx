@@ -1,22 +1,19 @@
 import React from "react";
-import { useParams, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectClientById } from "./clientsApiSlice";
-import { Spinner } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { useGetClientsQuery } from "./clientsApiSlice";
+import PulseLoader from "react-spinners/PulseLoader";
 import EditClientForm from "./EditClientForm";
 
 export default function EditClientProfile() {
   const { clientId } = useParams();
-  const client = useSelector((state) => selectClientById(state, clientId));
 
-  return client ? (
-    <>
-      <EditClientForm client={client} />
-      {/* <Outlet /> */}
-    </>
-  ) : (
-    <Spinner animation="border" role="status">
-      <span className="visually-hidden">Loading...</span>
-    </Spinner>
-  );
+  const { client } = useGetClientsQuery("clientsList", {
+    selectFromResult: ({ data }) => ({
+      client: data?.entities[clientId],
+    }),
+  });
+
+  if (!client) return <PulseLoader color={"var(--Forest)"} />;
+
+  return <EditClientForm client={client} />;
 }

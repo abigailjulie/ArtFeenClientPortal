@@ -11,10 +11,12 @@ const initialState = projectsAdapter.getInitialState();
 export const projectsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProjects: builder.query({
-      query: () => "/projects",
-      validateStatus: (response, result) => {
-        return response.status === 200 && !result.isError;
-      },
+      query: () => ({
+        url: "/projects",
+        validateStatus: (response, result) => {
+          return response.status === 200 && !result.isError;
+        },
+      }),
       transformResponse: (responseData) => {
         const loadedProjects = responseData.map((project) => {
           project.id = project._id;
