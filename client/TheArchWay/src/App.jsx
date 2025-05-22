@@ -29,6 +29,7 @@ export default function App() {
         {/* Public Routes */}
         <Route index element={<Welcome />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<NewClientForm />} />
         {/* Protected Routes */}
         <Route element={<PersistLogin />}>
           <Route

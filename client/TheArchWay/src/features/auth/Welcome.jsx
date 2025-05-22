@@ -16,7 +16,7 @@ export default function Welcome() {
       >
         The ArchWay
       </h1>
-      <p>One platform for architects and client from concept to completion.</p>
+      <p>One platform for architects and clients from concept to completion.</p>
       <p className="d-flex flex-column link-opacity-75 link-offset-2">
         <Link to="/login">Login</Link>
       </p>

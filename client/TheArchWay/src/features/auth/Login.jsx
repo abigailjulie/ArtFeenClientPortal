@@ -5,55 +5,15 @@ import { setCredentials } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
 import PulseLoader from "react-spinners/PulseLoader";
 import usePersist from "../../hooks/usePersist";
+import LoginForm from "../../components/login/LoginForm";
 
 export default function Login() {
-  const clientRef = useRef();
   const errRef = useRef();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [persist, setPersist] = usePersist();
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [login, { isLoading }] = useLoginMutation();
-
-  useEffect(() => {
-    clientRef.current.focus();
-  }, []);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [username, password]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { accessToken } = await login({ username, password }).unwrap();
-      dispatch(setCredentials({ accessToken }));
-      setUsername("");
-      setPassword("");
-      navigate("/dash");
-    } catch (error) {
-      if (!error.status) {
-        setErrMsg("No Server Response");
-      } else if (error.status === 400) {
-        setErrMsg("Missing Username or Password");
-      } else if (error.status === 401) {
-        setErrMsg("Unauthorized");
-      } else {
-        setErrMsg(error?.data?.message);
-      }
-      if (errRef.current) {
-        errRef.current.focus();
-      }
-    }
-  };
-
-  const handleClientInput = (e) => setUsername(e.target.value);
-  const handlePwdInput = (e) => setPassword(e.target.value);
-  const handleToggle = () => setPersist((prev) => !prev);
 
   const errClass = errMsg ? "errmsg" : "offscreen";
 
@@ -62,51 +22,28 @@ export default function Login() {
   return (
     <section className="h-100 d-flex flex-column justify-content-center align-items-center">
       <header>
-        <h1>Login</h1>
+        <h1 style={{ fontSize: "var(--ft-Exlarge)" }}>Login</h1>
         <p>A new way of connected clients to the architecture process.</p>
       </header>
 
-      <main>
+      <main className="w-75">
         <p ref={errRef} className={errClass} aria-live="assertive">
           {errMsg}
         </p>
 
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            ref={clientRef}
-            value={username}
-            onChange={handleClientInput}
-            autoComplete="off"
-            required
-          />
-
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={handlePwdInput}
-            required
-          />
-          <button>Sign In</button>
-
-          <label htmlFor="persist">
-            <input
-              type="checkbox"
-              id="persist"
-              onChange={handleToggle}
-              checked={persist}
-            />
-            Trust This Device
-          </label>
-        </form>
+        <LoginForm />
       </main>
 
-      <footer>
-        <Link to="/">Back to Home</Link>
+      <footer className="d-flex flex-column text-center">
+        <Link
+          className="link-dark link-opacity-75 link-offset-2"
+          to="/register"
+        >
+          Create Account
+        </Link>
+        <Link className="link-dark link-opacity-75 link-offset-2" to="/">
+          Back to Home
+        </Link>
       </footer>
     </section>
   );
