@@ -1,10 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
 import PulseLoader from "react-spinners/PulseLoader";
-import usePersist from "../../hooks/usePersist";
 import LoginForm from "../../components/login/LoginForm";
 
 export default function Login() {

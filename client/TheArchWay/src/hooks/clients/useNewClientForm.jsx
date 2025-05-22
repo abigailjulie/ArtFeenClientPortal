@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAddNewClientMutation } from "./clientsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,7 +6,7 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../config/roles";
 import { CLIENT_REGEX, PWD_REGEX } from "../../utils/REGEX";
 
-export default function NewClientForm() {
+export default function useNewClientForm() {
   const [addNewClient, { isLoading, isSuccess, isError, error }] =
     useAddNewClientMutation();
 
@@ -120,114 +119,5 @@ export default function NewClientForm() {
   const validClientClass = !validUsername ? "border border-danger" : "";
   const validPwdClass = !validPassword ? "border border-danger" : "";
   const validRolesClass = !Boolean(roles.length) ? "border border-danger" : "";
-
-  return (
-    <>
-      <p className={errClass}>{error?.data?.message}</p>
-      <form
-        className="h-100 d-flex flex-column justify-content-center align-items-center"
-        onSubmit={onSaveClientClicked}
-      >
-        <div>
-          <h2>New Client Information:</h2>
-          <div>
-            <button
-              className="btn"
-              title="Save"
-              onClick={onSaveClientClicked}
-              disabled={!canSave}
-            >
-              <FontAwesomeIcon icon={faSave} />
-            </button>
-          </div>
-        </div>
-
-        <label htmlFor="username">
-          Username: <span className="text-nowrap">[3-20 letters incl. .-]</span>
-        </label>
-        <input
-          className={validClientClass}
-          id="username"
-          name="username"
-          type="text"
-          autoComplete="off"
-          value={username}
-          onChange={onUsernameChanged}
-        />
-
-        <label htmlFor="password">
-          Password:
-          <span className="text-nowrap">[4-12 letters incl. !@#$%]</span>
-        </label>
-        <input
-          className={validPwdClass}
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="off"
-          value={password}
-          onChange={onPasswordChanged}
-        />
-
-        <label htmlFor="telephone">Telephone:</label>
-        <input
-          id="telephone"
-          name="telephone"
-          type="text"
-          value={telephone}
-          onChange={onTelephoneChanged}
-        />
-
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={email}
-          onChange={onEmailChanged}
-        />
-
-        <label htmlFor="roles">ASSIGNED ROLES:</label>
-        <select
-          className={validRolesClass}
-          id="roles"
-          name="roles"
-          multiple={true}
-          size={3}
-          value={roles}
-          onChange={onRolesChanged}
-        >
-          {options}
-        </select>
-
-        <h2>Company Information</h2>
-        <label htmlFor="companyName">Company Name:</label>
-        <input
-          id="companyName"
-          name="companyName"
-          type="text"
-          value={companyName}
-          onChange={onCompanyNameChanged}
-        />
-
-        <label htmlFor="companyAddress">Company Address:</label>
-        <input
-          id="companyAddress"
-          name="companyAddress"
-          type="text"
-          value={companyAddress}
-          onChange={onCompanyAddressChanged}
-        />
-
-        <label htmlFor="companyNumber">Company Number:</label>
-        <input
-          id="companyNumber"
-          name="companyNumber"
-          type="text"
-          value={companyNumber}
-          onChange={onCompanyNumberChanged}
-        />
-      </form>
-    </>
-  );
+  return <div></div>;
 }
