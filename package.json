@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "Art Feen Client Portal",
+  "description": "The ArchWay",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
@@ -17,7 +17,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "express": "^4.18.2",
-    "express-async-handler": "^1.2.0",
+    "express-async-errors": "^3.1.1",
     "express-rate-limit": "^7.5.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",

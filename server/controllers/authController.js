@@ -1,13 +1,12 @@
 const Client = require("../models/Client");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const asyncHandler = require("express-async-handler");
 const errorHandler = require("../middleware/errorHandler");
 
 // desc Login
 // route POST /auth
 // access Public
-const login = asyncHandler(async (req, res) => {
+const login = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -53,7 +52,7 @@ const login = asyncHandler(async (req, res) => {
   });
 
   res.json({ accessToken });
-});
+};
 
 // desc Refresh
 // route GET /auth/refresh
@@ -70,7 +69,7 @@ const refresh = (req, res) => {
   jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
-    asyncHandler(async (err, decoded) => {
+    async (err, decoded) => {
       if (err) {
         return res.status(403).json({ message: "Forbidden." });
       }
@@ -93,7 +92,7 @@ const refresh = (req, res) => {
       );
 
       res.json({ accessToken });
-    })
+    }
   );
 };
 

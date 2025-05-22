@@ -1,27 +1,27 @@
 const Project = require("../models/Project");
-const asyncHandler = require("express-async-handler");
 
 // desc Get all projects
 // route GET /projects
 // access Private
-const getAllProjects = asyncHandler(async (req, res) => {
+const getAllProjects = async (req, res) => {
   const projects = await Project.find().populate("client", "username").lean();
   if (!projects?.length) {
     return res.status(400).json({ message: "No projects found" });
   }
   res.json(projects);
-});
+};
 
 // desc Create new project
 // route POST /projects
 // access Private
-const createNewProject = asyncHandler(async (req, res) => {
+const createNewProject = async (req, res) => {
   const { name, address, telephone, client, number } = req.body;
   if (!name || !address || !client || !telephone || !number) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   const duplicate = await Project.findOne({ $or: [{ name }, { number }] })
+    .collation({ locale: "en", strength: 2 })
     .lean()
     .exec();
 
@@ -48,12 +48,12 @@ const createNewProject = asyncHandler(async (req, res) => {
   } else {
     res.status(400).json({ message: "Invalid project data recieved" });
   }
-});
+};
 
 // desc Update a project
 // route PATCH /projects
 // access Private
-const updateProject = asyncHandler(async (req, res) => {
+const updateProject = async (req, res) => {
   const {
     id,
     name,
@@ -78,7 +78,10 @@ const updateProject = asyncHandler(async (req, res) => {
   }
 
   if (name && name !== project.name) {
-    const duplicate = await Project.findOne({ name }).lean().exec();
+    const duplicate = await Project.findOne({ name })
+      .collation({ locale: "en", strength: 2 })
+      .lean()
+      .exec();
 
     if (duplicate && duplicate?._id.toString() !== id) {
       return res.status(409).json({ message: "Duplicate project name" });
@@ -86,7 +89,10 @@ const updateProject = asyncHandler(async (req, res) => {
   }
 
   if (number && number !== project.number) {
-    const duplicateNumber = await Project.findOne({ number }).lean().exec();
+    const duplicateNumber = await Project.findOne({ number })
+      .collation({ locale: "en", strength: 2 })
+      .lean()
+      .exec();
 
     if (duplicateNumber && duplicateNumber._id.toString() !== id) {
       return res.status(409).json({ message: "Duplicate project number" });
@@ -154,12 +160,12 @@ const updateProject = asyncHandler(async (req, res) => {
   const updatedProject = await project.save();
 
   res.json({ message: `${updatedProject.name} updated` });
-});
+};
 
 // desc Delete a project
 // route DELETE /projects
 // access Private
-const deleteProject = asyncHandler(async (req, res) => {
+const deleteProject = async (req, res) => {
   const { id } = req.body;
 
   if (!id) {
@@ -177,7 +183,7 @@ const deleteProject = asyncHandler(async (req, res) => {
   const reply = `Project ${project.name} with ID ${project._id} deleted`;
 
   res.json(reply);
-});
+};
 
 module.exports = {
   getAllProjects,

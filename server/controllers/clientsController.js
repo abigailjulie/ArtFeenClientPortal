@@ -1,29 +1,31 @@
 const Client = require("../models/Client");
 const Project = require("../models/Project");
-const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 
 // desc Get all clients
 // route GET /clients
 // access Private
-const getAllClients = asyncHandler(async (req, res) => {
+const getAllClients = async (req, res) => {
   const clients = await Client.find().select("-password").lean();
   if (!clients?.length) {
     return res.status(400).json({ message: "No clients found" });
   }
   res.json(clients);
-});
+};
 
 // desc Create new client
 // route POST /clients
 // access Private
-const createNewClient = asyncHandler(async (req, res) => {
+const createNewClient = async (req, res) => {
   const { username, password, roles, email, telephone, company } = req.body;
-  if (!username || !password || !Array.isArray(roles) || !roles.length) {
+  if (!username || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const duplicate = await Client.findOne({ username }).lean().exec();
+  const duplicate = await Client.findOne({ username })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
 
   if (duplicate) {
     return res.status(409).json({ message: "Duplicate username" });
@@ -31,14 +33,23 @@ const createNewClient = asyncHandler(async (req, res) => {
 
   const hashedPwd = await bcrypt.hash(password, 10);
 
-  const clientObject = {
-    username,
-    password: hashedPwd,
-    roles,
-    email,
-    telephone,
-    company,
-  };
+  const clientObject =
+    !Array.isArray(roles) || !roles.length
+      ? {
+          username,
+          password: hashedPwd,
+          email,
+          telephone,
+          company,
+        }
+      : {
+          username,
+          password: hashedPwd,
+          roles,
+          email,
+          telephone,
+          company,
+        };
 
   const client = await Client.create(clientObject);
 
@@ -47,12 +58,12 @@ const createNewClient = asyncHandler(async (req, res) => {
   } else {
     res.status(400).json({ message: "Invalid client data recieved" });
   }
-});
+};
 
 // desc Update a client
 // route PATCH /clients
 // access Private
-const updateClient = asyncHandler(async (req, res) => {
+const updateClient = async (req, res) => {
   const { id, username, roles, active, password } = req.body;
 
   if (
@@ -71,7 +82,10 @@ const updateClient = asyncHandler(async (req, res) => {
     return res.status(409).json({ message: "User not found" });
   }
 
-  const duplicate = await Client.findOne({ username }).lean().exec();
+  const duplicate = await Client.findOne({ username })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
   //not duplicate, found client to update
   if (duplicate && duplicate?._id.toString() !== id) {
     return res.status(409).json({ message: "Duplicate username" });
@@ -88,12 +102,12 @@ const updateClient = asyncHandler(async (req, res) => {
   const updatedClient = await client.save();
 
   res.json({ message: `${updatedClient.username} updated` });
-});
+};
 
 // desc Delete a client
 // route DELETE /clients
 // access Private
-const deleteClient = asyncHandler(async (req, res) => {
+const deleteClient = async (req, res) => {
   const { id } = req.body;
 
   if (!id) {
@@ -111,6 +125,6 @@ const deleteClient = asyncHandler(async (req, res) => {
   const reply = `Username ${client.username} with ID ${client._id} deleted`;
 
   res.json(reply);
-});
+};
 
 module.exports = { getAllClients, createNewClient, updateClient, deleteClient };
