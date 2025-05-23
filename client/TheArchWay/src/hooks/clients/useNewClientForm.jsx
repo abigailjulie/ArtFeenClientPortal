@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useAddNewClientMutation } from "./clientsApiSlice";
+import { useAddNewClientMutation } from "../../features/clients/clientsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../config/roles";
 import { CLIENT_REGEX, PWD_REGEX } from "../../utils/REGEX";
+import { showToast } from "../../utils/showToast";
 
 export default function useNewClientForm() {
   const [addNewClient, { isLoading, isSuccess, isError, error }] =
@@ -20,7 +19,11 @@ export default function useNewClientForm() {
   const [telephone, setTelephone] = useState("");
   const [email, setEmail] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [companyAddress, setCompanyAddress] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [city, setCity] = useState("");
+  const [stateCode, setStateCode] = useState("");
+  const [zip, setZip] = useState("");
   const [companyNumber, setCompanyNumber] = useState("");
 
   useEffect(() => {
@@ -33,12 +36,17 @@ export default function useNewClientForm() {
 
   useEffect(() => {
     if (isSuccess) {
-      setUsername("");
-      setPassword("");
-      setRoles([]);
-      navigate("/dash/clients");
+      showToast.success(result?.data?.message || "Client created!");
+      navigate(`/dash/clients`);
     }
   }, [isSuccess, navigate]);
+
+  const formatAddress = () => {
+    const base = `${address1.trim()}`;
+    const line2 = address2.trim() && `${address2.trim()}`;
+    const location = `${city.trim()}, ${stateCode.trim()} ${zip.trim()}`;
+    return `${base} ${line2}, ${location}`;
+  };
 
   const onUsernameChanged = (e) => {
     setUsername(e.target.value);
@@ -60,8 +68,20 @@ export default function useNewClientForm() {
     setCompanyName(e.target.value);
   };
 
-  const onCompanyAddressChanged = (e) => {
-    setCompanyAddress(e.target.value);
+  const onAddress1Changed = (e) => {
+    setAddress1(e.target.value);
+  };
+  const onAddress2Changed = (e) => {
+    setAddress2(e.target.value);
+  };
+  const onCityChanged = (e) => {
+    setCity(e.target.value);
+  };
+  const onStateCodeChanged = (e) => {
+    setStateCode(e.target.value);
+  };
+  const onZipChanged = (e) => {
+    setZip(e.target.value);
   };
 
   const onCompanyNumberChanged = (e) => {
@@ -82,7 +102,10 @@ export default function useNewClientForm() {
       validUsername,
       validPassword,
       companyName,
-      companyAddress,
+      address1,
+      city,
+      stateCode,
+      zip,
       companyNumber,
     ].every(Boolean) && !isLoading;
 
@@ -90,19 +113,26 @@ export default function useNewClientForm() {
     e.preventDefault();
     if (canSave) {
       try {
+        const formattedAddress = formatAddress();
         const result = await addNewClient({
           username,
           password,
           roles,
+          email,
+          telephone,
           company: {
             name: companyName,
-            address: companyAddress,
+            address: formattedAddress,
             telephone: companyNumber,
           },
-        });
-        console.log("Result of addNewClient:", result);
+        }).unwrap();
+
+        showToast.success(result?.message || `Client ${username} created!`);
       } catch (err) {
-        console.error("Error adding new client:", err);
+        showToast.error(
+          err?.data?.message || "Form is incomplete or contains invalid data."
+        );
+        console.error("Client creation error:", err);
       }
     }
   };
@@ -115,9 +145,54 @@ export default function useNewClientForm() {
     );
   });
 
-  const errClass = isError ? "errmsg" : "offscreen";
-  const validClientClass = !validUsername ? "border border-danger" : "";
-  const validPwdClass = !validPassword ? "border border-danger" : "";
-  const validRolesClass = !Boolean(roles.length) ? "border border-danger" : "";
-  return <div></div>;
+  return {
+    state: {
+      username,
+      password,
+      roles,
+      telephone,
+      email,
+      companyName,
+      address1,
+      address2,
+      city,
+      stateCode,
+      zip,
+      companyNumber,
+      error,
+      isError,
+      canSave,
+      options,
+    },
+    clicked: {
+      onUsernameChanged,
+      onPasswordChanged,
+      onRolesChanged,
+      onCompanyNameChanged,
+      onAddress1Changed,
+      onAddress2Changed,
+      onCityChanged,
+      onStateCodeChanged,
+      onZipChanged,
+      onCompanyNumberChanged,
+      onTelephoneChanged,
+      onEmailChanged,
+      onSaveClientClicked,
+    },
+    handlers: {
+      setUsername,
+      setPassword,
+      setRoles,
+      setTelephone,
+      setEmail,
+      setCompanyName,
+      setAddress1,
+      setAddress2,
+      setCity,
+      setStateCode,
+      setZip,
+      setCompanyNumber,
+    },
+    validation: { validUsername, validPassword },
+  };
 }
