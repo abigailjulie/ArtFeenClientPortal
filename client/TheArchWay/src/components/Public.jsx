@@ -1,27 +1,36 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useGetClientsQuery } from "../features/clients/clientsApiSlice";
 import useAuth from "../hooks/useAuth";
-import { useSelector } from "react-redux";
-import { selectAllClients } from "../features/clients/clientsApiSlice";
+import PulseLoader from "react-spinners/PulseLoader";
 
 export default function Public() {
+  const navigate = useNavigate();
   const { username, isAdmin, isFounder } = useAuth();
 
-  const clients = useSelector(selectAllClients);
-  const client = clients?.find(
-    (currentClient) => currentClient.username === username
-  );
+  const { client, isLoading } = useGetClientsQuery("clientsList", {
+    selectFromResult: ({ data, isLoading }) => ({
+      isLoading,
+      client: data?.ids
+        .map((id) => data.entities[id])
+        .find((c) => c.username === username),
+    }),
+  });
 
-  const projectsRoute = client?._id
-    ? `/dash/clients/${client._id}/projects`
-    : "/dash/projects";
+  useEffect(() => {
+    if (!isLoading && client) {
+      navigate(`/dash/clients/${client._id}/projects`);
+    }
+  }, [client, navigate, isLoading]);
+
+  if (isLoading) return <PulseLoader color={"var(--Forest)"} />;
 
   return (
     <section>
       <h1>Welcome {username}!</h1>
 
       <p>
-        <Link to={projectsRoute}>View projects</Link>
+        <Link to={`/dash/clients/${client?._id}/projects`}>View projects</Link>
       </p>
 
       <p>
@@ -31,15 +40,14 @@ export default function Public() {
       </p>
 
       {(isAdmin || isFounder) && (
-        <p>
-          <Link to="/dash/clients">View Clients</Link>
-        </p>
-      )}
-
-      {(isAdmin || isFounder) && (
-        <p>
-          <Link to="/dash/clients/new">Add New Client</Link>
-        </p>
+        <>
+          <p>
+            <Link to="/dash/clients">View Clients</Link>
+          </p>
+          <p>
+            <Link to="/dash/clients/new">Add New Client</Link>
+          </p>
+        </>
       )}
     </section>
   );

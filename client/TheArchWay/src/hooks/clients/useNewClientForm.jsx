@@ -36,7 +36,6 @@ export default function useNewClientForm() {
 
   useEffect(() => {
     if (isSuccess) {
-      showToast.success(result?.data?.message || "Client created!");
       navigate(`/dash/clients`);
     }
   }, [isSuccess, navigate]);

@@ -51,16 +51,25 @@ export default function ProjectsList() {
                 <th className="fs-3 ps-3 pb-3" scope="col">
                   Status
                 </th>
-                <th className="fs-3 ps-3 pb-3" scope="col">
+                <th
+                  className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
+                  scope="col"
+                >
                   Created
                 </th>
-                <th className="fs-3 ps-3 pb-3" scope="col">
+                <th
+                  className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
+                  scope="col"
+                >
                   Updated
                 </th>
                 <th className="fs-3 ps-3 pb-3" scope="col">
                   Title
                 </th>
-                <th className="fs-3 ps-3 pb-3" scope="col">
+                <th
+                  className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
+                  scope="col"
+                >
                   Owner
                 </th>
                 <th className="fs-3 ps-3 pb-3 w-5" scope="col">

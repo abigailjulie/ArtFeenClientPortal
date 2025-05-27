@@ -5,3 +5,9 @@
 .ft-large {
   font-size: var(--ft-large);
 }
+
+.forest {
+  background-color: var(--Forest) !important;
+  border: none !important;
+  min-width: 6rem;
+}

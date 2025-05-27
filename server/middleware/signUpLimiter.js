@@ -1,11 +1,12 @@
 const rateLimit = require("express-rate-limit");
 const { logEvents } = require("./logger");
 
-const loginLimiter = rateLimit({
-  windowMs: 60 * 1000,
+const signUpLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
   max: 5,
   message: {
-    message: "Too many login attempts from this IP.",
+    message:
+      "Too many accounts created from this IP, pleease try again after a 60 sec pause.",
   },
   handler: (req, res, next, options) => {
     logEvents(
@@ -18,4 +19,4 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-module.exports = loginLimiter;
+module.exports = signUpLimiter;

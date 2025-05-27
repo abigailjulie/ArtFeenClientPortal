@@ -11,11 +11,11 @@ import {
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useSendLogoutMutation } from "../features/auth/authApiSlice";
 import useAuth from "../hooks/useAuth";
-import { useSelector } from "react-redux";
-import { selectAllClients } from "../features/clients/clientsApiSlice";
+import { useGetClientsQuery } from "../features/clients/clientsApiSlice";
 import "./DashHeader.css";
-import { selectAllProjects } from "../features/projects/projectsApiSlice";
+import { useGetProjectsQuery } from "../features/projects/projectsApiSlice";
 import PulseLoader from "react-spinners/PulseLoader";
+import { Button } from "react-bootstrap";
 
 const DASH_REGEX = /^\/dash(\/)?$/;
 const PROJECTS_REGEX = /^\/dash\/projects(\/)?$/;
@@ -26,21 +26,34 @@ export default function DashHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const clients = useSelector(selectAllClients);
-  const projects = useSelector(selectAllProjects);
+  const {
+    data: clientsData,
+    isLoading: clientsLoading,
+    isSuccess: clientsSuccess,
+  } = useGetClientsQuery("clientsList");
+
+  const clients = clientsSuccess
+    ? clientsData?.ids.map((id) => clientsData.entities[id])
+    : [];
 
   const client = clients?.find(
     (currentClient) => currentClient.username === username
   );
 
-  const clientsProjects = projects?.filter(
-    (project) =>
-      project.client === client?._id || project.client?._id === client?._id
-  );
+  const { data: projectsData, isSuccess: projectsSuccess } =
+    useGetProjectsQuery("projectsList");
 
-  const [selectedProjectId, setSelectedProjectId] = useState(
-    clientsProjects?.[0]?._id || null
-  );
+  const projects = projectsSuccess
+    ? projectsData.ids.map((id) => projectsData.entities[id])
+    : [];
+
+  const clientsProjects = projects?.filter((project) => {
+    const projectClientId =
+      typeof project.client === "object" ? project.client._id : project.client;
+    return projectClientId === client?._id;
+  });
+
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   const selectedProject = clientsProjects?.find(
     (project) => project._id === selectedProjectId
@@ -54,7 +67,7 @@ export default function DashHeader() {
   }, [isSuccess, navigate]);
 
   useEffect(() => {
-    if (!selectedProjectId && clientsProjects?.length) {
+    if (clientsProjects?.length > 0 && selectedProjectId === null) {
       setSelectedProjectId(clientsProjects[0]._id);
     }
   }, [clientsProjects, selectedProjectId]);
@@ -86,7 +99,7 @@ export default function DashHeader() {
     !PROJECTS_REGEX.test(pathname) &&
     !CLIENTS_REGEX.test(pathname)
   ) {
-    dashClass = "fw-lighter";
+    dashClass = "";
   }
 
   const handleGoHome = () => {
@@ -103,29 +116,47 @@ export default function DashHeader() {
   };
 
   let newProjectBtn = null;
-  if (!isAdmin && !isFounder && PROJECTS_REGEX.test(pathname)) {
+  if (
+    !isAdmin &&
+    !isFounder &&
+    pathname.includes("/projects") &&
+    clientsSuccess &&
+    client?._id
+  ) {
     newProjectBtn = (
-      <button className="btn" title="New Project" onClick={onNewProjectClicked}>
+      <Button
+        className="forest mb-2"
+        title="New Project"
+        onClick={onNewProjectClicked}
+      >
         <FontAwesomeIcon icon={faFileCirclePlus} />
-      </button>
+      </Button>
     );
   }
 
   let newClientBtn = null;
   if (CLIENTS_REGEX.test(pathname)) {
     newClientBtn = (
-      <button className="btn" title="New Client" onClick={onNewClientClicked}>
+      <Button
+        className="forest mb-2"
+        title="New Client"
+        onClick={onNewClientClicked}
+      >
         <FontAwesomeIcon icon={faUserPlus} />
-      </button>
+      </Button>
     );
   }
 
   let projectsBtn = null;
-  if (!PROJECTS_REGEX.test(pathname) && pathname.includes("/dash")) {
+  if (!pathname.includes("/projects") && pathname.includes("/dash")) {
     projectsBtn = (
-      <button className="btn" title="View Projects" onClick={onProjectsClicked}>
+      <Button
+        className="forest mb-2"
+        title="View Projects"
+        onClick={onProjectsClicked}
+      >
         <FontAwesomeIcon icon={faFilePen} />
-      </button>
+      </Button>
     );
   }
 
@@ -133,26 +164,23 @@ export default function DashHeader() {
   if (isAdmin || isFounder) {
     if (!CLIENTS_REGEX.test(pathname) && pathname.includes("/dash")) {
       clientsBtn = (
-        <button className="btn" title="View Clients" onClick={onClientsClicked}>
+        <Button
+          className="forest mb-2"
+          title="View Clients"
+          onClick={onClientsClicked}
+        >
           <FontAwesomeIcon icon={faUserGear} />
-        </button>
+        </Button>
       );
     }
   }
 
-  let homeBtn = null;
-  if (pathname !== "/dash") {
-    homeBtn = (
-      <button className="btn" title="Home" onClick={handleGoHome}>
-        <FontAwesomeIcon icon={faHouse} />
-      </button>
-    );
-  }
-
   const logoutBtn = (
-    <button className="btn" title="Logout" onClick={handleLogout}>
-      <FontAwesomeIcon icon={faRightFromBracket} />
-    </button>
+    <Button className="forest" title="Logout" onClick={handleLogout}>
+      <span>
+        <FontAwesomeIcon icon={faRightFromBracket} />
+      </span>
+    </Button>
   );
 
   const date = new Date();
@@ -182,58 +210,64 @@ export default function DashHeader() {
       <p className={errClass}>{error?.data?.message}</p>
 
       <header className="dash-header mt-3">
-        <main className={`ms-4 dash-container ${dashClass}`}>
-          <div className="d-flex flex-row align-items-center">
-            <p className="mb-0">
-              Client Name:
-              <strong className="ms-2">
+        <main
+          className={`d-flex justify-content-between ms-4 dash-container ${dashClass}`}
+        >
+          <div>
+            <div className="d-flex flex-row align-items-center">
+              <p className="mb-0">
+                Client Name:
+                <strong className="ms-2">
+                  <Link
+                    className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
+                    to="/dash/profile"
+                  >
+                    {username}
+                  </Link>
+                </strong>
+                <span className="mx-2">X</span>
                 <Link
                   className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
-                  to="/dash/profile"
+                  to="/dash"
                 >
-                  {username}
+                  The ArchWay
                 </Link>
-              </strong>
-              <span className="mx-2">X</span>
-              <Link
-                className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
-                to="/dash"
+              </p>
+            </div>
+
+            {clientsProjects?.length > 1 && (
+              <select
+                className="form-select mt-2 mb-2"
+                value={selectedProjectId || ""}
+                onChange={(e) => setSelectedProjectId(e.target.value)}
+                style={{ maxWidth: "300px" }}
               >
-                The ArchWay
-              </Link>
-            </p>
-            <nav>{btnContent}</nav>
+                {clientsProjects.map((project) => (
+                  <option key={project._id} value={project._id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {selectedProject ? (
+              <>
+                <p className="mb-0">Phase: {selectedProject.phase.name}</p>
+                <p className="mb-0">Status: {selectedProject.status}</p>
+                <p className="ft-large fw-bold mb-0 line-height-min">
+                  ${selectedProject.finances.budget.toLocaleString()}
+                </p>
+                <p>Outstanding balance as of {today}</p>
+              </>
+            ) : (
+              <p className="text-muted mt-2">
+                No project information available
+              </p>
+            )}
           </div>
 
-          {clientsProjects?.length > 1 && (
-            <select
-              className="form-select mt-2 mb-2"
-              value={selectedProjectId || ""}
-              onChange={(e) => setSelectedProjectId(e.target.value)}
-              style={{ maxWidth: "300px" }}
-            >
-              {clientsProjects.map((project) => (
-                <option key={project._id} value={project._id}>
-                  {project.name}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {selectedProject ? (
-            <>
-              <p className="mb-0">Phase: {selectedProject.phase.name}</p>
-              <p className="mb-0">Status: {selectedProject.status}</p>
-              <p className="ft-large fw-bold mb-0 line-height-min">
-                ${selectedProject.finances.budget.toLocaleString()}
-              </p>
-              <p>Outstanding balance as of {today}</p>
-            </>
-          ) : (
-            <p className="text-muted mt-2">No project information available</p>
-          )}
+          <nav className="d-flex flex-column">{btnContent}</nav>
         </main>
-        {homeBtn}
       </header>
     </>
   );

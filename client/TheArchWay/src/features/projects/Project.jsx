@@ -23,6 +23,8 @@ const Project = memo(function Project({ projectId }) {
   const client = clientList?.find((c) => c.username === username);
   const navigate = useNavigate();
 
+  const unauthorized = !isAdmin && !isFounder;
+
   if (project) {
     const created = new Date(project.createdAt).toLocaleString("en-US", {
       day: "numeric",
@@ -54,15 +56,18 @@ const Project = memo(function Project({ projectId }) {
     return (
       <tr className={`bg-body-tertiary shadow mb-3 ${rowStatusClass}`}>
         <td className="p-3">{project.status}</td>
-        <td className="p-3">{created}</td>
-        <td className="p-3">{updated}</td>
+        <td className="p-3 d-none d-md-table-cell">{created}</td>
+        <td className="p-3 d-none d-md-table-cell">{updated}</td>
         <td className="p-3">{project.name}</td>
-        <td className="p-3">{project.client?.username}</td>
+        <td className="p-3 d-none d-md-table-cell">
+          {project.client?.username}
+        </td>
         <td className="p-3 d-flex justify-content-center">
           <button
             onClick={handleEdit}
             title="Edit Project"
             className="btn btn-sm"
+            disabled={unauthorized}
           >
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>

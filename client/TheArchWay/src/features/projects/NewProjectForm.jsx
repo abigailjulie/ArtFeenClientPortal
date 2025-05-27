@@ -18,9 +18,9 @@ export default function NewProjectForm({ clientId }) {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate("/dash/projects");
+      navigate(`/dash/clients/${clientId}/projects`);
     }
-  }, [isSuccess, navigate]);
+  }, [isSuccess, navigate, clientId]);
 
   const onNameChanged = (e) => {
     setProjectName(e.target.value);
