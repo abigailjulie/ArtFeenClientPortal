@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAddNewClientMutation } from "../../features/clients/clientsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { ROLES } from "../../config/roles";
-import { CLIENT_REGEX, PWD_REGEX } from "../../utils/REGEX";
+import { CLIENT_REGEX, PWD_REGEX } from "../../utils/regex";
 import { showToast } from "../../utils/showToast";
 
 export default function useNewClientForm() {

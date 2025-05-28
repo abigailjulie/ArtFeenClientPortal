@@ -64,7 +64,8 @@ const createNewClient = async (req, res) => {
 // route PATCH /clients
 // access Private
 const updateClient = async (req, res) => {
-  const { id, username, roles, active, password } = req.body;
+  const { id, username, roles, active, password, email, telephone, company } =
+    req.body;
 
   if (
     !id ||
@@ -97,6 +98,23 @@ const updateClient = async (req, res) => {
 
   if (password) {
     client.password = await bcrypt.hash(password, 10);
+  }
+
+  if (email && email !== client.email) client.email = email;
+  if (telephone && telephone !== client.telephone) client.telephone = telephone;
+  if (client.company) {
+    if (company.name !== undefined && company.name !== client.company.name)
+      client.company.name = company.name;
+    if (
+      company.address !== undefined &&
+      company.address !== client.company.address
+    )
+      client.company.address = company.address;
+    if (
+      company.telephone !== undefined &&
+      company.telephone !== client.company.telephone
+    )
+      client.company.telephone = company.telephone;
   }
 
   const updatedClient = await client.save();

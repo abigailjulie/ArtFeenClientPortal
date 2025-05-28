@@ -266,7 +266,7 @@ export default function DashHeader() {
             )}
           </div>
 
-          <nav className="d-flex flex-column">{btnContent}</nav>
+          <nav className="d-flex flex-column me-4">{btnContent}</nav>
         </main>
       </header>
     </>

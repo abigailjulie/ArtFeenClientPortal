@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useGetClientsQuery } from "./clientsApiSlice";
 import PulseLoader from "react-spinners/PulseLoader";
-import EditClientForm from "./EditClientForm";
+import EditClient from "./EditClient";
 
 export default function EditClientProfile() {
   const { clientId } = useParams();
@@ -15,5 +15,5 @@ export default function EditClientProfile() {
 
   if (!client) return <PulseLoader color={"var(--Forest)"} />;
 
-  return <EditClientForm client={client} />;
+  return <EditClient client={client} />;
 }

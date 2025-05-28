@@ -85,6 +85,7 @@ export default function LoginForm() {
             id="password"
             type="password"
             placeholder="Password"
+            autoComplete="off"
             value={password}
             onChange={handlePwdInput}
             required
