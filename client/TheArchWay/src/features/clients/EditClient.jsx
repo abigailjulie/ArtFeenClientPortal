@@ -19,13 +19,15 @@ export default function EditClient() {
   if (!client) return <p>Client not found</p>;
 
   return (
-    <>
+    <div className="mb-5">
       {state?.errorMessage && (
         <p className="text-danger">{state.errorMessage}</p>
       )}
 
-      <h2>Edit Client</h2>
+      <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
+        Edit Client
+      </h2>
       <EditClientForm state={state} validation={validation} clicked={clicked} />
-    </>
+    </div>
   );
 }

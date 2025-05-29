@@ -176,7 +176,7 @@ export default function DashHeader() {
   }
 
   const logoutBtn = (
-    <Button className="forest" title="Logout" onClick={handleLogout}>
+    <Button className="forest mb-3" title="Logout" onClick={handleLogout}>
       <span>
         <FontAwesomeIcon icon={faRightFromBracket} />
       </span>
@@ -188,7 +188,7 @@ export default function DashHeader() {
     dateStyle: "long",
   }).format(date);
 
-  const errClass = isError ? "errmsg" : "";
+  // const errClass = isError ? "errmsg" : "";
 
   let btnContent;
   if (isLoading) {
@@ -207,17 +207,16 @@ export default function DashHeader() {
 
   return (
     <>
-      <p className={errClass}>{error?.data?.message}</p>
+      <p className="m-0">{error?.data?.message}</p>
 
-      <header className="dash-header mt-3">
+      <header className="dash-header pt-3 bg-white">
         <main
           className={`d-flex justify-content-between ms-4 dash-container ${dashClass}`}
         >
           <div>
             <div className="d-flex flex-row align-items-center">
               <p className="mb-0">
-                Client Name:
-                <strong className="ms-2">
+                <strong>
                   <Link
                     className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
                     to="/dash/profile"
@@ -235,34 +234,40 @@ export default function DashHeader() {
               </p>
             </div>
 
-            {clientsProjects?.length > 1 && (
-              <select
-                className="form-select mt-2 mb-2"
-                value={selectedProjectId || ""}
-                onChange={(e) => setSelectedProjectId(e.target.value)}
-                style={{ maxWidth: "300px" }}
-              >
-                {clientsProjects.map((project) => (
-                  <option key={project._id} value={project._id}>
-                    {project.name}
-                  </option>
-                ))}
-              </select>
-            )}
-
-            {selectedProject ? (
+            {!isAdmin && !isFounder ? (
               <>
-                <p className="mb-0">Phase: {selectedProject.phase.name}</p>
-                <p className="mb-0">Status: {selectedProject.status}</p>
-                <p className="ft-large fw-bold mb-0 line-height-min">
-                  ${selectedProject.finances.budget.toLocaleString()}
-                </p>
-                <p>Outstanding balance as of {today}</p>
+                {clientsProjects?.length > 1 && (
+                  <select
+                    className="form-select mt-2 mb-2"
+                    value={selectedProjectId || ""}
+                    onChange={(e) => setSelectedProjectId(e.target.value)}
+                    style={{ maxWidth: "300px" }}
+                  >
+                    {clientsProjects.map((project) => (
+                      <option key={project._id} value={project._id}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                {selectedProject ? (
+                  <>
+                    <p className="mb-0">Phase: {selectedProject.phase.name}</p>
+                    <p className="mb-0">Status: {selectedProject.status}</p>
+                    <p className="ft-large fw-bold mb-0 line-height-min">
+                      ${selectedProject.finances.budget.toLocaleString()}
+                    </p>
+                    <p>Outstanding balance as of {today}</p>
+                  </>
+                ) : (
+                  <p className="text-muted mt-2">
+                    No project information available
+                  </p>
+                )}
               </>
             ) : (
-              <p className="text-muted mt-2">
-                No project information available
-              </p>
+              <p>Admin View</p>
             )}
           </div>
 

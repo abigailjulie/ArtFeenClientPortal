@@ -22,11 +22,15 @@ export default function useEditClientForm({ client }) {
   const [validPassword, setValidPassword] = useState(false);
   const [roles, setRoles] = useState(client?.roles);
   const [active, setActive] = useState(client?.active);
-  const [email, setEmail] = useState(client?.email);
-  const [telephone, setTelephone] = useState(client?.telephone);
-  const [companyName, setCompanyName] = useState(client?.company.name);
-  const [companyAddress, setCompanyAddress] = useState(client?.company.address);
-  const [companyNumber, setCompanyNumber] = useState(client?.company.telephone);
+  const [email, setEmail] = useState(client?.email ?? "");
+  const [telephone, setTelephone] = useState(client?.telephone ?? "");
+  const [companyName, setCompanyName] = useState(client?.company.name ?? "");
+  const [companyAddress, setCompanyAddress] = useState(
+    client?.company.address ?? ""
+  );
+  const [companyNumber, setCompanyNumber] = useState(
+    client?.company.telephone ?? ""
+  );
 
   const { isLoading: isUpdateLoading } = updateState;
   const { isLoading: isDeleteLoading } = deleteState;
@@ -34,43 +38,6 @@ export default function useEditClientForm({ client }) {
 
   const { isSuccess } = updateState;
   const { isSuccess: isDelSuccess } = deleteState;
-
-  if (!client) {
-    return {
-      state: {
-        username: "",
-        password: "",
-        roles: [],
-        active: false,
-        telephone: "",
-        email: "",
-        companyName: "",
-        companyAddress: "",
-        companyNumber: "",
-        updateState,
-        deleteState,
-        isFounder,
-        canSave: false,
-      },
-      clicked: {
-        onUsernameChanged: () => {},
-        onPasswordChanged: () => {},
-        onRolesChanged: () => {},
-        onActiveChanged: () => {},
-        onEmailChanged: () => {},
-        onTelephoneChanged: () => {},
-        onCompanyNameChanged: () => {},
-        onCompanyAddressChanged: () => {},
-        onCompanyNumberChanged: () => {},
-        onSaveClientClicked: () => {},
-        onDeleteClientClicked: () => {},
-      },
-      validation: {
-        validUsername: false,
-        validPassword: false,
-      },
-    };
-  }
 
   const company = {
     name: companyName,
