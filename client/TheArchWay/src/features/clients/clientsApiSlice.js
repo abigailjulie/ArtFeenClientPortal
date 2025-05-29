@@ -1,6 +1,5 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice";
-import { showToast } from "../../utils/showToast";
 
 const clientsAdapter = createEntityAdapter({});
 
@@ -40,16 +39,6 @@ export const clientsApiSlice = apiSlice.injectEndpoints({
         },
       }),
       invalidatesTags: [{ type: "Client", id: "LIST" }],
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          showToast.success(data.message || "Client created successfully.");
-        } catch (err) {
-          showToast.error(
-            err?.error?.data?.message || "Failed to create client."
-          );
-        }
-      },
     }),
     updateClient: builder.mutation({
       query: (initialClientData) => ({

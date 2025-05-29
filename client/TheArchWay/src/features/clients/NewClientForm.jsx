@@ -1,20 +1,59 @@
-import React from "react";
-import ClientForm from "../../components/client/ClientForm";
-import useNewClientForm from "../../hooks/clients/useNewClientForm";
+import CompanyInfoSection from "../../components/client/CompanyInfoSection";
+import ClientInfoSection from "../../components/client/ClientInfoSection";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { Col, Form, Row, Button } from "react-bootstrap";
+import useAuth from "../../hooks/useAuth";
 
-export default function NewClientForm() {
-  const { state, handlers, validation, clicked } = useNewClientForm();
+export default function NewClientForm({ state, validation, clicked }) {
+  const { roles, canSave, options } = state;
+  const { onRolesChanged, onSaveClientClicked } = clicked;
+
+  const { isFounder } = useAuth();
 
   return (
-    <div className="h-100 d-flex flex-column justify-content-center align-items-center">
-      <h1>New Client Information</h1>
-      <ClientForm
-        state={state}
-        handlers={handlers}
-        validation={validation}
-        clicked={clicked}
-      />
-      {/* <p className={errClass}>{error?.data?.message}</p> */}
-    </div>
+    <>
+      <Form onSubmit={(e) => e.preventDefault()}>
+        <ClientInfoSection
+          state={state}
+          validation={validation}
+          clicked={clicked}
+        />
+
+        {isFounder && (
+          <Row>
+            <Col>
+              <Form.Select
+                multiple
+                aria-label="Select role(s)"
+                value={roles?.length ? roles : []}
+                onChange={onRolesChanged}
+              >
+                {options?.length ? options : <option value="">No roles</option>}
+              </Form.Select>
+            </Col>
+          </Row>
+        )}
+
+        <CompanyInfoSection
+          state={state}
+          clicked={clicked}
+          validation={validation}
+          isEdit={false}
+        />
+
+        <div className="d-flex justify-content-center mt-3">
+          <Button
+            className="btn"
+            title="Save"
+            type="button"
+            onClick={onSaveClientClicked}
+            disabled={!canSave}
+          >
+            <FontAwesomeIcon icon={faSave} />
+          </Button>
+        </div>
+      </Form>
+    </>
   );
 }

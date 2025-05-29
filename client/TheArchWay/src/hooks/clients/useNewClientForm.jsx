@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAddNewClientMutation } from "../../features/clients/clientsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { ROLES } from "../../config/roles";
-import { CLIENT_REGEX, PWD_REGEX } from "../../utils/regex";
+import { CLIENT_REGEX, PWD_REGEX, STATE_REGEX } from "../../utils/regex";
 import { showToast } from "../../utils/showToast";
 
 export default function useNewClientForm() {
@@ -23,6 +23,7 @@ export default function useNewClientForm() {
   const [address2, setAddress2] = useState("");
   const [city, setCity] = useState("");
   const [stateCode, setStateCode] = useState("");
+  const [validStateCode, setValidStateCode] = useState(false);
   const [zip, setZip] = useState("");
   const [companyNumber, setCompanyNumber] = useState("");
 
@@ -33,6 +34,10 @@ export default function useNewClientForm() {
   useEffect(() => {
     setValidPassword(PWD_REGEX.test(password));
   }, [password]);
+
+  useEffect(() => {
+    setValidStateCode(STATE_REGEX.test(stateCode));
+  }, [stateCode]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -103,7 +108,7 @@ export default function useNewClientForm() {
       companyName,
       address1,
       city,
-      stateCode,
+      validStateCode,
       zip,
       companyNumber,
     ].every(Boolean) && !isLoading;
@@ -127,11 +132,10 @@ export default function useNewClientForm() {
         }).unwrap();
 
         showToast.success(result?.message || `Client ${username} created!`);
-      } catch (err) {
+      } catch (error) {
         showToast.error(
-          err?.data?.message || "Form is incomplete or contains invalid data."
+          error?.data?.message || "Form is incomplete or contains invalid data."
         );
-        console.error("Client creation error:", err);
       }
     }
   };
@@ -167,6 +171,8 @@ export default function useNewClientForm() {
       onUsernameChanged,
       onPasswordChanged,
       onRolesChanged,
+      onTelephoneChanged,
+      onEmailChanged,
       onCompanyNameChanged,
       onAddress1Changed,
       onAddress2Changed,
@@ -174,24 +180,8 @@ export default function useNewClientForm() {
       onStateCodeChanged,
       onZipChanged,
       onCompanyNumberChanged,
-      onTelephoneChanged,
-      onEmailChanged,
       onSaveClientClicked,
     },
-    handlers: {
-      setUsername,
-      setPassword,
-      setRoles,
-      setTelephone,
-      setEmail,
-      setCompanyName,
-      setAddress1,
-      setAddress2,
-      setCity,
-      setStateCode,
-      setZip,
-      setCompanyNumber,
-    },
-    validation: { validUsername, validPassword },
+    validation: { validUsername, validPassword, validStateCode },
   };
 }

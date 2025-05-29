@@ -43,8 +43,8 @@ export default function ProjectsList() {
       ));
 
     return (
-      <div className="mx-5">
-        <section className="w-100 px-4 py-2">
+      <div>
+        <section className="w-100">
           <table className="w-100 align-items-between table-spaced">
             <thead className="w-100">
               <tr>

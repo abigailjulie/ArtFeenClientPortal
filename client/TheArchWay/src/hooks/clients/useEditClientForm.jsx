@@ -4,8 +4,14 @@ import {
   useDeleteClientMutation,
 } from "../../features/clients/clientsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { CLIENT_REGEX, PWD_REGEX } from "../../utils/regex";
+import {
+  CLIENT_REGEX,
+  EMAIL_REGEX,
+  PHONE_REGEX,
+  PWD_REGEX,
+} from "../../utils/regex";
 import useAuth from "../../hooks/useAuth";
+import { showToast } from "../../utils/showToast";
 
 export default function useEditClientForm({ client }) {
   const [updateClient, updateState] = useUpdateClientMutation();
@@ -23,7 +29,9 @@ export default function useEditClientForm({ client }) {
   const [roles, setRoles] = useState(client?.roles);
   const [active, setActive] = useState(client?.active);
   const [email, setEmail] = useState(client?.email ?? "");
+  const [validEmail, setValidEmail] = useState(false);
   const [telephone, setTelephone] = useState(client?.telephone ?? "");
+  const [validTelephone, setValidTelephone] = useState(false);
   const [companyName, setCompanyName] = useState(client?.company.name ?? "");
   const [companyAddress, setCompanyAddress] = useState(
     client?.company.address ?? ""
@@ -88,39 +96,70 @@ export default function useEditClientForm({ client }) {
   const onSaveClientClicked = async (e) => {
     e.preventDefault();
     if (password) {
-      await updateClient({
-        id: client.id,
-        username,
-        password,
-        roles,
-        active,
-        email,
-        telephone,
-        company,
-      });
+      try {
+        const result = await updateClient({
+          id: client.id,
+          username,
+          password,
+          roles,
+          active,
+          email,
+          telephone,
+          company,
+        }).unwrap();
+
+        showToast.success(
+          result?.message || `${username} updated successfully!`
+        );
+      } catch (error) {
+        showToast.error(
+          error?.data?.message || "Update failed. Please check the input."
+        );
+      }
     } else {
-      await updateClient({
-        id: client.id,
-        username,
-        roles,
-        active,
-        email,
-        telephone,
-        company,
-      });
+      try {
+        const result = await updateClient({
+          id: client.id,
+          username,
+          roles,
+          active,
+          email,
+          telephone,
+          company,
+        }).unwrap();
+
+        showToast.success(
+          result?.message || `${username} updated successfully!`
+        );
+      } catch (error) {
+        showToast.error(
+          error?.data?.message || "Update failed. Please check the input."
+        );
+      }
     }
   };
 
   const onDeleteClientClicked = async () => {
-    await deleteClient({ id: client.id });
+    try {
+      const result = await deleteClient({ id: client.id });
+      showToast.success(result?.message || `${username} deleted successfully!`);
+    } catch (error) {
+      showToast.error(
+        error?.data?.message || "Delete failed. Please check the input."
+      );
+    }
   };
 
   let canSave;
   if (password) {
     canSave =
-      [roles, validUsername, validPassword].every(Boolean) && !isLoading;
+      [roles, validUsername, validEmail, validTelephone, validPassword].every(
+        Boolean
+      ) && !isLoading;
   } else {
-    canSave = [roles, validUsername].every(Boolean) && !isLoading;
+    canSave =
+      [roles, validUsername, validEmail, validTelephone].every(Boolean) &&
+      !isLoading;
   }
 
   useEffect(() => {
@@ -130,6 +169,14 @@ export default function useEditClientForm({ client }) {
   useEffect(() => {
     setValidPassword(PWD_REGEX.test(password));
   }, [password]);
+
+  useEffect(() => {
+    setValidTelephone(PHONE_REGEX.test(telephone));
+  }, [telephone]);
+
+  useEffect(() => {
+    setValidEmail(EMAIL_REGEX.test(email));
+  }, [email]);
 
   useEffect(() => {
     if (isSuccess || isDelSuccess) {
@@ -169,6 +216,6 @@ export default function useEditClientForm({ client }) {
       onSaveClientClicked,
       onDeleteClientClicked,
     },
-    validation: { validUsername, validPassword },
+    validation: { validUsername, validPassword, validTelephone, validEmail },
   };
 }

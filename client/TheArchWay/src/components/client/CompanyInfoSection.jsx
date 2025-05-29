@@ -1,6 +1,11 @@
 import { Col, Form, Row } from "react-bootstrap";
 
-export default function CompanyInfoSection({ state, clicked, isEdit }) {
+export default function CompanyInfoSection({
+  state,
+  clicked,
+  validation,
+  isEdit,
+}) {
   const {
     companyName,
     companyAddress,
@@ -21,10 +26,27 @@ export default function CompanyInfoSection({ state, clicked, isEdit }) {
     onStateCodeChanged,
     onZipChanged,
   } = clicked;
+  const { validStateCode } = validation;
 
   return (
     <>
       <h3 className="mt-5 text-center">Company Information:</h3>
+
+      <Row>
+        <Col className="mb-3">
+          <Form.Label htmlFor="companyName" visuallyHidden>
+            Company Name:
+          </Form.Label>
+          <Form.Control
+            id="companyName"
+            type="text"
+            placeholder="Company Name"
+            value={companyName}
+            onChange={onCompanyNameChanged}
+            required
+          />
+        </Col>
+      </Row>
 
       {isEdit ? (
         <Row>
@@ -44,7 +66,7 @@ export default function CompanyInfoSection({ state, clicked, isEdit }) {
         </Row>
       ) : (
         <Row>
-          <Form.Group controlId="companyAddress1">
+          <Form.Group controlId="companyAddress1" className="mb-3">
             <Form.Label visuallyHidden>Address</Form.Label>
             <Form.Control
               placeholder="Street Address"
@@ -53,7 +75,7 @@ export default function CompanyInfoSection({ state, clicked, isEdit }) {
               required
             />
           </Form.Group>
-          <Form.Group controlId="companyAddress2">
+          <Form.Group controlId="companyAddress2" className="mb-3">
             <Form.Label visuallyHidden>Address 2</Form.Label>
             <Form.Control
               placeholder="Apartment, studio, or floor"
@@ -61,7 +83,7 @@ export default function CompanyInfoSection({ state, clicked, isEdit }) {
               onChange={onAddress2Changed}
             />
           </Form.Group>
-          <Row>
+          <Row className="mb-3">
             <Form.Group as={Col} controlId="companyCity">
               <Form.Label visuallyHidden>City</Form.Label>
               <Form.Control
@@ -78,11 +100,13 @@ export default function CompanyInfoSection({ state, clicked, isEdit }) {
                 placeholder="State"
                 value={stateCode}
                 onChange={onStateCodeChanged}
+                isInvalid={stateCode && !validStateCode}
                 required
               />
-              <Form.Text id="stateHelpBlock" muted>
-                Please enter your state as a two-letter abbreviation (e.g., NY)
-              </Form.Text>
+              <Form.Control.Feedback type="invalid" className="px-2 mt-2" muted>
+                Please enter a valid 2-letter U.S. state abbreviation (e.g.,
+                NY).
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group as={Col} controlId="companyZip">
@@ -98,7 +122,7 @@ export default function CompanyInfoSection({ state, clicked, isEdit }) {
         </Row>
       )}
 
-      <Row>
+      <Row className="mb-3">
         <Col>
           <Form.Label htmlFor="companyNumber" visuallyHidden>
             Company Number:

@@ -22,7 +22,7 @@ const PROJECTS_REGEX = /^\/dash\/projects(\/)?$/;
 const CLIENTS_REGEX = /^\/dash\/clients(\/)?$/;
 
 export default function DashHeader() {
-  const { username, isAdmin, isFounder, status } = useAuth();
+  const { username, isAdmin, isFounder, status } = useAuth() || {};
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -47,11 +47,15 @@ export default function DashHeader() {
     ? projectsData.ids.map((id) => projectsData.entities[id])
     : [];
 
-  const clientsProjects = projects?.filter((project) => {
-    const projectClientId =
-      typeof project.client === "object" ? project.client._id : project.client;
-    return projectClientId === client?._id;
-  });
+  const clientsProjects = client
+    ? projects.filter((project) => {
+        const projectClientId =
+          typeof project.client === "object"
+            ? project.client?._id
+            : project.client;
+        return projectClientId === client._id;
+      })
+    : [];
 
   const [selectedProjectId, setSelectedProjectId] = useState(null);
 
@@ -74,7 +78,7 @@ export default function DashHeader() {
 
   const onNewProjectClicked = () => {
     if (client?._id) {
-      navigate(`/dash/clients/${client?._id}/projects/new`);
+      navigate(`/dash/clients/${client._id}/projects/new`);
     } else {
       console.error("Client ID not found for user:", username);
     }
@@ -84,7 +88,7 @@ export default function DashHeader() {
   };
   const onProjectsClicked = () => {
     if (client?._id) {
-      navigate(`/dash/clients/${client?._id}/projects`);
+      navigate(`/dash/clients/${client._id}/projects`);
     } else {
       navigate("/dash/projects");
     }
@@ -111,7 +115,7 @@ export default function DashHeader() {
       await sendLogout().unwrap();
       navigate("/", { replace: true });
     } catch (error) {
-      console.error("Logout failed", err);
+      console.error("Logout failed", error);
     }
   };
 

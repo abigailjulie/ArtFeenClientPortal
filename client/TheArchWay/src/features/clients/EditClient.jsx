@@ -1,4 +1,4 @@
-import EditClientForm from "../../components/client/EditClientForm";
+import EditClientForm from "./EditClientForm";
 import useEditClientForm from "../../hooks/clients/useEditClientForm";
 import { useParams } from "react-router-dom";
 import {
@@ -6,6 +6,7 @@ import {
   selectClientById,
 } from "../clients/clientsApiSlice";
 import { useSelector } from "react-redux";
+import Loader from "../../components/Loader";
 
 export default function EditClient() {
   const { clientId } = useParams();
@@ -14,7 +15,7 @@ export default function EditClient() {
 
   const { state, validation, clicked } = useEditClientForm({ client });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loader />;
   if (isError) return <p className="errmsg">{error?.data?.message}</p>;
   if (!client) return <p>Client not found</p>;
 

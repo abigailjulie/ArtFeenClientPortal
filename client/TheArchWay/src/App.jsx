@@ -8,7 +8,7 @@ import Login from "./features/auth/Login";
 import Welcome from "./features/auth/Welcome";
 import ClientsList from "./features/clients/ClientsList";
 import ProjectsList from "./features/projects/ProjectsList";
-import NewClientForm from "./features/clients/NewClientForm";
+import NewClient from "./features/clients/NewClient";
 import EditClientProfile from "./features/clients/EditClientProfile";
 import NewProject from "./features/projects/NewProject";
 import EditProject from "./features/projects/EditProject";
@@ -31,7 +31,7 @@ export default function App() {
           {/* Public Routes */}
           <Route index element={<Welcome />} />
           <Route path="login" element={<Login />} />
-          <Route path="register" element={<NewClientForm />} />
+          <Route path="register" element={<NewClient />} />
           {/* Protected Routes */}
           <Route element={<PersistLogin />}>
             <Route
@@ -46,7 +46,7 @@ export default function App() {
 
                   <Route path="clients">
                     <Route index element={<ClientsList />} />
-                    <Route path="new" element={<NewClientForm />} />
+                    <Route path="new" element={<NewClient />} />
 
                     <Route path=":clientId">
                       <Route index element={<ClientProfile />} />

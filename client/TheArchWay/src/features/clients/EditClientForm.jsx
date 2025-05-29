@@ -2,8 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { Col, Form, Row, Button } from "react-bootstrap";
 import { ROLES } from "../../config/roles";
-import ClientInfoSection from "./ClientInfoSection";
-import CompanyInfoSection from "./CompanyInfoSection";
+import ClientInfoSection from "../../components/client/ClientInfoSection";
+import CompanyInfoSection from "../../components/client/CompanyInfoSection";
 
 export default function EditClientForm({ state, validation, clicked }) {
   const { roles, active, isFounder, canSave } = state;
@@ -32,8 +32,8 @@ export default function EditClientForm({ state, validation, clicked }) {
         />
 
         {isFounder && (
-          <Row>
-            <Col>
+          <div className="mt-3 d-flex flex-column justify-content-center align-items-center">
+            <Col style={{ minWidth: "20rem" }}>
               <Form.Select
                 multiple
                 id="roles"
@@ -46,19 +46,26 @@ export default function EditClientForm({ state, validation, clicked }) {
               </Form.Select>
             </Col>
 
-            <Col>
-              <Form.Check
-                type="checkbox"
-                id="clientActive"
-                label="Active"
-                checked={active}
-                onChange={onActiveChanged}
-              />
-            </Col>
-          </Row>
+            <div className="mt-3">
+              <Col>
+                <Form.Check
+                  type="checkbox"
+                  id="clientActive"
+                  label="Active"
+                  checked={active}
+                  onChange={onActiveChanged}
+                />
+              </Col>
+            </div>
+          </div>
         )}
 
-        <CompanyInfoSection state={state} clicked={clicked} isEdit={true} />
+        <CompanyInfoSection
+          state={state}
+          clicked={clicked}
+          validation={validation}
+          isEdit={true}
+        />
 
         <div className="d-flex justify-content-center gap-2 mt-3">
           {isFounder && (

@@ -8,7 +8,8 @@ export default function ClientInfoSection({ state, validation, clicked }) {
     onTelephoneChanged,
     onEmailChanged,
   } = clicked;
-  const { validUsername, validPassword } = validation;
+  const { validUsername, validPassword, validEmail, validTelephone } =
+    validation;
 
   return (
     <>
@@ -23,14 +24,13 @@ export default function ClientInfoSection({ state, validation, clicked }) {
             value={username}
             placeholder="Username"
             onChange={onUsernameChanged}
-            autoComplete="off"
+            isInvalid={username && !validUsername}
             required
           />
-          <Form.Text id="usernameHelpBlock" className="px-2" muted>
-            Your username must be 3-20 characters long, contain letters,
-            numbers, special characters .- and must not contain spaces, or
-            emojis.
-          </Form.Text>
+          <Form.Control.Feedback type="invalid" className="px-2 mt-2" muted>
+            Username must be 3-20 characters, and contain only letters, numbers,
+            ".", or "-".
+          </Form.Control.Feedback>
         </Col>
       </Row>
 
@@ -45,17 +45,17 @@ export default function ClientInfoSection({ state, validation, clicked }) {
             placeholder="Password"
             value={password}
             onChange={onPasswordChanged}
+            isInvalid={password && !validPassword}
             required
           />
-          <Form.Text id="passwordHelpBlock" className="px-2" muted>
-            Your password must be 4-12 characters long, contain letters,
-            numbers, special characters !@#$% and must not contain spaces, or
-            emojis.
-          </Form.Text>
+          <Form.Control.Feedback type="invalid" className="px-2 mt-2" muted>
+            Password must be 4-12 characters and include letters, numbers, and
+            !@#$%.
+          </Form.Control.Feedback>
         </Col>
       </Row>
 
-      <Row>
+      <Row className="mb-3">
         <Col>
           <Form.Label htmlFor="telephone" visuallyHidden>
             Telephone
@@ -66,8 +66,12 @@ export default function ClientInfoSection({ state, validation, clicked }) {
             placeholder="Telephone"
             value={telephone}
             onChange={onTelephoneChanged}
+            isInvalid={telephone && !validTelephone}
             required
           />
+          <Form.Control.Feedback type="invalid" className="px-2 mt-2" muted>
+            Enter a valid phone number in the format 123-456-7890.
+          </Form.Control.Feedback>
         </Col>
 
         <Col>
@@ -80,8 +84,12 @@ export default function ClientInfoSection({ state, validation, clicked }) {
             placeholder="Email"
             value={email}
             onChange={onEmailChanged}
+            isInvalid={email && !validEmail}
             required
           />
+          <Form.Control.Feedback type="invalid" className="px-2 mt-2" muted>
+            Please enter a valid email address.
+          </Form.Control.Feedback>
         </Col>
       </Row>
     </>
