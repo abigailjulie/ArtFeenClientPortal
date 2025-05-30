@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import useAuth from "../../hooks/useAuth";
+import ProjectInfoSection from "../../components/projects/ProjectInfoSection";
 
 export default function EditProjectForm({ project, clients }) {
   const { isAdmin, isFounder } = useAuth();
@@ -175,6 +176,7 @@ export default function EditProjectForm({ project, clients }) {
         className="h-100 d-flex flex-column justify-content-center align-items-center"
         onSubmit={(e) => e.preventDefault()}
       >
+        <ProjectInfoSection />
         <div>
           <h2>Edit Project:</h2>
           <div>

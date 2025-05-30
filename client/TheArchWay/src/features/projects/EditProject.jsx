@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useGetClientsQuery } from "../clients/clientsApiSlice";
 import { useGetProjectsQuery } from "./projectsApiSlice";
 import useAuth from "../../hooks/useAuth";
-import PulseLoader from "react-spinners/PulseLoader";
+import Loader from "../../components/Loader";
 import EditProjectForm from "./EditProjectForm";
 
 export default function EditProject() {
@@ -23,8 +23,7 @@ export default function EditProject() {
     }),
   });
 
-  if (!project || !clients?.length)
-    return <PulseLoader color={"var(--Forest)"} />;
+  if (!project || !clients?.length) return <Loader />;
 
   if (!isAdmin && !isFounder) {
     if (project.username !== username) {
