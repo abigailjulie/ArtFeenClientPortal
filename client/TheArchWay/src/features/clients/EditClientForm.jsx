@@ -73,7 +73,7 @@ export default function EditClientForm({ state, validation, clicked }) {
               className="btn"
               title="Delete"
               type="button"
-              onClick={clicked.onDeleteClientClicked}
+              onClick={onDeleteClientClicked}
             >
               <FontAwesomeIcon icon={faTrashCan} />
             </Button>
@@ -82,8 +82,8 @@ export default function EditClientForm({ state, validation, clicked }) {
           <Button
             title="Save"
             type="button"
-            onClick={clicked.onSaveClientClicked}
-            disabled={!state.canSave}
+            onClick={onSaveClientClicked}
+            disabled={!canSave}
           >
             <FontAwesomeIcon icon={faSave} />
           </Button>
