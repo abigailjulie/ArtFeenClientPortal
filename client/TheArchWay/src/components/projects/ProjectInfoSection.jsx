@@ -14,14 +14,13 @@ export default function ProjectInfoSection({ state, clicked }) {
     <>
       <Row>
         <Col className="mb-3">
-          <Form.Label htmlFor="name" visuallyHidden>
-            Project Name
-          </Form.Label>
+          <Form.Label htmlFor="name">Project Name</Form.Label>
           <Form.Control
             type="text"
             name="name"
             id="name"
             autoComplete="off"
+            placeholder=""
             value={projectName}
             onChange={onNameChanged}
           />
@@ -30,9 +29,7 @@ export default function ProjectInfoSection({ state, clicked }) {
 
       <Row>
         <Col className="mb-3">
-          <Form.Label htmlFor="number" visuallyHidden>
-            Project Number
-          </Form.Label>
+          <Form.Label htmlFor="number">Project Number</Form.Label>
           <Form.Control
             type="text"
             name="number"
@@ -46,9 +43,7 @@ export default function ProjectInfoSection({ state, clicked }) {
 
       <Row>
         <Col className="mb-3">
-          <Form.Label htmlFor="address" visuallyHidden>
-            Project Address
-          </Form.Label>
+          <Form.Label htmlFor="address">Project Address</Form.Label>
           <Form.Control
             type="text"
             name="address"
@@ -62,9 +57,7 @@ export default function ProjectInfoSection({ state, clicked }) {
 
       <Row>
         <Col className="mb-3">
-          <Form.Label htmlFor="telephone" visuallyHidden>
-            Project Telephone
-          </Form.Label>
+          <Form.Label htmlFor="telephone">Project Telephone</Form.Label>
           <Form.Control
             type="text"
             name="telephone"

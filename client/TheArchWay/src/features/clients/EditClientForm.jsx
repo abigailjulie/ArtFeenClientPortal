@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { Col, Form, Row, Button } from "react-bootstrap";
+import { Col, Form, Button } from "react-bootstrap";
 import { ROLES } from "../../config/roles";
 import ClientInfoSection from "../../components/client/ClientInfoSection";
 import CompanyInfoSection from "../../components/client/CompanyInfoSection";

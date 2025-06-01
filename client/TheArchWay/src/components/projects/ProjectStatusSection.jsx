@@ -1,66 +1,114 @@
 import { Col, Form, Row } from "react-bootstrap";
-import { ProjectTickSelector } from "./ProjectTickSelector";
+import ProjectTickSelector from "./ProjectTickSelector";
+import FormSelect from "../FormSelect";
+import { isValidCurrency } from "../../utils/FormatCurrency";
 
-export default function ProjectStatusSection({ state, clicked }) {
-  const clientOptions = clients.map((client) => {
-    return (
-      <option key={client.id} value={client.id}>
-        {client.username}
-      </option>
-    );
-  });
+export default function ProjectStatusSection({ state, clicked, clients }) {
+  const clientOptions = clients.map((client) => ({
+    value: client.id,
+    label: client.username,
+  }));
+
+  const statusOptions = [
+    { value: "Active", label: "Active" },
+    { value: "Paused", label: "Paused" },
+    { value: "Completed", label: "Completed" },
+    { value: "Cancelled", label: "Cancelled" },
+  ];
+
+  const phaseOptions = [
+    { value: "Predevelopment", label: "Predevelopment" },
+    { value: "Programming", label: "Programming" },
+    { value: "Schematic Design", label: "Schematic Design" },
+    { value: "Design Development", label: "Design Development" },
+    { value: "Construction Documents", label: "Construction Documents" },
+    {
+      value: "Construction Administration",
+      label: "Construction Administration",
+    },
+    { value: "Project Close-out", label: "Project Close-out" },
+  ];
 
   return (
     <>
       <Row>
-        <Col>
-          <Form.Label htmlFor="projectStatus" visuallyHidden>
-            Status
-          </Form.Label>
-          <Form.Select
-            aria-label="Status select"
+        <Col className="mb-3">
+          <FormSelect
             id="projectStatus"
             name="projectStatus"
-            value={status}
-            onChange={onStatusChanged}
-          >
-            <option value="Active">Active</option>
-            <option value="Paused">Paused</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
-          </Form.Select>
+            ariaLabel="Select Status"
+            options={statusOptions}
+            onChange={clicked.onStatusChanged}
+          />
         </Col>
 
-        <Col>
-          <Form.Select
-            aria-label="Client select"
+        <Col className="mb-3">
+          <FormSelect
             id="projectUsername"
             name="username"
-            value={clientId}
-            onChange={onClientIdChanged}
-          >
-            {clientOptions}
-          </Form.Select>
+            aria-label="Select Client"
+            options={clientOptions}
+            onChange={clicked.onClientIdChanged}
+          />
         </Col>
       </Row>
 
-      <ProjectTickSelector
-        name="timeline"
-        label="Project Timeline Tick"
-        value={timelineTick}
-        onChange={onTimelineTickChanged}
-      />
+      <Row>
+        <Col className="mb-3">
+          <FormSelect
+            id="phaseName"
+            name="phaseName"
+            ariaLabel="Select Phase Name"
+            options={phaseOptions}
+            onChange={clicked.onPhaseNameChanged}
+          />
+        </Col>
+      </Row>
 
       <Row>
-        <Col>
+        <Col className="mb-3">
+          <Form.Group controlId="spent">
+            <Form.Label>Project Spent</Form.Label>
+            <Form.Control
+              type="text"
+              value={state.spent}
+              onChange={clicked.onSpentChanged}
+              isInvalid={!isValidCurrency(state.spent)}
+              required
+            />
+            <Form.Control.Feedback type="invalid">
+              Please enter a valid currency amount (e.g., 1,000.00)
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col className="mb-3">
+          <Form.Group controlId="budget">
+            <Form.Label>Project Budget</Form.Label>
+            <Form.Control
+              type="text"
+              value={state.budget}
+              onChange={clicked.onBudgetChanged}
+              isInvalid={!isValidCurrency(state.budget)}
+              required
+            />
+            <Form.Control.Feedback type="invalid">
+              Please enter a valid currency amount (e.g., 1,000.00)
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col className="mb-3">
           <Form.Group controlId="expectedCompletionDate">
-            <Form.Label visuallyHidden>
-              Project Expected Completion Date
-            </Form.Label>
+            <Form.Label>Project Expected Completion Date</Form.Label>
             <Form.Control
               type="date"
-              value={expectedCompletionDate}
-              onChange={onExpectedCompletionDateChanged}
+              value={state.expectedCompletionDate}
+              onChange={clicked.onExpectedCompletionDateChanged}
               required
             />
           </Form.Group>
@@ -69,57 +117,23 @@ export default function ProjectStatusSection({ state, clicked }) {
 
       <ProjectTickSelector
         name="finances"
-        label="Project Finances Tick"
-        value={financesTick}
-        onChange={onFinancesTickChanged}
+        label="Project Finances"
+        value={state.financesTick}
+        onChange={clicked.onFinancesTickChanged}
       />
-
-      <Row>
-        <Col>
-          <Form.Group controlId="spent">
-            <Form.Label visuallyHidden>Project Spent</Form.Label>
-            <Form.Control
-              type="number"
-              value={spent}
-              onChange={onSpentChanged}
-              required
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col>
-          <Form.Label htmlFor="phaseName" visuallyHidden>
-            Project Phase Name
-          </Form.Label>
-          <Form.Select
-            aria-label="Phase Name Select"
-            id="phaseName"
-            name="phaseName"
-            value={phaseName}
-            onChange={onPhaseNameChanged}
-          >
-            <option value="Predevelopment">Predevelopment</option>
-            <option value="Programming">Programming</option>
-            <option value="Schematic Design">Schematic Design</option>
-            <option value="Design Development">Design Development</option>
-            <option value="Construction Documents">
-              Construction Documents
-            </option>
-            <option value="Construction Administration">
-              Construction Administration
-            </option>
-            <option value="Project Close-out">Project Close-out</option>
-          </Form.Select>
-        </Col>
-      </Row>
 
       <ProjectTickSelector
         name="phase"
-        label="Project Phase Tick"
-        value={phaseTick}
-        onChange={onPhaseTickChanged}
+        label="Project Phase"
+        value={state.phaseTick}
+        onChange={clicked.onPhaseTickChanged}
+      />
+
+      <ProjectTickSelector
+        name="timeline"
+        label="Project Timeline"
+        value={state.timelineTick}
+        onChange={clicked.onTimelineTickChanged}
       />
     </>
   );

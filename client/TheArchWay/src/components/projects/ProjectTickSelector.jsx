@@ -9,14 +9,12 @@ export default function ProjectTickSelector({
 }) {
   return (
     <Row>
-      <Form.Label htmlFor={`${name}Tick`} visuallyHidden>
-        {label}
-      </Form.Label>
+      <Form.Label htmlFor={`${name}Tick`}>{label}</Form.Label>
       {tickValues.map((tick) => (
-        <Col key={tick} xs={1}>
+        <Col key={tick} xs={1} className="mb-3">
           <Form.Check
             type="radio"
-            name={`${name}Tick`}
+            name={name}
             id={`${name}-tick-${tick}`}
             value={tick}
             label={tick}
