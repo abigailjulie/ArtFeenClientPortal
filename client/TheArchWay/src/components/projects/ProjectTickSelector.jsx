@@ -1,4 +1,4 @@
-import { Col, Form, Row } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 export default function ProjectTickSelector({
   name,
@@ -8,11 +8,14 @@ export default function ProjectTickSelector({
   tickValues = [1, 2, 3, 4, 5, 6, 7, 8, 9],
 }) {
   return (
-    <Row>
-      <Form.Label htmlFor={`${name}Tick`}>{label}</Form.Label>
-      {tickValues.map((tick) => (
-        <Col key={tick} xs={1} className="mb-3">
+    <div className="mb-3">
+      <Form.Label htmlFor={`${name}Tick`} className="d-block mb-2">
+        {label}
+      </Form.Label>
+      <div className="d-flex justify-content-between">
+        {tickValues.map((tick) => (
           <Form.Check
+            key={tick}
             type="radio"
             name={name}
             id={`${name}-tick-${tick}`}
@@ -20,9 +23,10 @@ export default function ProjectTickSelector({
             label={tick}
             checked={Number(value) === tick}
             onChange={onChange}
+            className="mx-1"
           />
-        </Col>
-      ))}
-    </Row>
+        ))}
+      </div>
+    </div>
   );
 }

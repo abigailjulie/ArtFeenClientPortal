@@ -6,7 +6,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import useAuth from "../useAuth";
 import { formatCurrency, parseCurrency } from "../../utils/FormatCurrency";
-import { formatDateTime } from "../../utils/formatDateTime";
+import { formatDateTime } from "../../utils/dateUtils";
 import useProjectFormFields from "./useProjectFormFields";
 
 export default function useEditProject({ project }) {

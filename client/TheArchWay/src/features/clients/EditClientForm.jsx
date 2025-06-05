@@ -23,7 +23,7 @@ export default function EditClientForm({ state, validation, clicked }) {
   });
 
   return (
-    <>
+    <div className="container-md">
       <Form onSubmit={(e) => e.preventDefault()}>
         <ClientInfoSection
           state={state}
@@ -89,6 +89,6 @@ export default function EditClientForm({ state, validation, clicked }) {
           </Button>
         </div>
       </Form>
-    </>
+    </div>
   );
 }

@@ -115,26 +115,28 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
         </Col>
       </Row>
 
-      <ProjectTickSelector
-        name="finances"
-        label="Project Finances"
-        value={state.financesTick}
-        onChange={clicked.onFinancesTickChanged}
-      />
+      <div className="container-sm">
+        <ProjectTickSelector
+          name="finances"
+          label="Project Finances"
+          value={state.financesTick}
+          onChange={clicked.onFinancesTickChanged}
+        />
 
-      <ProjectTickSelector
-        name="phase"
-        label="Project Phase"
-        value={state.phaseTick}
-        onChange={clicked.onPhaseTickChanged}
-      />
+        <ProjectTickSelector
+          name="phase"
+          label="Project Phase"
+          value={state.phaseTick}
+          onChange={clicked.onPhaseTickChanged}
+        />
 
-      <ProjectTickSelector
-        name="timeline"
-        label="Project Timeline"
-        value={state.timelineTick}
-        onChange={clicked.onTimelineTickChanged}
-      />
+        <ProjectTickSelector
+          name="timeline"
+          label="Project Timeline"
+          value={state.timelineTick}
+          onChange={clicked.onTimelineTickChanged}
+        />
+      </div>
     </>
   );
 }

@@ -12,14 +12,18 @@ export default function EditProjectForm({ state, clicked, clients }) {
   let deleteBtn = null;
   if (isAdmin || isFounder) {
     deleteBtn = (
-      <button className="btn" title="Delete" onClick={onDeleteProjectClicked}>
+      <Button
+        className="btn ms-2"
+        title="Delete"
+        onClick={onDeleteProjectClicked}
+      >
         <FontAwesomeIcon icon={faTrashCan} />
-      </button>
+      </Button>
     );
   }
 
   return (
-    <>
+    <div className="container-md">
       <Form onSubmit={onSaveProjectClicked}>
         <h3>Project Info</h3>
 
@@ -33,12 +37,12 @@ export default function EditProjectForm({ state, clicked, clients }) {
           clients={clients}
         />
 
-        <div>
-          <p>Created: {created}</p>
+        <div className="text-center mt-5">
+          <p className="mb-0">Created: {created}</p>
           <p>Updated: {updated}</p>
         </div>
 
-        <div>
+        <div className="text-center">
           <Button
             className="btn"
             title="Save"
@@ -51,6 +55,6 @@ export default function EditProjectForm({ state, clicked, clients }) {
           {deleteBtn}
         </div>
       </Form>
-    </>
+    </div>
   );
 }

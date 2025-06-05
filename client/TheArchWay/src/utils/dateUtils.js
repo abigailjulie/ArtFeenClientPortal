@@ -9,3 +9,10 @@ export function formatDateTime(dateString) {
     second: "numeric",
   });
 }
+
+export const formatToday = () => {
+  const date = new Date();
+  return new Intl.DateTimeFormat("en-us", {
+    dateStyle: "long",
+  }).format(date);
+};

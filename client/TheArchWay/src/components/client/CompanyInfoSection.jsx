@@ -65,61 +65,78 @@ export default function CompanyInfoSection({
           </Col>
         </Row>
       ) : (
-        <Row>
-          <Form.Group controlId="companyAddress1" className="mb-3">
-            <Form.Label visuallyHidden>Address</Form.Label>
-            <Form.Control
-              placeholder="Street Address"
-              value={address1}
-              onChange={onAddress1Changed}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="companyAddress2" className="mb-3">
-            <Form.Label visuallyHidden>Address 2</Form.Label>
-            <Form.Control
-              placeholder="Apartment, studio, or floor"
-              value={address2}
-              onChange={onAddress2Changed}
-            />
-          </Form.Group>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="companyCity">
-              <Form.Label visuallyHidden>City</Form.Label>
-              <Form.Control
-                placeholder="City"
-                value={city}
-                onChange={onCityChanged}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group as={Col} controlId="companyState">
-              <Form.Label visuallyHidden>State</Form.Label>
-              <Form.Control
-                placeholder="State"
-                value={stateCode}
-                onChange={onStateCodeChanged}
-                isInvalid={stateCode && !validStateCode}
-                required
-              />
-              <Form.Control.Feedback type="invalid" className="px-2 mt-2" muted>
-                Please enter a valid 2-letter U.S. state abbreviation (e.g.,
-                NY).
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group as={Col} controlId="companyZip">
-              <Form.Label visuallyHidden>Zip</Form.Label>
-              <Form.Control
-                placeholder="Zip Code"
-                value={zip}
-                onChange={onZipChanged}
-                required
-              />
-            </Form.Group>
+        <>
+          <Row>
+            <Col className="mb-3">
+              <Form.Group controlId="companyAddress1">
+                <Form.Label visuallyHidden>Address</Form.Label>
+                <Form.Control
+                  placeholder="Street Address"
+                  value={address1}
+                  onChange={onAddress1Changed}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col className="mb-3">
+              <Form.Group controlId="companyAddress2">
+                <Form.Label visuallyHidden>Address 2</Form.Label>
+                <Form.Control
+                  placeholder="Apartment, studio, or floor"
+                  value={address2}
+                  onChange={onAddress2Changed}
+                />
+              </Form.Group>
+            </Col>
           </Row>
-        </Row>
+
+          <Row className="mb-3">
+            <Col>
+              <Form.Group controlId="companyCity">
+                <Form.Label visuallyHidden>City</Form.Label>
+                <Form.Control
+                  placeholder="City"
+                  value={city}
+                  onChange={onCityChanged}
+                  required
+                />
+              </Form.Group>
+            </Col>
+
+            <Col>
+              <Form.Group controlId="companyState">
+                <Form.Label visuallyHidden>State</Form.Label>
+                <Form.Control
+                  placeholder="State"
+                  value={stateCode}
+                  onChange={onStateCodeChanged}
+                  isInvalid={stateCode && !validStateCode}
+                  required
+                />
+                <Form.Control.Feedback
+                  type="invalid"
+                  className="px-2 mt-2"
+                  muted
+                >
+                  Please enter a valid 2-letter U.S. state abbreviation (e.g.,
+                  NY).
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+
+            <Col>
+              <Form.Group controlId="companyZip">
+                <Form.Label visuallyHidden>Zip</Form.Label>
+                <Form.Control
+                  placeholder="Zip Code"
+                  value={zip}
+                  onChange={onZipChanged}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        </>
       )}
 
       <Row className="mb-3">

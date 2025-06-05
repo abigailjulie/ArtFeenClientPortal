@@ -8,14 +8,20 @@ export default function NewClient() {
   const publicStyle = { margin: "3rem 5rem 5rem 5rem", paddingBottom: "5rem" };
 
   return (
-    <div className="mb-5" style={isPublicRoute ? publicStyle : undefined}>
+    <div style={isPublicRoute ? publicStyle : undefined}>
       {state?.isError && (
         <p className="text-danger">{state.error?.data?.message}</p>
       )}
       <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
         New Client
       </h2>
-      <NewClientForm state={state} validation={validation} clicked={clicked} />
+      <div className="container-md">
+        <NewClientForm
+          state={state}
+          validation={validation}
+          clicked={clicked}
+        />
+      </div>
     </div>
   );
 }

@@ -55,7 +55,7 @@ export default function EditProject() {
     return <p className="errmsg">Missing data</p>;
 
   return (
-    <div className="mb-5">
+    <div>
       {state?.errorMessage && (
         <p className="text-danger">{state.errorMessage}</p>
       )}
