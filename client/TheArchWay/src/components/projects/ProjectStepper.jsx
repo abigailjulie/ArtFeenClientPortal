@@ -1,4 +1,3 @@
-import React from "react";
 import "./ProjectStepper.css";
 
 export default function ProjectStepper({ activeStep }) {

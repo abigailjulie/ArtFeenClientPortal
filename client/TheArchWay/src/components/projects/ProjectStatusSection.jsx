@@ -10,6 +10,7 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
   }));
 
   const statusOptions = [
+    { value: "", label: "Select Status..." },
     { value: "Active", label: "Active" },
     { value: "Paused", label: "Paused" },
     { value: "Completed", label: "Completed" },
@@ -17,6 +18,7 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
   ];
 
   const phaseOptions = [
+    { value: "", label: "Select Phase..." },
     { value: "Predevelopment", label: "Predevelopment" },
     { value: "Programming", label: "Programming" },
     { value: "Schematic Design", label: "Schematic Design" },

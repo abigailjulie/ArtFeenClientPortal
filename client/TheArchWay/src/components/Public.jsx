@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetClientsQuery } from "../features/clients/clientsApiSlice";
 import useAuth from "../hooks/useAuth";
-import PulseLoader from "react-spinners/PulseLoader";
+import Loader from "./Loader";
 
 export default function Public() {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export default function Public() {
     }
   }, [client, navigate, isLoading]);
 
-  if (isLoading) return <PulseLoader color={"var(--Forest)"} />;
+  if (isLoading) return <Loader />;
 
   return (
     <section>

@@ -1,44 +1,21 @@
-import React from "react";
-import { useGetProjectsQuery } from "./projectsApiSlice";
-import PulseLoader from "react-spinners/PulseLoader";
+import Loader from "../../components/Loader";
 import Project from "./Project";
-import "../../components/TableStyles.css";
-import useAuth from "../../hooks/useAuth";
+import { useProjectList } from "../../hooks/projects/useProjectsList";
+import { SORT_OPTIONS } from "../../config/sorting";
+import "../../components/projects/TableStyles.css";
 
 export default function ProjectsList() {
-  const { username, isAdmin, isFounder } = useAuth();
+  const { sortedIds, isLoading, isSuccess, isError, error, sortBy, setSortBy } =
+    useProjectList();
 
-  const {
-    data: projects,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetProjectsQuery("projectsList", {
-    pollingInterval: 15000,
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
-  });
-
-  if (isLoading) return <PulseLoader color={"var(--Forest)"} />;
+  if (isLoading) return <Loader />;
 
   if (isError) return <p className="errmsg">{error?.data?.message}</p>;
 
   if (isSuccess) {
-    const { ids, entities } = projects;
-
-    let filteredIds;
-    if (isAdmin || isFounder) {
-      filteredIds = [...ids];
-    } else {
-      filteredIds = ids.filter(
-        (projectId) => entities[projectId].client.username === username
-      );
-    }
-
     const tableContent =
-      ids?.length &&
-      filteredIds.map((projectId) => (
+      sortedIds?.length &&
+      sortedIds.map((projectId) => (
         <Project key={projectId} projectId={projectId} />
       ));
 
@@ -55,7 +32,17 @@ export default function ProjectsList() {
                   className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
                   scope="col"
                 >
-                  Created
+                  <button
+                    type="button"
+                    className="btn btn-link fs-3 text-decoration-none"
+                    onClick={() => setSortBy(SORT_OPTIONS.CREATED)}
+                    style={{
+                      color:
+                        sortBy === SORT_OPTIONS.CREATED ? "#0d6efd" : "inherit",
+                    }}
+                  >
+                    Created
+                  </button>
                 </th>
                 <th
                   className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
@@ -70,7 +57,17 @@ export default function ProjectsList() {
                   className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
                   scope="col"
                 >
-                  Owner
+                  <button
+                    type="button"
+                    className="btn btn-link p-0 fs-3 text-decoration-none"
+                    onClick={() => setSortBy(SORT_OPTIONS.OWNER)}
+                    style={{
+                      color:
+                        sortBy === SORT_OPTIONS.OWNER ? "#0d6efd" : "inherit",
+                    }}
+                  >
+                    Owner
+                  </button>
                 </th>
                 <th className="fs-3 ps-3 pb-3 w-5" scope="col">
                   Edit

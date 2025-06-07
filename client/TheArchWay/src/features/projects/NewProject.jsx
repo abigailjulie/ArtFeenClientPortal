@@ -1,7 +1,6 @@
-import React from "react";
 import { useParams } from "react-router-dom";
 import { useGetClientsQuery } from "../clients/clientsApiSlice";
-import PulseLoader from "react-spinners/PulseLoader";
+import Loader from "../../components/Loader";
 import NewProjectForm from "./NewProjectForm";
 
 export default function NewProject() {
@@ -12,7 +11,7 @@ export default function NewProject() {
     }),
   });
 
-  if (!client) return <PulseLoader color={"var(--Forest)"} />;
+  if (!client) return <Loader />;
 
   return <NewProjectForm clientId={client.id} />;
 }

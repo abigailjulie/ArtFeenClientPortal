@@ -1,4 +1,3 @@
-import React from "react";
 import ProjectPrecentageCell from "./ProjectPrecentageCell";
 
 export default function ProjectPrecentage() {

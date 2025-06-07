@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useGetClientsQuery } from "./clientsApiSlice";
-import React, { memo } from "react";
+import { memo } from "react";
 
 const Client = memo(function Client({ clientId }) {
   const { client } = useGetClientsQuery("clientsList", {

@@ -6,21 +6,20 @@ import {
   faUserGear,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate, useLocation, Link } from "react-router-dom";
-import { useGetClientsQuery } from "../features/clients/clientsApiSlice";
-import { useGetProjectsQuery } from "../features/projects/projectsApiSlice";
-import { useDashNavigation } from "../hooks/dash/useDashNavigation";
-import { useDashHeader } from "../hooks/dash/useDashHeader";
-import { DASH_REGEX, PROJECTS_REGEX, CLIENTS_REGEX } from "../utils/regex";
-import useAuth from "../hooks/useAuth";
-import Loader from "./Loader";
-import DynButton from "./DynButton";
+import { useLocation, Link } from "react-router-dom";
+import { useGetClientsQuery } from "../../features/clients/clientsApiSlice";
+import { useGetProjectsQuery } from "../../features/projects/projectsApiSlice";
+import { useDashNavigation } from "../../hooks/dash/useDashNavigation";
+import { useDashHeader } from "../../hooks/dash/useDashHeader";
+import { DASH_REGEX, PROJECTS_REGEX, CLIENTS_REGEX } from "../../utils/regex";
+import useAuth from "../../hooks/useAuth";
+import Loader from "../Loader";
+import DynButton from "../DynButton";
 import "./DashHeader.css";
-import DashProjectInfo from "./dash/DashProjectInfo";
+import DashProjectInfo from "./DashProjectInfo";
 
 export default function DashHeader() {
   const { username, isAdmin, isFounder, status } = useAuth() || {};
-  const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const {

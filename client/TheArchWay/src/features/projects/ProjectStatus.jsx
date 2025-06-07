@@ -1,6 +1,5 @@
-import React from "react";
-import ProjectPrecentage from "../../components/ProjectPrecentage";
-import ProjectStepper from "../../components/ProjectStepper";
+import ProjectPrecentage from "../../components/projects/ProjectPrecentage";
+import ProjectStepper from "../../components/projects/ProjectStepper";
 import "./ProjectStatus.css";
 
 export default function ProjectStatus() {

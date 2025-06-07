@@ -1,8 +1,7 @@
-import React from "react";
 import { useGetClientsQuery } from "./clientsApiSlice";
-import PulseLoader from "react-spinners/PulseLoader";
+import Loader from "../../components/Loader";
 import Client from "./Client";
-import "../../components/TableStyles.css";
+import "../../components/projects/TableStyles.css";
 
 export default function ClientsList() {
   const {
@@ -17,7 +16,7 @@ export default function ClientsList() {
     refetchOnMountOrArgChange: true,
   });
 
-  if (isLoading) return <PulseLoader color={"var(--Forest)"} />;
+  if (isLoading) return <Loader />;
 
   if (isError) return <p className="errmsg">{error?.data?.message}</p>;
 
