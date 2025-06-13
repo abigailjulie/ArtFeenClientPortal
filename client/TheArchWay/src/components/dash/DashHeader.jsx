@@ -104,7 +104,7 @@ export default function DashHeader() {
           className="forest mb-2"
           title="View Projects"
           onClick={onProjectsClicked}
-          show={!pathname.includes("/projects") && pathname.includes("/dash")}
+          show={pathname.includes("/dash")}
         />
 
         <DynButton
@@ -134,7 +134,7 @@ export default function DashHeader() {
     <>
       <header className="dash-header pt-3 bg-white">
         <main
-          className={`d-flex justify-content-between ms-4 dash-container ${dashClass}`}
+          className={`d-flex flex-column flex-md-row justify-content-between ms-4 dash-container ${dashClass}`}
         >
           <div>
             <div className="d-flex flex-row align-items-center">
@@ -142,7 +142,7 @@ export default function DashHeader() {
                 <strong>
                   <Link
                     className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
-                    to="/dash/profile"
+                    to={`/dash/clients/${client?._id}`}
                   >
                     {username}
                   </Link>

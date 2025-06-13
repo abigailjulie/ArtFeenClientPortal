@@ -13,5 +13,12 @@ export default function NewProject() {
 
   if (!client) return <Loader />;
 
-  return <NewProjectForm clientId={client.id} />;
+  return (
+    <>
+      <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
+        New Project
+      </h2>
+      <NewProjectForm clientId={client.id} />
+    </>
+  );
 }

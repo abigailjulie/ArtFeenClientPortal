@@ -5,6 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import Loader from "../../components/Loader";
 import EditProjectForm from "./EditProjectForm";
 import useEditProject from "../../hooks/projects/useEditProject";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 export default function EditProject() {
   const { projectId } = useParams();
@@ -39,7 +40,7 @@ export default function EditProject() {
     }),
   });
 
-  const { state, clicked } = useEditProject({ clients, project });
+  const { state, clicked } = useEditProject({ project });
 
   if (isProjectLoading || isClientsLoading) return <Loader />;
   if (isProjectError || isClientsError)
@@ -56,20 +57,26 @@ export default function EditProject() {
 
   return (
     <div>
-      {state?.errorMessage && (
-        <p className="text-danger">{state.errorMessage}</p>
-      )}
-
       <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
         Edit Project
       </h2>
-
       <EditProjectForm
         state={state}
         clicked={clicked}
         clients={clients}
         project={project}
       />
+      <DeleteConfirmationModal
+        show={state.showDeleteModal}
+        handleClose={() => state.setShowDeleteModal(false)}
+        handleConfirm={() => {
+          clicked.confirmDelete();
+          state.setShowDeleteModal(false);
+        }}
+        title={`Delete ${name}?`}
+        message="Are you sure you want to permanently delete this project? This action cannot be undone."
+      />
+      ;
     </div>
   );
 }

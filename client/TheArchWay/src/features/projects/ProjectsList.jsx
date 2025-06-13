@@ -13,11 +13,18 @@ export default function ProjectsList() {
   if (isError) return <p className="errmsg">{error?.data?.message}</p>;
 
   if (isSuccess) {
-    const tableContent =
-      sortedIds?.length &&
+    const tableContent = sortedIds?.length ? (
       sortedIds.map((projectId) => (
         <Project key={projectId} projectId={projectId} />
-      ));
+      ))
+    ) : (
+      <tr>
+        <td colSpan={6} className="text-center py-4">
+          No projects found. Click the "New Project" button in the header above
+          to start!
+        </td>
+      </tr>
+    );
 
     return (
       <div>

@@ -5,19 +5,34 @@ import {
 } from "../../features/projects/projectsApiSlice";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../useAuth";
-import { formatCurrency, parseCurrency } from "../../utils/FormatCurrency";
+import { parseCurrency } from "../../utils/FormatCurrency";
 import { formatDateTime } from "../../utils/dateUtils";
 import useProjectFormFields from "./useProjectFormFields";
+import { showToast } from "../../utils/showToast";
 
 export default function useEditProject({ project }) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isProjectLoaded, setIsProjectLoaded] = useState(false);
   const { isAdmin, isFounder } = useAuth();
 
-  const [updateProject, { isLoading, isSuccess, isError, error }] =
-    useUpdateProjectMutation();
+  const [
+    updateProject,
+    {
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateProjectMutation();
 
   const [
     deleteProject,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
+    {
+      isLoading: isDelLoading,
+      isSuccess: isDelSuccess,
+      isError: isDelError,
+      error: delError,
+    },
   ] = useDeleteProjectMutation();
 
   const navigate = useNavigate();
@@ -42,54 +57,104 @@ export default function useEditProject({ project }) {
   } = useProjectFormFields({ project });
 
   useEffect(() => {
-    if (isSuccess || isDelSuccess) {
-      if (clientId) {
-        navigate(`/dash/clients/${clientId}/projects`);
-      } else {
-        navigate("/dash/projects");
-      }
+    if (project && project.id) {
+      setIsProjectLoaded(true);
     }
-  }, [isSuccess, isDelSuccess, navigate, clientId]);
+  }, [project]);
 
   const onSaveProjectClicked = async (e) => {
     e.preventDefault();
-    await updateProject({
-      id: project?.id,
-      name: projectName,
-      number: projectNumber,
-      address: projectAddress,
-      telephone: projectTelephone,
-      status,
-      client: clientId,
-      timeline: {
-        currentTick: timelineTick,
-        expectedCompletionDate: expectedCompletionDate
-          ? new Date(expectedCompletionDate)
-          : project?.timeline.expectedCompletionDate,
-      },
-      finances: {
-        currentTick: financesTick,
-        budget: parseCurrency(budget),
-        spent: parseCurrency(spent),
-      },
-      phase: {
-        name: phaseName,
-        currentTick: phaseTick,
-      },
-    });
+
+    if (!canSave) {
+      showToast.error("Please fill in all required fields before saving.");
+      return;
+    }
+
+    try {
+      const result = await updateProject({
+        id: project?.id,
+        name: projectName,
+        number: projectNumber,
+        address: projectAddress,
+        telephone: projectTelephone,
+        status,
+        client: clientId,
+        timeline: {
+          currentTick: timelineTick,
+          expectedCompletionDate: expectedCompletionDate
+            ? new Date(expectedCompletionDate)
+            : project?.timeline.expectedCompletionDate,
+        },
+        finances: {
+          currentTick: financesTick,
+          budget: parseCurrency(budget),
+          spent: parseCurrency(spent),
+        },
+        phase: {
+          name: phaseName,
+          currentTick: phaseTick,
+        },
+      }).unwrap();
+
+      showToast.success(
+        result?.message || `Project ${projectName} updated successfully!`
+      );
+
+      setTimeout(() => {
+        if (clientId) {
+          navigate(`/dash/clients/${clientId}/projects`);
+        } else {
+          navigate("/dash/projects");
+        }
+      }, 500);
+    } catch (error) {
+      showToast.error(
+        error?.data?.message || "Failed to update project. Please try again."
+      );
+    }
   };
 
-  const onDeleteProjectClicked = async () => {
-    await deleteProject({ id: project?.id });
+  const onDeleteProjectClicked = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!project?.id) {
+      showToast.error("Cannot delete project: Project ID is missing.");
+      return;
+    }
+
+    try {
+      const result = await deleteProject({ id: project?.id }).unwrap();
+      showToast.success(
+        result?.message || `Project ${projectName} deleted successfully!`
+      );
+
+      setTimeout(() => {
+        if (clientId) {
+          navigate(`/dash/clients/${clientId}/projects`);
+        } else {
+          navigate("/dash/projects");
+        }
+      }, 500);
+    } catch (error) {
+      showToast.error(
+        error?.data?.message || "Failed to delete project. Please try again."
+      );
+    }
   };
 
   const created = formatDateTime(project?.createdAt);
   const updated = formatDateTime(project?.updatedAt);
 
+  const isLoading = isUpdateLoading || isDelLoading;
+
+  const hasError = isUpdateError || isDelError;
+
   const canSave =
     [clientId, project?.id, projectName, status].every(Boolean) && !isLoading;
 
-  const errorMessage = (error?.data?.message || delError?.data?.message) ?? "";
+  const isInitialLoading = !isProjectLoaded && !project;
 
   return {
     state: {
@@ -107,21 +172,27 @@ export default function useEditProject({ project }) {
       spent,
       phaseName,
       phaseTick,
+      isInitialLoading,
+      isProjectLoaded,
+      updateError,
+      hasError,
       isLoading,
-      isError,
-      error,
+      isUpdateError,
+      updateError,
       delError,
       created,
       updated,
       isAdmin,
       canSave,
       isFounder,
-      errorMessage,
+      showDeleteModal,
+      setShowDeleteModal,
     },
     clicked: {
       ...clicked,
       onSaveProjectClicked,
       onDeleteProjectClicked,
+      confirmDelete,
     },
   };
 }

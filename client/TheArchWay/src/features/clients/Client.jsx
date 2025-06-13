@@ -31,7 +31,7 @@ const Client = memo(function Client({ clientId }) {
           <span>{clientRoleString}</span>
         </td>
         <td className="p-3 d-flex justify-content-center">
-          <button onClick={handleEdit}>
+          <button className="btn btn-sm" onClick={handleEdit}>
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
         </td>

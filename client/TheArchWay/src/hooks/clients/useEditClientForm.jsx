@@ -157,9 +157,7 @@ export default function useEditClientForm({ client }) {
         Boolean
       ) && !isLoading;
   } else {
-    canSave =
-      [roles, validUsername, validEmail, validTelephone].every(Boolean) &&
-      !isLoading;
+    canSave = [roles, validUsername].every(Boolean) && !isLoading;
   }
 
   useEffect(() => {

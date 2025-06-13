@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAddNewProjectMutation } from "./projectsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { showToast } from "../../utils/showToast";
+import Loader from "../../components/Loader";
 
 export default function NewProjectForm({ clientId }) {
   const [addNewProject, { isLoading, isSuccess, isError, error }] =
@@ -15,12 +18,6 @@ export default function NewProjectForm({ clientId }) {
   const [projectTelephone, setProjectTelephone] = useState("");
 
   const number = `TAW-${Date.now()}`;
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigate(`/dash/clients/${clientId}/projects`);
-    }
-  }, [isSuccess, navigate, clientId]);
 
   const onNameChanged = (e) => {
     setProjectName(e.target.value);
@@ -35,81 +32,92 @@ export default function NewProjectForm({ clientId }) {
   const onSaveProjectClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      console.log({
-        clientId,
-        projectName,
-        projectAddress,
-        projectTelephone,
-        number,
-      });
-      await addNewProject({
-        name: projectName,
-        address: projectAddress,
-        telephone: projectTelephone,
-        client: clientId,
-        number,
-      });
+      try {
+        const result = await addNewProject({
+          name: projectName,
+          address: projectAddress,
+          telephone: projectTelephone,
+          client: clientId,
+          number,
+        }).unwrap();
+
+        showToast.success(
+          result?.message || `${projectName} added successfully!`
+        );
+
+        setTimeout(() => {
+          navigate(`/dash/clients/${clientId}/projects`);
+        }, 500);
+      } catch (error) {
+        showToast.error(error?.data?.message || "Please check the input.");
+      }
     }
   };
+
+  if (isLoading) return <Loader />;
 
   const canSave =
     [clientId, projectName, projectAddress, projectTelephone].every(Boolean) &&
     !isLoading;
 
-  const errClass = isError ? "errmsg" : "offscreen";
-
-  const errContent = error?.data?.message ?? "";
-
   return (
-    <>
-      <p className={errClass}>{errContent}</p>
+    <div className="container-md">
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Row>
+          <Col className="mb-3">
+            <Form.Label htmlFor="projectName">Project Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="projectName"
+              id="projectName"
+              autoComplete="off"
+              placeholder=""
+              value={projectName}
+              onChange={onNameChanged}
+            />
+          </Col>
+        </Row>
 
-      <form
-        className="h-100 d-flex flex-column justify-content-center align-items-center"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <div>
-          <h2>New Project Information:</h2>
-          <div>
-            <button
-              className="btn"
-              title="Save"
-              onClick={onSaveProjectClicked}
-              disabled={!canSave}
-            >
-              <FontAwesomeIcon icon={faSave} />
-            </button>
-          </div>
+        <Row>
+          <Col className="mb-3">
+            <Form.Label htmlFor="projectAddress">Project Address</Form.Label>
+            <Form.Control
+              type="text"
+              name="projectAddress"
+              id="projectAddress"
+              value={projectAddress}
+              onChange={onAddressChanged}
+            />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col className="mb-3">
+            <Form.Label htmlFor="projectTelephone">
+              Project Telephone
+            </Form.Label>
+            <Form.Control
+              type="text"
+              name="projectTelephone"
+              id="projectTelephone"
+              value={projectTelephone}
+              onChange={onTelephoneChanged}
+            />
+          </Col>
+        </Row>
+
+        <div className="d-flex justify-content-center mt-3">
+          <Button
+            className="btn"
+            title="Save"
+            type="button"
+            onClick={onSaveProjectClicked}
+            disabled={!canSave}
+          >
+            <FontAwesomeIcon icon={faSave} />
+          </Button>
         </div>
-
-        <label htmlFor="name">Project Name:</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          autoComplete="off"
-          value={projectName}
-          onChange={onNameChanged}
-        />
-        <label htmlFor="address">Project Address:</label>
-        <input
-          type="text"
-          name="address"
-          id="address"
-          autoComplete="off"
-          value={projectAddress}
-          onChange={onAddressChanged}
-        />
-        <label htmlFor="telephone">Project Telephone:</label>
-        <input
-          type="text"
-          name="telephone"
-          id="telephone"
-          autoComplete="off"
-          value={projectTelephone}
-          onChange={onTelephoneChanged}
-        />
       </form>
-    </>
+    </div>
   );
 }
