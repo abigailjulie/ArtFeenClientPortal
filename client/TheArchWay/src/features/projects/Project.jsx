@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faChartPie, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetProjectsQuery } from "./projectsApiSlice";
@@ -46,6 +46,16 @@ const Project = memo(function Project({ projectId }) {
       }
     };
 
+    const handleProfile = () => {
+      if (client?._id) {
+        navigate(`/dash/clients/${client._id}/projects/${projectId}/profile`);
+      } else {
+        navigate(
+          `/dash/clients/${project.client._id}/projects/${projectId}/profile`
+        );
+      }
+    };
+
     const statusClassMap = {
       Completed: "bg-dark-subtle opacity-50",
       Paused: "bg-warning-subtle opacity-50",
@@ -61,6 +71,15 @@ const Project = memo(function Project({ projectId }) {
         <td className="p-3">{project.name}</td>
         <td className="p-3 d-none d-md-table-cell">
           {project.client?.username}
+        </td>
+        <td className="p-3">
+          <button
+            onClick={handleProfile}
+            title="View Project Profile"
+            className="btn btn-sm ps-4"
+          >
+            <FontAwesomeIcon icon={faChartPie} />
+          </button>
         </td>
         <td className="p-3 d-flex justify-content-center">
           <button

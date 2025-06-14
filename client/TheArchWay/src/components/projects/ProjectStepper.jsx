@@ -1,7 +1,7 @@
 import "./ProjectStepper.css";
 
-export default function ProjectStepper({ activeStep }) {
-  const steps = ["0", "1", "2", "3", "4", "5", "6", "7"];
+export default function ProjectStepper({ activeStep, maxStep = 7 }) {
+  const steps = Array.from({ length: maxStep + 1 }, (_, i) => i.toString());
   return (
     <div className="w-100">
       <div
@@ -12,7 +12,7 @@ export default function ProjectStepper({ activeStep }) {
           className="salmon position-absolute top-0 start-0"
           style={{
             height: "100%",
-            width: `${(activeStep / (steps.length - 1)) * 100}%`,
+            width: `${(activeStep / maxStep) * 100}%`,
             transition: "width 0.4s ease",
           }}
         />

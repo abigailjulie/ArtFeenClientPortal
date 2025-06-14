@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGetClientsQuery } from "../clients/clientsApiSlice";
 import { useGetProjectsQuery } from "./projectsApiSlice";
 import { showToast } from "../../utils/showToast";
-import ProjectStatus from "./ProjectStatus";
 import useAuth from "../../hooks/useAuth";
 import Loader from "../../components/Loader";
 
@@ -113,38 +112,9 @@ export default function ClientProfile() {
 
       <div className="d-flex flex-column">
         <label className="form-label text-muted small">Company Telphone</label>
-        <p className="form-control-plaintext border-bottom pb-2 mb-3">
+        <p className="form-control-plaintext pb-2 mb-3">
           {client.company?.telephone || "Not provided"}
         </p>
-      </div>
-
-      <div className="d-flex flex-column">
-        <label className="form-label text-muted small">
-          View Projects Profiles
-        </label>
-        {clientsProjects.length > 0 ? (
-          <div className="d-flex flex-column">
-            <label className="form-label text-muted small">Projects</label>
-            <ul className="list-group mb-3">
-              {clientsProjects.map((project) => (
-                <li
-                  key={project._id}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <span>{project.title || "Untitled Project"}</span>
-                  <Link
-                    to={`/dash/clients/${clientId}/projects/${project._id}/profile`}
-                    className="btn btn-sm btn-outline-primary"
-                  >
-                    View Project
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <p>No projects available.</p>
-        )}
       </div>
     </div>
   );

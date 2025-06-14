@@ -60,7 +60,7 @@ export default function useEditProject({ project }) {
     if (project && project.id) {
       setIsProjectLoaded(true);
     }
-  }, [project]);
+  }, [project, project?.id]);
 
   const onSaveProjectClicked = async (e) => {
     e.preventDefault();
@@ -104,12 +104,14 @@ export default function useEditProject({ project }) {
         if (clientId) {
           navigate(`/dash/clients/${clientId}/projects`);
         } else {
-          navigate("/dash/projects");
+          navigate("/dash/projects", { replace: true });
         }
       }, 500);
     } catch (error) {
       showToast.error(
-        error?.data?.message || "Failed to update project. Please try again."
+        error?.data?.message ||
+          error?.message ||
+          "Failed to update project. Please try again."
       );
     }
   };
@@ -154,8 +156,6 @@ export default function useEditProject({ project }) {
   const canSave =
     [clientId, project?.id, projectName, status].every(Boolean) && !isLoading;
 
-  const isInitialLoading = !isProjectLoaded && !project;
-
   return {
     state: {
       project,
@@ -172,9 +172,7 @@ export default function useEditProject({ project }) {
       spent,
       phaseName,
       phaseTick,
-      isInitialLoading,
       isProjectLoaded,
-      updateError,
       hasError,
       isLoading,
       isUpdateError,

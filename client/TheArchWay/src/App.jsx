@@ -12,7 +12,7 @@ import NewClient from "./features/clients/NewClient";
 import EditClientProfile from "./features/clients/EditClientProfile";
 import NewProject from "./features/projects/NewProject";
 import EditProject from "./features/projects/EditProject";
-import ProjectProfileForm from "./features/projects/ProjectProfileForm";
+import ProjectProfile from "./features/projects/ProjectProfile";
 import PersistLogin from "./features/auth/PersistLogin";
 import RequireAuth from "./features/auth/RequireAuth";
 import { ROLES } from "./config/roles";
@@ -55,10 +55,7 @@ export default function App() {
                         <Route index element={<ProjectsList />} />
                         <Route path="new" element={<NewProject />} />
                         <Route path=":projectId">
-                          <Route
-                            path="profile"
-                            element={<ProjectProfileForm />}
-                          />
+                          <Route path="profile" element={<ProjectProfile />} />
                           <Route path="edit" element={<EditProject />} />
                         </Route>
                       </Route>

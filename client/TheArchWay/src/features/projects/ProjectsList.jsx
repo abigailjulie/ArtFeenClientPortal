@@ -3,6 +3,7 @@ import Project from "./Project";
 import { useProjectList } from "../../hooks/projects/useProjectsList";
 import { SORT_OPTIONS } from "../../config/sorting";
 import "../../components/projects/TableStyles.css";
+import { showToast } from "../../utils/showToast";
 
 export default function ProjectsList() {
   const { sortedIds, isLoading, isSuccess, isError, error, sortBy, setSortBy } =
@@ -10,7 +11,10 @@ export default function ProjectsList() {
 
   if (isLoading) return <Loader />;
 
-  if (isError) return <p className="errmsg">{error?.data?.message}</p>;
+  if (isError)
+    return showToast.error(
+      error?.data?.message || "Failed to load projects, try again."
+    );
 
   if (isSuccess) {
     const tableContent = sortedIds?.length ? (
@@ -75,6 +79,9 @@ export default function ProjectsList() {
                   >
                     Owner
                   </button>
+                </th>
+                <th className="fs-3 ps-3 pb-3" scope="col">
+                  Profile
                 </th>
                 <th className="fs-3 ps-3 pb-3 w-5" scope="col">
                   Edit
