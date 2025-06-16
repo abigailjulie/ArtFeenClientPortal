@@ -21,9 +21,9 @@ const projectSchema = new mongoose.Schema(
       currentTick: {
         required: true,
         type: Number,
-        min: 1,
-        max: 9,
-        default: 1,
+        min: 0,
+        max: 7,
+        default: 0,
       },
       expectedCompletionDate: {
         type: Date,
@@ -34,9 +34,9 @@ const projectSchema = new mongoose.Schema(
       currentTick: {
         required: true,
         type: Number,
-        min: 1,
-        max: 9,
-        default: 1,
+        min: 0,
+        max: 7,
+        default: 0,
       },
       budget: {
         required: true,
@@ -68,9 +68,9 @@ const projectSchema = new mongoose.Schema(
       currentTick: {
         required: true,
         type: Number,
-        min: 1,
-        max: 9,
-        default: 1,
+        min: 0,
+        max: 7,
+        default: 0,
       },
     },
   },

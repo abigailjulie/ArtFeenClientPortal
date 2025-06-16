@@ -76,7 +76,7 @@ const Project = memo(function Project({ projectId }) {
           <button
             onClick={handleProfile}
             title="View Project Profile"
-            className="btn btn-sm ps-4"
+            className="btn btn-sm ms-4"
           >
             <FontAwesomeIcon icon={faChartPie} />
           </button>

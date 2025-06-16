@@ -11,7 +11,7 @@ export default function useProjectFormFields({ project }) {
   const [clientId, setClientId] = useState(project?.client || "");
   const [status, setStatus] = useState(project?.status || "");
   const [timelineTick, setTimelineTick] = useState(
-    project?.timeline.currentTick || 1
+    project?.timeline.currentTick || 0
   );
   const [expectedCompletionDate, setExpectedCompletionDate] = useState(
     project?.timeline.expectedCompletionDate
@@ -21,7 +21,7 @@ export default function useProjectFormFields({ project }) {
       : ""
   );
   const [financesTick, setFinancesTick] = useState(
-    project?.finances.currentTick || 1
+    project?.finances.currentTick || 0
   );
   const [budget, setBudget] = useState(
     formatCurrency(project?.finances.budget || 0)
@@ -30,15 +30,23 @@ export default function useProjectFormFields({ project }) {
     formatCurrency(project?.finances.spent || 0)
   );
   const [phaseName, setPhaseName] = useState(project?.phase.name || "");
-  const [phaseTick, setPhaseTick] = useState(project?.phase.currentTick || 1);
+  const [phaseTick, setPhaseTick] = useState(project?.phase.currentTick || 0);
 
   const handleCurrencyChange = (setter) => (e) => {
-    const formatted = formatCurrency(e.target.value);
+    setter(e.target.value);
+  };
+
+  const handleCurrencyBlur = (getter, setter) => () => {
+    const value = getter();
+    const formatted = formatCurrency(value);
     setter(formatted);
   };
 
   const onBudgetChanged = handleCurrencyChange(setBudget);
   const onSpentChanged = handleCurrencyChange(setSpent);
+
+  const onBudgetBlur = handleCurrencyBlur(() => budget, setBudget);
+  const onSpentBlur = handleCurrencyBlur(() => spent, setSpent);
 
   const onNameChanged = (e) => {
     setProjectName(e.target.value);
@@ -92,6 +100,8 @@ export default function useProjectFormFields({ project }) {
     clicked: {
       onBudgetChanged,
       onSpentChanged,
+      onBudgetBlur,
+      onSpentBlur,
       onNameChanged,
       onNumberChanged,
       onAddressChanged,

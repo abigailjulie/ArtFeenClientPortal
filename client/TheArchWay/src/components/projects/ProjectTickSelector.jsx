@@ -5,7 +5,7 @@ export default function ProjectTickSelector({
   label,
   value,
   onChange,
-  tickValues = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  tickValues = Array.from({ length: 8 }, (_, i) => i),
 }) {
   return (
     <div className="mb-3">

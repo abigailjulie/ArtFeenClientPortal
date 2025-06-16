@@ -11,14 +11,9 @@ export default function ProjectStatus({ project }) {
 
   return (
     <section className="py-5">
-      <h4 className="text-center mb-2">Project Status</h4>
       <article className="d-flex w-75 mx-auto align-items-center justify-content-between">
         <div className="w-50 pe-4">
-          <ProjectPrecentage
-            currentTick={project.phase.currentTick}
-            budget={project.finances.budget}
-            spent={project.finances.spent}
-          />
+          <ProjectPrecentage />
         </div>
 
         <div className="d-flex flex-column w-50 ps-4">
@@ -31,7 +26,7 @@ export default function ProjectStatus({ project }) {
               {formatCurrency(project?.finances?.budget)}
             </button>
             <ProjectStepper
-              activeStep={project.finances?.currentTick}
+              activeStep={project?.finances?.currentTick}
               maxStep={7}
             />
             <h4 className="mt-2">Project Budget</h4>
@@ -42,10 +37,10 @@ export default function ProjectStatus({ project }) {
               onClick={handleEdit}
               className="btn btn-link w-auto ms-auto no-underline-hover pe-0 text-black"
             >
-              {project.phase.name}
+              {project?.phase.name}
             </button>
             <ProjectStepper
-              activeStep={project.phase.currentTick}
+              activeStep={project?.phase.currentTick}
               maxStep={7}
             />
             <h4 className="mt-2">Project Phase</h4>
@@ -56,12 +51,12 @@ export default function ProjectStatus({ project }) {
               onClick={handleEdit}
               className="btn btn-link w-auto ms-auto no-underline-hover pe-0 text-black"
             >
-              {project.timeline?.expectedCompletionDate
-                ? formatDateTime(project.timeline.expectedCompletionDate)
+              {project?.timeline?.expectedCompletionDate
+                ? formatDateTime(project?.timeline.expectedCompletionDate)
                 : "No date"}
             </button>
             <ProjectStepper
-              activeStep={project.timeline.currentTick}
+              activeStep={project?.timeline.currentTick}
               maxStep={7}
             />
             <h4 className="mt-2">Project Timeline</h4>

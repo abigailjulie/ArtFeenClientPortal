@@ -1,0 +1,21 @@
+.project-budget {
+  font-size: 1.1rem;
+  font-weight: 400;
+  transition: color 0.2s ease, text-decoration 0.2s ease, opacity 0.2s ease;
+}
+
+.project-budget.editable {
+  color: var(--Dark-Grey);
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.project-budget.editable:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+
+.project-budget.readonly {
+  color: var(--Black-75opacity);
+  cursor: default;
+}

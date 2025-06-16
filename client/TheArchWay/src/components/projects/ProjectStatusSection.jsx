@@ -75,6 +75,7 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
               type="text"
               value={state.spent}
               onChange={clicked.onSpentChanged}
+              onBlur={clicked.onSpentBlur}
               isInvalid={!isValidCurrency(state.spent)}
               required
             />
@@ -93,6 +94,7 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
               type="text"
               value={state.budget}
               onChange={clicked.onBudgetChanged}
+              onBlur={clicked.onBudgetBlur}
               isInvalid={!isValidCurrency(state.budget)}
               required
             />
