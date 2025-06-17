@@ -3,7 +3,13 @@ import { formatCurrency } from "../../utils/FormatCurrency";
 import useAuth from "../../hooks/useAuth";
 import "./ProjectPhaseBudget.css";
 
-export default function ProjectPhaseBudget() {
+export default function ProjectPhaseBudget({
+  value = 0,
+  onChange,
+  phaseName = "",
+  fieldType = "budget",
+  placeholder = "0",
+}) {
   const [value, setValue] = useState("Pending Admin");
   const [isEditing, setIsEditing] = useState(false);
   const { isAdmin, isFounder } = useAuth();

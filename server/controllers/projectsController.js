@@ -65,6 +65,7 @@ const updateProject = async (req, res) => {
     timeline,
     finances,
     phase,
+    phaseBudgets,
   } = req.body;
 
   if (!id) {
@@ -107,6 +108,7 @@ const updateProject = async (req, res) => {
   if (telephone && telephone !== project.telephone)
     project.telephone = telephone;
   if (status && status !== project.status) project.status = status;
+
   if (timeline) {
     if (
       timeline.currentTick !== undefined &&
@@ -121,45 +123,92 @@ const updateProject = async (req, res) => {
     ) {
       project.timeline.expectedCompletionDate = timeline.expectedCompletionDate;
     }
-    if (finances) {
-      if (
-        finances.currentTick !== undefined &&
-        finances.currentTick !== project.finances.currentTick
-      ) {
-        project.finances.currentTick = finances.currentTick;
-      }
-      if (
-        finances.budget !== undefined &&
-        finances.budget !== project.finances.budget
-      ) {
-        project.finances.budget = finances.budget;
-      }
-      if (
-        finances.spent !== undefined &&
-        finances.spent !== project.finances.spent
-      ) {
-        project.finances.spent = finances.spent;
-      }
+  }
+  if (finances) {
+    if (
+      finances.currentTick !== undefined &&
+      finances.currentTick !== project.finances.currentTick
+    ) {
+      project.finances.currentTick = finances.currentTick;
     }
-    if (phase) {
-      if (
-        phase.currentTick !== undefined &&
-        phase.currentTick !== project.phase.currentTick
-      ) {
-        project.phase.currentTick = phase.currentTick;
-      }
-      if (phase.budget !== undefined && phase.budget !== project.phase.budget) {
-        project.phase.budget = phase.budget;
-      }
-      if (phase.spent !== undefined && phase.spent !== project.phase.spent) {
-        project.phase.spent = phase.spent;
-      }
+    if (
+      finances.budget !== undefined &&
+      finances.budget !== project.finances.budget
+    ) {
+      project.finances.budget = finances.budget;
+    }
+    if (
+      finances.spent !== undefined &&
+      finances.spent !== project.finances.spent
+    ) {
+      project.finances.spent = finances.spent;
     }
   }
 
-  const updatedProject = await project.save();
+  if (phase) {
+    if (
+      phase.currentTick !== undefined &&
+      phase.currentTick !== project.phase.currentTick
+    ) {
+      project.phase.currentTick = phase.currentTick;
+    }
+    if (phase.budget !== undefined && phase.budget !== project.phase.budget) {
+      project.phase.budget = phase.budget;
+    }
+    if (phase.spent !== undefined && phase.spent !== project.phase.spent) {
+      project.phase.spent = phase.spent;
+    }
+  }
 
-  res.json({ message: `${updatedProject.name} updated` });
+  if (phaseBudgets) {
+    try {
+      for (const [phaseName, phaseData] of Object.entries(phaseBudgets)) {
+        if (phaseData.budget !== undefined && phaseData.budget < 0) {
+          return res.status(400).json({
+            message: `Budget cannot be negative for phase: ${phaseName}`,
+          });
+        }
+
+        if (phaseData.spent !== undefined && phaseData.spent < 0) {
+          return res.status(400).json({
+            message: `Spent amount cannot be negative for phase: ${phaseName}`,
+          });
+        }
+
+        const currentPhaseData = project.phaseBudgets.get(phaseName) || {
+          budget: 0,
+          spent: 0,
+          number: 0,
+        };
+
+        project.phaseBudgets.set(phaseName, {
+          budget:
+            phaseData.budget !== undefined
+              ? phaseData.budget
+              : currentPhaseData.budget,
+          spent:
+            phaseData.spent !== undefined
+              ? phaseData.spent
+              : currentPhaseData.spent,
+          number: currentPhaseData.number,
+        });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        message: "Invalid phase budget data",
+        error: error.message,
+      });
+    }
+  }
+  try {
+    const updatedProject = await project.save();
+    res.json({ message: `${updatedProject.name} updated` });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error updating project",
+      error: error.message,
+    });
+  }
 };
 
 // desc Delete a project

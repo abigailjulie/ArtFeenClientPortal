@@ -32,6 +32,27 @@ export default function useProjectFormFields({ project }) {
   const [phaseName, setPhaseName] = useState(project?.phase.name || "");
   const [phaseTick, setPhaseTick] = useState(project?.phase.currentTick || 0);
 
+  const initializePhaseBudgets = () => {
+    if (project?.phaseBudgets) {
+      if (project.phaseBudgets instanceof Map) {
+        return Object.fromEntries(project.phaseBudgets);
+      }
+      return project.phaseBudgets;
+    }
+
+    return {
+      Predevelopment: { budget: 0, spent: 0, number: 1 },
+      Programming: { budget: 0, spent: 0, number: 2 },
+      "Schematic Design": { budget: 0, spent: 0, number: 3 },
+      "Design Development": { budget: 0, spent: 0, number: 4 },
+      "Construction Documents": { budget: 0, spent: 0, number: 5 },
+      "Construction Administration": { budget: 0, spent: 0, number: 6 },
+      "Project Close-out": { budget: 0, spent: 0, number: 7 },
+    };
+  };
+
+  const [phaseBudgets, setPhaseBudgets] = useState(initializePhaseBudgets());
+
   const handleCurrencyChange = (setter) => (e) => {
     setter(e.target.value);
   };
@@ -81,6 +102,32 @@ export default function useProjectFormFields({ project }) {
   const onPhaseTickChanged = (e) => {
     setPhaseTick(e.target.value);
   };
+
+  const updatePhaseBudget = (phaseName, field, value) => {
+    setPhaseBudgets((prev) => ({
+      ...prev,
+      [phaseName]: {
+        ...prev[phaseName],
+        [field]: value,
+      },
+    }));
+  };
+
+  const onPhaseBudgetChanged = (phaseName, field) => (e) => {
+    const value = e.target.value;
+    updatePhaseBudget(phaseName, field, value);
+  };
+
+  const onPhaseBudgetBlur = (phaseName, field) => () => {
+    const currentValue = phaseBudgets[phaseName]?.[field] || 0;
+    const formatted = formatCurrency(currentValue);
+    updatePhaseBudget(phaseName, field, formatted);
+  };
+
+  const onPhaseBudgetsChanged = (newPhaseBudgets) => {
+    setPhaseBudgets(newPhaseBudgets);
+  };
+
   return {
     fields: {
       projectName,
@@ -96,6 +143,7 @@ export default function useProjectFormFields({ project }) {
       spent,
       phaseName,
       phaseTick,
+      phaseBudgets,
     },
     clicked: {
       onBudgetChanged,
@@ -113,6 +161,10 @@ export default function useProjectFormFields({ project }) {
       onFinancesTickChanged,
       onPhaseNameChanged,
       onPhaseTickChanged,
+      onPhaseBudgetsChanged,
+      updatePhaseBudget,
+      onPhaseBudgetChanged,
+      onPhaseBudgetBlur,
     },
   };
 }

@@ -9,6 +9,18 @@ export default function ProjectStatus({ project }) {
     showToast.info(`Edit ${section} clicked`);
   };
 
+  const getPhaseBudgetInfo = (phaseName) => {
+    if (!project?.phaseBudgets) return { budget: 0, spent: 0 };
+
+    if (project.phaseBudgets instanceof Map) {
+      return project.phaseBudgets.get(phaseName) || { budget: 0, spent: 0 };
+    }
+
+    return project.phaseBudgets[phaseName] || { budget: 0, spent: 0 };
+  };
+
+  const currentPhaseInfo = getPhaseBudgetInfo(project?.phase?.name);
+
   return (
     <section className="py-5">
       <article className="d-flex w-75 mx-auto align-items-center justify-content-between">

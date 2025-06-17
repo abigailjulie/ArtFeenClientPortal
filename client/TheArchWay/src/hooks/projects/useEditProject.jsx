@@ -52,6 +52,7 @@ export default function useEditProject({ project }) {
       spent,
       phaseName,
       phaseTick,
+      phaseBudgets,
     },
     clicked,
   } = useProjectFormFields({ project });
@@ -71,6 +72,16 @@ export default function useEditProject({ project }) {
     }
 
     try {
+      const formattedPhaseBudgets = {};
+
+      Object.entries(phaseBudgets).forEach(([phaseName, phaseData]) => {
+        formattedPhaseBudgets[phaseName] = {
+          budget: parseCurrency(phaseData.budget),
+          spent: parseCurrency(phaseData.spent),
+          number: phaseData.number,
+        };
+      });
+
       const result = await updateProject({
         id: project?.id,
         name: projectName,
@@ -94,6 +105,7 @@ export default function useEditProject({ project }) {
           name: phaseName,
           currentTick: phaseTick,
         },
+        phaseBudgets: formattedPhaseBudgets,
       }).unwrap();
 
       showToast.success(
@@ -172,6 +184,7 @@ export default function useEditProject({ project }) {
       spent,
       phaseName,
       phaseTick,
+      phaseBudgets,
       isProjectLoaded,
       hasError,
       isLoading,
