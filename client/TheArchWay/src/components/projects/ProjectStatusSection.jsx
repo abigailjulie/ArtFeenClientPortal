@@ -3,7 +3,7 @@ import ProjectTickSelector from "./ProjectTickSelector";
 import FormSelect from "../FormSelect";
 import { isValidCurrency } from "../../utils/FormatCurrency";
 
-export default function ProjectStatusSection({ state, clicked, clients }) {
+export default function ProjectStatusSection({ state, actions, clients }) {
   const clientOptions = clients.map((client) => ({
     value: client.id,
     label: client.username,
@@ -40,7 +40,7 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
             name="projectStatus"
             ariaLabel="Select Status"
             options={statusOptions}
-            onChange={clicked.onStatusChanged}
+            onChange={actions.onStatusChanged}
           />
         </Col>
 
@@ -50,7 +50,7 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
             name="username"
             aria-label="Select Client"
             options={clientOptions}
-            onChange={clicked.onClientIdChanged}
+            onChange={actions.onClientIdChanged}
           />
         </Col>
       </Row>
@@ -62,7 +62,7 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
             name="phaseName"
             ariaLabel="Select Phase Name"
             options={phaseOptions}
-            onChange={clicked.onPhaseNameChanged}
+            onChange={actions.onPhaseNameChanged}
           />
         </Col>
       </Row>
@@ -74,8 +74,8 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
             <Form.Control
               type="text"
               value={state.spent}
-              onChange={clicked.onSpentChanged}
-              onBlur={clicked.onSpentBlur}
+              onChange={actions.onSpentChanged}
+              onBlur={actions.onSpentBlur}
               isInvalid={!isValidCurrency(state.spent)}
               required
             />
@@ -93,8 +93,8 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
             <Form.Control
               type="text"
               value={state.budget}
-              onChange={clicked.onBudgetChanged}
-              onBlur={clicked.onBudgetBlur}
+              onChange={actions.onBudgetChanged}
+              onBlur={actions.onBudgetBlur}
               isInvalid={!isValidCurrency(state.budget)}
               required
             />
@@ -112,7 +112,7 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
             <Form.Control
               type="date"
               value={state.expectedCompletionDate}
-              onChange={clicked.onExpectedCompletionDateChanged}
+              onChange={actions.onExpectedCompletionDateChanged}
               required
             />
           </Form.Group>
@@ -124,21 +124,21 @@ export default function ProjectStatusSection({ state, clicked, clients }) {
           name="finances"
           label="Project Finances"
           value={state.financesTick}
-          onChange={clicked.onFinancesTickChanged}
+          onChange={actions.onFinancesTickChanged}
         />
 
         <ProjectTickSelector
           name="phase"
           label="Project Phase"
           value={state.phaseTick}
-          onChange={clicked.onPhaseTickChanged}
+          onChange={actions.onPhaseTickChanged}
         />
 
         <ProjectTickSelector
           name="timeline"
           label="Project Timeline"
           value={state.timelineTick}
-          onChange={clicked.onTimelineTickChanged}
+          onChange={actions.onTimelineTickChanged}
         />
       </div>
     </>

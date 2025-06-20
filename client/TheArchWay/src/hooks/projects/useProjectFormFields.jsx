@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { formatCurrency } from "../../utils/FormatCurrency";
+import { initializePhaseBudgets } from "../../utils/projectUtils";
 
 export default function useProjectFormFields({ project }) {
   const [projectName, setProjectName] = useState(project?.name || "");
@@ -32,26 +33,9 @@ export default function useProjectFormFields({ project }) {
   const [phaseName, setPhaseName] = useState(project?.phase.name || "");
   const [phaseTick, setPhaseTick] = useState(project?.phase.currentTick || 0);
 
-  const initializePhaseBudgets = () => {
-    if (project?.phaseBudgets) {
-      if (project.phaseBudgets instanceof Map) {
-        return Object.fromEntries(project.phaseBudgets);
-      }
-      return project.phaseBudgets;
-    }
-
-    return {
-      Predevelopment: { budget: 0, spent: 0, number: 1 },
-      Programming: { budget: 0, spent: 0, number: 2 },
-      "Schematic Design": { budget: 0, spent: 0, number: 3 },
-      "Design Development": { budget: 0, spent: 0, number: 4 },
-      "Construction Documents": { budget: 0, spent: 0, number: 5 },
-      "Construction Administration": { budget: 0, spent: 0, number: 6 },
-      "Project Close-out": { budget: 0, spent: 0, number: 7 },
-    };
-  };
-
-  const [phaseBudgets, setPhaseBudgets] = useState(initializePhaseBudgets());
+  const [phaseBudgets, setPhaseBudgets] = useState(
+    initializePhaseBudgets(project?.phaseBudgets)
+  );
 
   const handleCurrencyChange = (setter) => (e) => {
     setter(e.target.value);

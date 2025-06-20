@@ -4,10 +4,10 @@ import { Form, Button } from "react-bootstrap";
 import ProjectInfoSection from "../../components/projects/ProjectInfoSection";
 import ProjectStatusSection from "../../components/projects/ProjectStatusSection";
 
-export default function EditProjectForm({ state, clicked, clients }) {
-  const { isLoading, created, updated, isAdmin, isFounder, canSave } = state;
-
-  const { onSaveProjectClicked, onDeleteProjectClicked } = clicked;
+export default function EditProjectForm({ state, actions, clients }) {
+  const { isLoading, created, updated, isAdmin, isFounder, canSave, hasDraft } =
+    state;
+  const { onSaveProjectClicked, onDeleteProjectClicked } = actions;
 
   let deleteBtn = null;
   if (isAdmin || isFounder) {
@@ -25,15 +25,20 @@ export default function EditProjectForm({ state, clicked, clients }) {
   return (
     <div className="container-md">
       <Form onSubmit={onSaveProjectClicked}>
+        {hasDraft && (
+          <div className="alert alert-warning mb-3">
+            <small>You have unsaved changes</small>
+          </div>
+        )}
         <h3>Project Info</h3>
 
-        <ProjectInfoSection state={state} clicked={clicked} />
+        <ProjectInfoSection state={state} actions={actions} />
 
         <h3>Project Status</h3>
 
         <ProjectStatusSection
           state={state}
-          clicked={clicked}
+          actions={actions}
           clients={clients}
         />
 

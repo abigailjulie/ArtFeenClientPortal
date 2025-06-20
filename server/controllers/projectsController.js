@@ -8,7 +8,15 @@ const getAllProjects = async (req, res) => {
   if (!projects?.length) {
     return res.status(400).json({ message: "No projects found" });
   }
-  res.json(projects);
+
+  const projectsWithConvertedMaps = projects.map((project) => ({
+    ...project,
+    phaseBudgets: project.phaseBudgets
+      ? Object.fromEntries(project.phaseBudgets)
+      : {},
+  }));
+
+  res.json(projectsWithConvertedMaps);
 };
 
 // desc Create new project
@@ -190,9 +198,13 @@ const updateProject = async (req, res) => {
             phaseData.spent !== undefined
               ? phaseData.spent
               : currentPhaseData.spent,
-          number: currentPhaseData.number,
+          number:
+            phaseData.number !== undefined
+              ? phaseData.number
+              : currentPhaseData.number,
         });
       }
+      project.markModified("phaseBudgets");
     } catch (error) {
       return res.status(400).json({
         message: "Invalid phase budget data",

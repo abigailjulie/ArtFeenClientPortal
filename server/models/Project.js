@@ -79,10 +79,10 @@ const projectSchema = new mongoose.Schema(
       of: {
         budget: { type: Number, default: 0 },
         spent: { type: Number, default: 0 },
-        number: { type: Number, require: true },
+        number: { type: Number, required: true },
       },
       default: function () {
-        return Map([
+        return new Map([
           ["Predevelopment", { budget: 0, spent: 0, number: 1 }],
           ["Programming", { budget: 0, spent: 0, number: 2 }],
           ["Schematic Design", { budget: 0, spent: 0, number: 3 }],

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ProjectPrecentageCell({
+export default function ProjectPercentageCell({
   phase,
   phaseNum,
   phaseBudget,

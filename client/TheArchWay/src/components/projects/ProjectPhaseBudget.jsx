@@ -1,20 +1,32 @@
-import { useState } from "react";
-import { formatCurrency } from "../../utils/FormatCurrency";
+import { useState, useEffect } from "react";
+import { formatCurrency, isValidCurrency } from "../../utils/FormatCurrency";
 import useAuth from "../../hooks/useAuth";
 import "./ProjectPhaseBudget.css";
 
 export default function ProjectPhaseBudget({
-  value = 0,
+  value = "Pending Admin",
   onChange,
   phaseName = "",
   fieldType = "budget",
   placeholder = "0",
+  isEditing,
+  setIsEditing,
 }) {
-  const [value, setValue] = useState("Pending Admin");
-  const [isEditing, setIsEditing] = useState(false);
   const { isAdmin, isFounder } = useAuth();
-
   const canEdit = isAdmin || isFounder;
+
+  const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    if (isEditing) {
+      if (value === "Pending Admin") {
+        setInputValue("");
+      } else {
+        const numericStr = String(value).replace(/[$,]/g, "");
+        setInputValue(numericStr);
+      }
+    }
+  }, [isEditing, value]);
 
   const handleClick = () => {
     if (canEdit) {
@@ -23,18 +35,22 @@ export default function ProjectPhaseBudget({
   };
 
   const handleChange = (e) => {
-    setValue(e.target.value);
+    const newValue = e.target.value;
+    setInputValue(newValue);
   };
 
   const handleBlur = () => {
-    setIsEditing(false);
-    if (value && value !== "Pending Admin") {
-      const formatted = formatCurrency(value);
-      setValue(formatted);
-      if (onChange) {
-        onChange(formatted);
-      }
+    const trimmed = inputValue.trim();
+
+    if (!trimmed) {
+      onChange("Pending Admin");
+    } else if (isValidCurrency(trimmed)) {
+      const formatted = formatCurrency(trimmed);
+      onChange(formatted);
+    } else {
+      onChange("Pending Admin");
     }
+    setIsEditing(false);
   };
 
   const handleKeyDown = (e) => {
@@ -47,13 +63,14 @@ export default function ProjectPhaseBudget({
     return (
       <input
         type="text"
-        value={value === "Pending Admin" ? "" : value}
+        value={inputValue}
         onChange={handleChange}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         className="form-control form-control-sm"
         style={{ width: "100px", fontSize: "14px" }}
         autoFocus
+        placeholder={placeholder}
       />
     );
   }
@@ -64,7 +81,7 @@ export default function ProjectPhaseBudget({
       className={`project-budget ${canEdit ? "editable" : "readonly"}`}
       title={canEdit ? "Click to edit" : ""}
     >
-      ${value}
+      {value === "Pending Admin" ? value : `$${value}`}
     </span>
   );
 }

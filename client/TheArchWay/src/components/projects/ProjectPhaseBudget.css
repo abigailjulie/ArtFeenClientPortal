@@ -5,17 +5,17 @@
 }
 
 .project-budget.editable {
-  color: var(--Dark-Grey);
   cursor: pointer;
-  opacity: 0.75;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
 .project-budget.editable:hover {
-  text-decoration: underline;
-  opacity: 1;
+  background-color: #f8f9fa;
+  border: 1px dashed #dee2e6;
 }
 
 .project-budget.readonly {
-  color: var(--Black-75opacity);
-  cursor: default;
+  color: #6c757d;
 }

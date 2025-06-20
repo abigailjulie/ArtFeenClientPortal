@@ -40,7 +40,7 @@ export default function EditProject() {
     }),
   });
 
-  const { state, clicked } = useEditProject({ project });
+  const { state, actions } = useEditProject({ project });
 
   if (isProjectLoading || isClientsLoading) return <Loader />;
   if (isProjectError || isClientsError)
@@ -73,7 +73,7 @@ export default function EditProject() {
           clicked.confirmDelete();
           state.setShowDeleteModal(false);
         }}
-        title={`Delete ${name}?`}
+        title={`Delete ${project?.name || "Project"}?`}
         message="Are you sure you want to permanently delete this project? This action cannot be undone."
       />
       ;

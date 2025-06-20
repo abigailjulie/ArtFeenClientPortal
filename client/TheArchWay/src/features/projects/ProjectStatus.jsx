@@ -1,10 +1,16 @@
-import ProjectPrecentage from "../../components/projects/ProjectPrecentage";
+import ProjectPercentage from "../../components/projects/ProjectPercentage";
 import ProjectStepper from "../../components/projects/ProjectStepper";
+import useEditProject from "../../hooks/projects/useEditProject";
 import { formatCurrency } from "../../utils/FormatCurrency";
 import { formatDateTime } from "../../utils/dateUtils";
 import "./ProjectStatus.css";
 
 export default function ProjectStatus({ project }) {
+  const {
+    state: { phaseBudgets },
+    actions: { updateNestedField },
+  } = useEditProject({ project });
+
   const handleEdit = (section) => {
     showToast.info(`Edit ${section} clicked`);
   };
@@ -25,7 +31,10 @@ export default function ProjectStatus({ project }) {
     <section className="py-5">
       <article className="d-flex w-75 mx-auto align-items-center justify-content-between">
         <div className="w-50 pe-4">
-          <ProjectPrecentage />
+          <ProjectPercentage
+            phaseBudgets={phaseBudgets}
+            updateNestedField={updateNestedField}
+          />
         </div>
 
         <div className="d-flex flex-column w-50 ps-4">
