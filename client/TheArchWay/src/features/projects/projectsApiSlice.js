@@ -47,18 +47,17 @@ export const projectsApiSlice = apiSlice.injectEndpoints({
       query: (initialProjectData) => ({
         url: "/projects",
         method: "PATCH",
-        body: {
-          ...initialProjectData,
-        },
+        body: initialProjectData,
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "Project", id: arg.id },
+        { type: "Project", id: "LIST" },
       ],
     }),
     deleteProject: builder.mutation({
       query: ({ id }) => ({
         url: "/projects",
-        method: "Delete",
+        method: "DELETE",
         body: { id },
       }),
       invalidatesTags: (result, error, arg) => [

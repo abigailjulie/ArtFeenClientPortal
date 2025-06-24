@@ -11,9 +11,7 @@ const getAllProjects = async (req, res) => {
 
   const projectsWithConvertedMaps = projects.map((project) => ({
     ...project,
-    phaseBudgets: project.phaseBudgets
-      ? Object.fromEntries(project.phaseBudgets)
-      : {},
+    phaseBudgets: project.phaseBudgets || {},
   }));
 
   res.json(projectsWithConvertedMaps);

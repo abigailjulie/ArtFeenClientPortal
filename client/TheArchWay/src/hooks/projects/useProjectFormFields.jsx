@@ -2,7 +2,15 @@ import { useState } from "react";
 import { formatCurrency } from "../../utils/FormatCurrency";
 import { initializePhaseBudgets } from "../../utils/projectUtils";
 
-export default function useProjectFormFields({ project }) {
+export default function useProjectFormFields({
+  project,
+  timelineTick,
+  financesTick,
+  phaseTick,
+  onTimelineTickChanged,
+  onFinancesTickChanged,
+  onPhaseTickChanged,
+}) {
   const [projectName, setProjectName] = useState(project?.name || "");
   const [projectAddress, setProjectAddress] = useState(project?.address || "");
   const [projectNumber, setProjectNumber] = useState(project?.number || "");
@@ -11,18 +19,12 @@ export default function useProjectFormFields({ project }) {
   );
   const [clientId, setClientId] = useState(project?.client || "");
   const [status, setStatus] = useState(project?.status || "");
-  const [timelineTick, setTimelineTick] = useState(
-    project?.timeline.currentTick || 0
-  );
   const [expectedCompletionDate, setExpectedCompletionDate] = useState(
     project?.timeline.expectedCompletionDate
       ? new Date(project?.timeline.expectedCompletionDate)
           .toISOString()
           .split("T")[0]
       : ""
-  );
-  const [financesTick, setFinancesTick] = useState(
-    project?.finances.currentTick || 0
   );
   const [budget, setBudget] = useState(
     formatCurrency(project?.finances.budget || 0)
@@ -31,8 +33,6 @@ export default function useProjectFormFields({ project }) {
     formatCurrency(project?.finances.spent || 0)
   );
   const [phaseName, setPhaseName] = useState(project?.phase.name || "");
-  const [phaseTick, setPhaseTick] = useState(project?.phase.currentTick || 0);
-
   const [phaseBudgets, setPhaseBudgets] = useState(
     initializePhaseBudgets(project?.phaseBudgets)
   );
@@ -71,21 +71,15 @@ export default function useProjectFormFields({ project }) {
   const onStatusChanged = (e) => {
     setStatus(e.target.value);
   };
-  const onTimelineTickChanged = (e) => {
-    setTimelineTick(e.target.value);
-  };
   const onExpectedCompletionDateChanged = (e) => {
     setExpectedCompletionDate(e.target.value);
-  };
-  const onFinancesTickChanged = (e) => {
-    setFinancesTick(e.target.value);
   };
   const onPhaseNameChanged = (e) => {
     setPhaseName(e.target.value);
   };
-  const onPhaseTickChanged = (e) => {
-    setPhaseTick(e.target.value);
-  };
+  const onTimelineTickInputChanged = (tick) => onTimelineTickChanged(tick);
+  const onFinancesTickInputChanged = (tick) => onFinancesTickChanged(tick);
+  const onPhaseTickInputChanged = (tick) => onPhaseTickChanged(tick);
 
   const updatePhaseBudget = (phaseName, field, value) => {
     setPhaseBudgets((prev) => ({
@@ -140,15 +134,15 @@ export default function useProjectFormFields({ project }) {
       onTelephoneChanged,
       onClientIdChanged,
       onStatusChanged,
-      onTimelineTickChanged,
       onExpectedCompletionDateChanged,
-      onFinancesTickChanged,
       onPhaseNameChanged,
-      onPhaseTickChanged,
       onPhaseBudgetsChanged,
       updatePhaseBudget,
       onPhaseBudgetChanged,
       onPhaseBudgetBlur,
+      onTimelineTickChanged,
+      onFinancesTickChanged,
+      onPhaseTickChanged,
     },
   };
 }

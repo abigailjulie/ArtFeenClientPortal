@@ -22,7 +22,7 @@ export default function ProjectTickSelector({
             value={tick}
             label={tick}
             checked={Number(value) === tick}
-            onChange={onChange}
+            onChange={() => onChange(tick)}
             className="mx-1"
           />
         ))}

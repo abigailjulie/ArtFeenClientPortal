@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { formatCurrency, isValidCurrency } from "../../utils/FormatCurrency";
 import useAuth from "../../hooks/useAuth";
 import "./ProjectPhaseBudget.css";
 
@@ -22,8 +21,7 @@ export default function ProjectPhaseBudget({
       if (value === "Pending Admin") {
         setInputValue("");
       } else {
-        const numericStr = String(value).replace(/[$,]/g, "");
-        setInputValue(numericStr);
+        setInputValue(String(value));
       }
     }
   }, [isEditing, value]);
@@ -44,11 +42,8 @@ export default function ProjectPhaseBudget({
 
     if (!trimmed) {
       onChange("Pending Admin");
-    } else if (isValidCurrency(trimmed)) {
-      const formatted = formatCurrency(trimmed);
-      onChange(formatted);
     } else {
-      onChange("Pending Admin");
+      onChange(Number(trimmed));
     }
     setIsEditing(false);
   };
@@ -81,7 +76,12 @@ export default function ProjectPhaseBudget({
       className={`project-budget ${canEdit ? "editable" : "readonly"}`}
       title={canEdit ? "Click to edit" : ""}
     >
-      {value === "Pending Admin" ? value : `$${value}`}
+      {value === "Pending Admin"
+        ? value
+        : Number(value).toLocaleString(undefined, {
+            style: "currency",
+            currency: "USD",
+          })}
     </span>
   );
 }

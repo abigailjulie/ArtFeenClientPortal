@@ -4,7 +4,13 @@ import { Form, Button } from "react-bootstrap";
 import ProjectInfoSection from "../../components/projects/ProjectInfoSection";
 import ProjectStatusSection from "../../components/projects/ProjectStatusSection";
 
-export default function EditProjectForm({ state, actions, clients }) {
+export default function EditProjectForm({
+  state,
+  actions,
+  clients,
+  clicked,
+  fields,
+}) {
   const { isLoading, created, updated, isAdmin, isFounder, canSave, hasDraft } =
     state;
   const { onSaveProjectClicked, onDeleteProjectClicked } = actions;
@@ -13,6 +19,7 @@ export default function EditProjectForm({ state, actions, clients }) {
   if (isAdmin || isFounder) {
     deleteBtn = (
       <Button
+        type="button"
         className="btn ms-2"
         title="Delete"
         onClick={onDeleteProjectClicked}
@@ -40,6 +47,8 @@ export default function EditProjectForm({ state, actions, clients }) {
           state={state}
           actions={actions}
           clients={clients}
+          clicked={clicked}
+          fields={fields}
         />
 
         <div className="text-center mt-5">
@@ -49,9 +58,9 @@ export default function EditProjectForm({ state, actions, clients }) {
 
         <div className="text-center">
           <Button
+            type="submit"
             className="btn"
             title="Save"
-            onClick={onSaveProjectClicked}
             disabled={!canSave}
           >
             <FontAwesomeIcon icon={faSave} />

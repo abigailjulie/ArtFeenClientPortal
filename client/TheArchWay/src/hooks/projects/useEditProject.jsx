@@ -4,12 +4,11 @@ import {
   useDeleteProjectMutation,
 } from "../../features/projects/projectsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { parseCurrency } from "../../utils/FormatCurrency";
-import { formatDateTime } from "../../utils/dateUtils";
+import { formatDateTime, formatDateForInput } from "../../utils/dateUtils";
 import { showToast } from "../../utils/showToast";
 import { initializePhaseBudgets } from "../../utils/projectUtils";
+import { formatCurrency } from "../../utils/FormatCurrency";
 import useAuth from "../useAuth";
-import useProjectFormFields from "./useProjectFormFields";
 
 const getDraftKey = (projectId) => `project_draft_${projectId}`;
 
@@ -42,7 +41,22 @@ const removeDraftFromStorage = (key) => {
 export default function useEditProject({ project }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isProjectLoaded, setIsProjectLoaded] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    projectName: "",
+    projectAddress: "",
+    projectNumber: "",
+    projectTelephone: "",
+    clientId: "",
+    status: "",
+    timelineTick: 0,
+    expectedCompletionDate: "",
+    financesTick: 0,
+    budget: "",
+    spent: "",
+    phaseName: "",
+    phaseTick: 0,
+    phaseBudgets: {},
+  });
   const { isAdmin, isFounder } = useAuth();
 
   const navigate = useNavigate();
@@ -67,26 +81,6 @@ export default function useEditProject({ project }) {
     },
   ] = useDeleteProjectMutation();
 
-  const {
-    fields: {
-      projectName,
-      projectAddress,
-      projectNumber,
-      projectTelephone,
-      clientId,
-      status,
-      timelineTick,
-      expectedCompletionDate,
-      financesTick,
-      budget,
-      spent,
-      phaseName,
-      phaseTick,
-      phaseBudgets,
-    },
-    clicked,
-  } = useProjectFormFields({ project });
-
   useEffect(() => {
     if (project && project.id) {
       const draftKey = getDraftKey(project.id);
@@ -101,7 +95,9 @@ export default function useEditProject({ project }) {
         clientId: project.client || "",
         status: project.status || "",
         timelineTick: project.timeline?.currentTick || 0,
-        expectedCompletionDate: project.timeline?.expectedCompletionDate || "",
+        expectedCompletionDate: project.timeline?.expectedCompletionDate
+          ? formatDateForInput(project.timeline.expectedCompletionDate)
+          : "",
         financesTick: project.finances?.currentTick || 0,
         budget: project.finances?.budget || "",
         spent: project.finances?.spent || "",
@@ -137,35 +133,20 @@ export default function useEditProject({ project }) {
     [formData, saveDraft]
   );
 
-  const updateNestedField = useCallback(
-    (parentField, childField, value, subField = null) => {
-      let updatedData;
-
-      if (subField) {
-        updatedData = {
-          ...formData,
-          [parentField]: {
-            ...formData[parentField],
-            [childField]: {
-              ...formData[parentField]?.[childField],
-              [subField]: value,
-            },
-          },
-        };
-      } else {
-        updatedData = {
-          ...formData,
-          [parentField]: {
-            ...formData[parentField],
-            [childField]: value,
-          },
-        };
-      }
-
-      setFormData(updatedData);
-      saveDraft(updatedData);
+  const handleCurrencyChange = useCallback(
+    (fieldName) => (e) => {
+      updateField(fieldName, e.target.value);
     },
-    [formData, saveDraft]
+    [updateField]
+  );
+
+  const handleCurrencyBlur = useCallback(
+    (fieldName) => () => {
+      const currentValue = formData[fieldName] || "";
+      const formatted = formatCurrency(currentValue);
+      updateField(fieldName, formatted);
+    },
+    [formData, updateField]
   );
 
   const clearDraft = useCallback(() => {
@@ -189,8 +170,8 @@ export default function useEditProject({ project }) {
       Object.entries(formData.phaseBudgets || {}).forEach(
         ([phaseName, phaseData]) => {
           formattedPhaseBudgets[phaseName] = {
-            budget: parseCurrency(phaseData.budget),
-            spent: parseCurrency(phaseData.spent),
+            budget: phaseData.budget,
+            spent: phaseData.spent,
             number: phaseData.number,
           };
         }
@@ -212,8 +193,8 @@ export default function useEditProject({ project }) {
         },
         finances: {
           currentTick: formData.financesTick,
-          budget: parseCurrency(formData.budget),
-          spent: parseCurrency(formData.spent),
+          budget: formData.budget,
+          spent: formData.spent,
         },
         phase: {
           name: formData.phaseName,
@@ -221,11 +202,11 @@ export default function useEditProject({ project }) {
         },
         phaseBudgets: formattedPhaseBudgets,
       }).unwrap();
-
-      showToast.success(
-        result?.message ||
-          `Project ${formData.projectName} updated successfully!`
-      );
+      console.log("Update result:", result),
+        showToast.success(
+          result?.message ||
+            `Project ${formData.projectName} updated successfully!`
+        );
 
       clearDraft();
 
@@ -315,8 +296,27 @@ export default function useEditProject({ project }) {
         : false,
     },
     actions: {
+      onNameChanged: (e) => updateField("projectName", e.target.value),
+      onNumberChanged: (e) => updateField("projectNumber", e.target.value),
+      onAddressChanged: (e) => updateField("projectAddress", e.target.value),
+      onTelephoneChanged: (e) =>
+        updateField("projectTelephone", e.target.value),
+      onStatusChanged: (e) => updateField("status", e.target.value),
+      onClientIdChanged: (e) => updateField("clientId", e.target.value),
+      onPhaseNameChanged: (e) => updateField("phaseName", e.target.value),
+      onExpectedCompletionDateChanged: (e) =>
+        updateField("expectedCompletionDate", e.target.value),
+
+      onBudgetChanged: handleCurrencyChange("budget"),
+      onSpentChanged: handleCurrencyChange("spent"),
+      onBudgetBlur: handleCurrencyBlur("budget"),
+      onSpentBlur: handleCurrencyBlur("spent"),
+
+      onTimelineTickChanged: (tick) => updateField("timelineTick", tick),
+      onFinancesTickChanged: (tick) => updateField("financesTick", tick),
+      onPhaseTickChanged: (tick) => updateField("phaseTick", tick),
+
       updateField,
-      updateNestedField,
       clearDraft,
       onSaveProjectClicked,
       onDeleteProjectClicked,

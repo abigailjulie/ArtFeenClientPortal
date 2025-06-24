@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Loader from "../../components/Loader";
 import Project from "./Project";
 import { useProjectList } from "../../hooks/projects/useProjectsList";
@@ -9,12 +10,17 @@ export default function ProjectsList() {
   const { sortedIds, isLoading, isSuccess, isError, error, sortBy, setSortBy } =
     useProjectList();
 
+  useEffect(() => {
+    if (isError) {
+      showToast.error(
+        error?.data?.message || "Failed to load projects, try again."
+      );
+    }
+  }, [isError, error]);
+
   if (isLoading) return <Loader />;
 
-  if (isError)
-    return showToast.error(
-      error?.data?.message || "Failed to load projects, try again."
-    );
+  if (isError) return null;
 
   if (isSuccess) {
     const tableContent = sortedIds?.length ? (

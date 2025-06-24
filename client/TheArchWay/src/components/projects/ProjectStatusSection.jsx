@@ -3,7 +3,13 @@ import ProjectTickSelector from "./ProjectTickSelector";
 import FormSelect from "../FormSelect";
 import { isValidCurrency } from "../../utils/FormatCurrency";
 
-export default function ProjectStatusSection({ state, actions, clients }) {
+export default function ProjectStatusSection({
+  state,
+  actions,
+  fields,
+  clients,
+  clicked,
+}) {
   const clientOptions = clients.map((client) => ({
     value: client.id,
     label: client.username,
@@ -40,6 +46,7 @@ export default function ProjectStatusSection({ state, actions, clients }) {
             name="projectStatus"
             ariaLabel="Select Status"
             options={statusOptions}
+            value={state.status}
             onChange={actions.onStatusChanged}
           />
         </Col>
@@ -50,6 +57,7 @@ export default function ProjectStatusSection({ state, actions, clients }) {
             name="username"
             aria-label="Select Client"
             options={clientOptions}
+            value={state.clientId}
             onChange={actions.onClientIdChanged}
           />
         </Col>
@@ -62,6 +70,7 @@ export default function ProjectStatusSection({ state, actions, clients }) {
             name="phaseName"
             ariaLabel="Select Phase Name"
             options={phaseOptions}
+            value={state.phaseName}
             onChange={actions.onPhaseNameChanged}
           />
         </Col>

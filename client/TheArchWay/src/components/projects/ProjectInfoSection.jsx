@@ -1,6 +1,11 @@
 import { Col, Form, Row } from "react-bootstrap";
+import Loader from "../../components/Loader";
 
-export default function ProjectInfoSection({ state, clicked }) {
+export default function ProjectInfoSection({ state, actions }) {
+  if (!state.isProjectLoaded) {
+    return <Loader />;
+  }
+
   const { projectName, projectNumber, projectAddress, projectTelephone } =
     state;
   const {
@@ -8,7 +13,7 @@ export default function ProjectInfoSection({ state, clicked }) {
     onNumberChanged,
     onAddressChanged,
     onTelephoneChanged,
-  } = clicked;
+  } = actions;
 
   return (
     <>

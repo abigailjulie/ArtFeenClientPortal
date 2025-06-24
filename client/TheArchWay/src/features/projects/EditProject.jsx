@@ -40,7 +40,7 @@ export default function EditProject() {
     }),
   });
 
-  const { state, actions } = useEditProject({ project });
+  const { state, actions, fields, clicked } = useEditProject({ project });
 
   if (isProjectLoading || isClientsLoading) return <Loader />;
   if (isProjectError || isClientsError)
@@ -62,15 +62,17 @@ export default function EditProject() {
       </h2>
       <EditProjectForm
         state={state}
-        clicked={clicked}
+        actions={actions}
         clients={clients}
         project={project}
+        fields={fields}
+        clicked={clicked}
       />
       <DeleteConfirmationModal
         show={state.showDeleteModal}
         handleClose={() => state.setShowDeleteModal(false)}
         handleConfirm={() => {
-          clicked.confirmDelete();
+          actions.confirmDelete();
           state.setShowDeleteModal(false);
         }}
         title={`Delete ${project?.name || "Project"}?`}
