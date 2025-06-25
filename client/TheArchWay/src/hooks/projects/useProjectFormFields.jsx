@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { formatCurrency } from "../../utils/FormatCurrency";
 import { initializePhaseBudgets } from "../../utils/projectUtils";
 
 export default function useProjectFormFields({
@@ -27,11 +26,9 @@ export default function useProjectFormFields({
       : ""
   );
   const [budget, setBudget] = useState(
-    formatCurrency(project?.finances.budget || 0)
+    parseFloat(project?.finances.budget || 0)
   );
-  const [spent, setSpent] = useState(
-    formatCurrency(project?.finances.spent || 0)
-  );
+  const [spent, setSpent] = useState(parseFloat(project?.finances.spent || 0));
   const [phaseName, setPhaseName] = useState(project?.phase.name || "");
   const [phaseBudgets, setPhaseBudgets] = useState(
     initializePhaseBudgets(project?.phaseBudgets)
@@ -43,7 +40,7 @@ export default function useProjectFormFields({
 
   const handleCurrencyBlur = (getter, setter) => () => {
     const value = getter();
-    const formatted = formatCurrency(value);
+    const formatted = parseFloat(value);
     setter(formatted);
   };
 
@@ -98,7 +95,7 @@ export default function useProjectFormFields({
 
   const onPhaseBudgetBlur = (phaseName, field) => () => {
     const currentValue = phaseBudgets[phaseName]?.[field] || 0;
-    const formatted = formatCurrency(currentValue);
+    const formatted = parseFloat(currentValue);
     updatePhaseBudget(phaseName, field, formatted);
   };
 

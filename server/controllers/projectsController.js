@@ -152,6 +152,9 @@ const updateProject = async (req, res) => {
   }
 
   if (phase) {
+    if (phase.name && phase.name !== project.phase.name) {
+      project.phase.name = phase.name;
+    }
     if (
       phase.currentTick !== undefined &&
       phase.currentTick !== project.phase.currentTick
@@ -212,7 +215,10 @@ const updateProject = async (req, res) => {
   }
   try {
     const updatedProject = await project.save();
-    res.json({ message: `${updatedProject.name} updated` });
+    res.json({
+      message: `${updatedProject.name} updated`,
+      project: updatedProject,
+    });
   } catch (error) {
     return res.status(500).json({
       message: "Error updating project",

@@ -1,6 +1,11 @@
 export function formatDateTime(dateString) {
   if (!dateString) return "";
-  return new Date(dateString).toLocaleString("en-US", {
+  const date = new Date(dateString);
+
+  const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+  const localDate = new Date(date.getTime() + userTimezoneOffset);
+
+  return localDate.toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric",

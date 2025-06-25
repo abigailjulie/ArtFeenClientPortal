@@ -1,25 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProjectPercentageCell from "./ProjectPercentageCell";
 import ProjectPhaseBudget from "./ProjectPhaseBudget";
+import useAuth from "../../hooks/useAuth";
+import { showToast } from "../../utils/showToast";
+import { useUpdateProjectMutation } from "../../features/projects/projectsApiSlice";
 
 export default function ProjectPercentage({
   phaseBudgets = {},
-  updateNestedField,
-  readOnly = false,
+  projectId,
+  onSave,
 }) {
-  const [editingStates, setEditingStates] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [localPhaseBudgets, setLocalPhaseBudgets] = useState(
+    JSON.parse(JSON.stringify(phaseBudgets))
+  );
+  const [updateProject, { isLoading }] = useUpdateProjectMutation();
+
+  const { isAdmin, isFounder } = useAuth();
+  const canEdit = isAdmin || isFounder;
+
+  useEffect(() => {
+    setLocalPhaseBudgets(JSON.parse(JSON.stringify(phaseBudgets)));
+  }, [phaseBudgets]);
+
+  const getDisplayValue = (phaseName, fieldType) => {
+    const value = localPhaseBudgets[phaseName]?.[fieldType];
+    if (value === undefined || value === null || value === "Pending Admin") {
+      return "Pending Admin";
+    }
+    return value;
+  };
 
   const handleBudgetChange = (phaseName, fieldType, newValue) => {
-    if (updateNestedField && !readOnly) {
-      updateNestedField("phaseBudgets", phaseName, newValue, fieldType);
+    setLocalPhaseBudgets((prev) => ({
+      ...prev,
+      [phaseName]: {
+        ...prev[phaseName],
+        [fieldType]: newValue,
+      },
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      await updateProject({
+        id: projectId,
+        phaseBudgets: localPhaseBudgets,
+      }).unwrap();
+
+      showToast.success("Phase budgets updated successfully");
+      setIsEditing(false);
+    } catch (error) {
+      showToast.error("Failed to update phase budgets: ", error);
     }
   };
 
-  const setEditingState = (phaseName, fieldType, isEditing) => {
-    setEditingStates((prev) => ({
-      ...prev,
-      [`${phaseName}_${fieldType}`]: isEditing,
-    }));
+  const handleCancel = () => {
+    setLocalPhaseBudgets(JSON.parse(JSON.stringify(phaseBudgets)));
+    setIsEditing(false);
+  };
+
+  const handleEdit = () => {
+    setLocalPhaseBudgets(JSON.parse(JSON.stringify(phaseBudgets)));
+    setIsEditing(true);
   };
 
   const phases = [
@@ -33,52 +76,71 @@ export default function ProjectPercentage({
   ];
 
   return (
-    <ul className="list-unstyled">
-      {phases.map((phase, index) => (
-        <li
-          key={phase.name}
-          className={`d-flex justify-content-between align-items-center ${
-            index < phases.length - 1 ? "border-bottom border-white" : ""
-          }`}
-        >
-          <ProjectPercentageCell
-            phase={phase.name}
-            phaseNum={phase.num}
-            phaseBudget={
-              <div className="d-flex gap-2">
-                <ProjectPhaseBudget
-                  value={phaseBudgets[phase.name]?.budget || "Pending Admin"}
-                  onChange={(value) =>
-                    handleBudgetChange(phase.name, "budget", Number(value))
-                  }
-                  phaseName={phase.name}
-                  fieldType="budget"
-                  placeholder="Budget"
-                  isEditing={editingStates[`${phase.name}_budget`] || false}
-                  setIsEditing={(isEditing) =>
-                    setEditingState(phase.name, "budget", isEditing)
-                  }
-                />
-                <span>/</span>
-                <ProjectPhaseBudget
-                  value={phaseBudgets[phase.name]?.spent || "Pending Admin"}
-                  onChange={(value) =>
-                    handleBudgetChange(phase.name, "spent", Number(value))
-                  }
-                  phaseName={phase.name}
-                  fieldType="spent"
-                  placeholder="Spent"
-                  isEditing={editingStates[`${phase.name}_spent`] || false}
-                  setIsEditing={(isEditing) =>
-                    setEditingState(phase.name, "spent", isEditing)
-                  }
-                />
-              </div>
-            }
-          />
-          <span className="ft-large">{phase.percentage}</span>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="list-unstyled">
+        {phases.map((phase, index) => (
+          <li
+            key={phase.name}
+            className={`d-flex justify-content-between align-items-center ${
+              index < phases.length - 1 ? "border-bottom border-white" : ""
+            }`}
+          >
+            <ProjectPercentageCell
+              phase={phase.name}
+              phaseNum={phase.num}
+              phaseBudget={
+                <div className="d-flex gap-2">
+                  <ProjectPhaseBudget
+                    value={getDisplayValue(phase.name, "budget")}
+                    onChange={(value) =>
+                      handleBudgetChange(phase.name, "budget", Number(value))
+                    }
+                    isEditing={isEditing}
+                    placeholder="Budget"
+                  />
+                  <span>/</span>
+                  <ProjectPhaseBudget
+                    value={getDisplayValue(phase.name, "spent")}
+                    onChange={(value) =>
+                      handleBudgetChange(phase.name, "spent", Number(value))
+                    }
+                    isEditing={isEditing}
+                    placeholder="Spent"
+                  />
+                </div>
+              }
+            />
+            <span className="ft-large">{phase.percentage}</span>
+          </li>
+        ))}
+      </ul>
+
+      {canEdit &&
+        (isEditing ? (
+          <div className="d-flex gap-2 mt-3">
+            <button
+              className="btn btn-sm btn-success"
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save"}
+            </button>
+            <button
+              className="btn btn-sm btn-secondary"
+              onClick={handleCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            className="btn btn-sm btn-outline-dark mt-3 ms-auto d-block"
+            onClick={handleEdit}
+          >
+            Edit Phase Budgets
+          </button>
+        ))}
+    </>
   );
 }

@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { formatDateTime, formatDateForInput } from "../../utils/dateUtils";
 import { showToast } from "../../utils/showToast";
 import { initializePhaseBudgets } from "../../utils/projectUtils";
-import { formatCurrency } from "../../utils/FormatCurrency";
 import useAuth from "../useAuth";
 
 const getDraftKey = (projectId) => `project_draft_${projectId}`;
@@ -16,7 +15,7 @@ const saveDraftToStorage = (key, data) => {
   try {
     localStorage.setItem(key, JSON.stringify(data));
   } catch (error) {
-    showToast.error("Failed to save draft to localStorage:", error);
+    showToast.error(`Failed to save draft to localStorage: ${error.message}`);
   }
 };
 
@@ -25,7 +24,7 @@ const getDraftFromStorage = (key) => {
     const saved = localStorage.getItem(key);
     return saved ? JSON.parse(saved) : null;
   } catch (error) {
-    showToast.error("Failed to load draft from localStorage:", error);
+    showToast.error(`Failed to load draft from localStorage:"${error.message}`);
     return null;
   }
 };
@@ -34,7 +33,9 @@ const removeDraftFromStorage = (key) => {
   try {
     localStorage.removeItem(key);
   } catch (error) {
-    showToast.error("Failed to remove draft from localStorage:", error);
+    showToast.error(
+      `Failed to remove draft from localStorage:"${error.message}`
+    );
   }
 };
 
@@ -123,14 +124,16 @@ export default function useEditProject({ project }) {
 
   const updateField = useCallback(
     (fieldName, value) => {
-      const updatedData = {
-        ...formData,
-        [fieldName]: value,
-      };
-      setFormData(updatedData);
-      saveDraft(updatedData);
+      setFormData((prevData) => {
+        const updatedData = {
+          ...prevData,
+          [fieldName]: value,
+        };
+        saveDraft(updatedData);
+        return updatedData;
+      });
     },
-    [formData, saveDraft]
+    [saveDraft]
   );
 
   const handleCurrencyChange = useCallback(
@@ -140,15 +143,6 @@ export default function useEditProject({ project }) {
     [updateField]
   );
 
-  const handleCurrencyBlur = useCallback(
-    (fieldName) => () => {
-      const currentValue = formData[fieldName] || "";
-      const formatted = formatCurrency(currentValue);
-      updateField(fieldName, formatted);
-    },
-    [formData, updateField]
-  );
-
   const clearDraft = useCallback(() => {
     if (project?.id) {
       const draftKey = getDraftKey(project.id);
@@ -156,75 +150,93 @@ export default function useEditProject({ project }) {
     }
   }, [project?.id]);
 
-  const onSaveProjectClicked = async (e) => {
-    e.preventDefault();
+  const created = formatDateTime(project?.createdAt);
+  const updated = formatDateTime(project?.updatedAt);
 
-    if (!canSave) {
-      showToast.error("Please fill in all required fields before saving.");
-      return;
-    }
+  const isLoading = isUpdateLoading || isDelLoading;
 
-    try {
-      const formattedPhaseBudgets = {};
+  const hasError = isUpdateError || isDelError;
 
-      Object.entries(formData.phaseBudgets || {}).forEach(
-        ([phaseName, phaseData]) => {
-          formattedPhaseBudgets[phaseName] = {
-            budget: phaseData.budget,
-            spent: phaseData.spent,
-            number: phaseData.number,
-          };
-        }
-      );
+  const canSave =
+    [
+      formData.clientId,
+      project?.id,
+      formData.projectName,
+      formData.status,
+    ].every(Boolean) && !isLoading;
 
-      const result = await updateProject({
-        id: project?.id,
-        name: formData.projectName,
-        number: formData.projectNumber,
-        address: formData.projectAddress,
-        telephone: formData.projectTelephone,
-        status: formData.status,
-        client: formData.clientId,
-        timeline: {
-          currentTick: formData.timelineTick,
-          expectedCompletionDate: formData.expectedCompletionDate
-            ? new Date(formData.expectedCompletionDate)
-            : project?.timeline.expectedCompletionDate,
-        },
-        finances: {
-          currentTick: formData.financesTick,
-          budget: formData.budget,
-          spent: formData.spent,
-        },
-        phase: {
-          name: formData.phaseName,
-          currentTick: formData.phaseTick,
-        },
-        phaseBudgets: formattedPhaseBudgets,
-      }).unwrap();
-      console.log("Update result:", result),
+  const onSaveProjectClicked = useCallback(
+    async (e) => {
+      e.preventDefault();
+
+      if (!canSave) {
+        showToast.error("Please fill in all required fields before saving.");
+        return;
+      }
+
+      try {
+        const formattedPhaseBudgets = {};
+
+        Object.entries(formData.phaseBudgets || {}).forEach(
+          ([phaseName, phaseData]) => {
+            formattedPhaseBudgets[phaseName] = {
+              budget: phaseData.budget,
+              spent: phaseData.spent,
+              number: phaseData.number,
+            };
+          }
+        );
+
+        const result = await updateProject({
+          id: project?.id,
+          name: formData.projectName,
+          number: formData.projectNumber,
+          address: formData.projectAddress,
+          telephone: formData.projectTelephone,
+          status: formData.status,
+          client: formData.clientId,
+          timeline: {
+            currentTick: formData.timelineTick,
+            expectedCompletionDate: formData.expectedCompletionDate
+              ? new Date(formData.expectedCompletionDate)
+              : project?.timeline.expectedCompletionDate,
+          },
+          finances: {
+            currentTick: formData.financesTick,
+            budget: parseFloat(formData.budget.toString().replace(/,/g, "")),
+            spent: parseFloat(formData.spent.toString().replace(/,/g, "")),
+          },
+          phase: {
+            name: formData.phaseName,
+            currentTick: formData.phaseTick,
+          },
+          phaseBudgets: formattedPhaseBudgets,
+        }).unwrap();
+
         showToast.success(
           result?.message ||
             `Project ${formData.projectName} updated successfully!`
         );
 
-      clearDraft();
+        clearDraft();
 
-      setTimeout(() => {
-        if (formData.clientId) {
-          navigate(`/dash/clients/${formData.clientId}/projects`);
-        } else {
-          navigate("/dash/projects", { replace: true });
-        }
-      }, 500);
-    } catch (error) {
-      showToast.error(
-        error?.data?.message ||
-          error?.message ||
-          "Failed to update project. Please try again."
-      );
-    }
-  };
+        setTimeout(() => {
+          if (formData.clientId) {
+            navigate(`/dash/clients/${formData.clientId}/projects`);
+          } else {
+            navigate("/dash/projects", { replace: true });
+          }
+        }, 500);
+      } catch (error) {
+        showToast.error(
+          error?.data?.message ||
+            error?.message ||
+            "Failed to update project. Please try again."
+        );
+      }
+    },
+    [formData, project?.id, canSave, updateProject, clearDraft, navigate]
+  );
 
   const onDeleteProjectClicked = () => {
     setShowDeleteModal(true);
@@ -258,21 +270,6 @@ export default function useEditProject({ project }) {
       );
     }
   };
-
-  const created = formatDateTime(project?.createdAt);
-  const updated = formatDateTime(project?.updatedAt);
-
-  const isLoading = isUpdateLoading || isDelLoading;
-
-  const hasError = isUpdateError || isDelError;
-
-  const canSave =
-    [
-      formData.clientId,
-      project?.id,
-      formData.projectName,
-      formData.status,
-    ].every(Boolean) && !isLoading;
 
   return {
     state: {
@@ -309,8 +306,6 @@ export default function useEditProject({ project }) {
 
       onBudgetChanged: handleCurrencyChange("budget"),
       onSpentChanged: handleCurrencyChange("spent"),
-      onBudgetBlur: handleCurrencyBlur("budget"),
-      onSpentBlur: handleCurrencyBlur("spent"),
 
       onTimelineTickChanged: (tick) => updateField("timelineTick", tick),
       onFinancesTickChanged: (tick) => updateField("financesTick", tick),
