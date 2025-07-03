@@ -1,5 +1,5 @@
 const Client = require("../models/Client");
-const Project = require("../models/Project");
+const emailService = require("../../client/TheArchWay/src/services/emailService");
 const bcrypt = require("bcrypt");
 
 // desc Get all clients
@@ -54,6 +54,13 @@ const createNewClient = async (req, res) => {
   const client = await Client.create(clientObject);
 
   if (client) {
+    const clientData = { username, email, company };
+    setImmediate(() => {
+      emailService.sendAdminNotification("client", clientData);
+      if (email) {
+        emailService.sendClientWelcomeEmail(clientData);
+      }
+    });
     res.status(201).json({ message: `New client ${username} created!` });
   } else {
     res.status(400).json({ message: "Invalid client data recieved" });

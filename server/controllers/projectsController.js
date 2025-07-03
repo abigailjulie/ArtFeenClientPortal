@@ -1,4 +1,5 @@
 const Project = require("../models/Project");
+const emailService = require("../../client/TheArchWay/src/services/emailService");
 
 // desc Get all projects
 // route GET /projects
@@ -48,6 +49,10 @@ const createNewProject = async (req, res) => {
   const project = await Project.create(projectObject);
 
   if (project) {
+    setImmediate(() => {
+      emailService.sendAdminNotification("project", { name, number });
+    });
+
     res
       .status(201)
       .json({ message: `New project ${name} created with Number: ${number}!` });

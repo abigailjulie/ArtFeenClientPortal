@@ -18,6 +18,19 @@ export default function ProjectsList() {
     }
   }, [isError, error]);
 
+  useEffect(() => {
+    const popoverTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="popover"]'
+    );
+    const popoverList = [...popoverTriggerList].map(
+      (popoverTriggerEl) => new bootstrap.Popover(popoverTriggerEl)
+    );
+
+    return () => {
+      popoverList.forEach((popover) => popover.dispose());
+    };
+  }, []);
+
   if (isLoading) return <Loader />;
 
   if (isError) return null;
@@ -53,6 +66,11 @@ export default function ProjectsList() {
                     type="button"
                     className="btn btn-link fs-3 text-decoration-none"
                     onClick={() => setSortBy(SORT_OPTIONS.CREATED)}
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover focus"
+                    data-bs-content="Click to sort by creation date"
+                    data-bs-placement="top"
+                    tabIndex="0"
                     style={{
                       color:
                         sortBy === SORT_OPTIONS.CREATED ? "#0d6efd" : "inherit",
@@ -78,6 +96,11 @@ export default function ProjectsList() {
                     type="button"
                     className="btn btn-link p-0 fs-3 text-decoration-none"
                     onClick={() => setSortBy(SORT_OPTIONS.OWNER)}
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover focus"
+                    data-bs-content="Click to sort by owner"
+                    data-bs-placement="top"
+                    tabIndex="0"
                     style={{
                       color:
                         sortBy === SORT_OPTIONS.OWNER ? "#0d6efd" : "inherit",
