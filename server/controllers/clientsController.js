@@ -1,6 +1,6 @@
-const Client = require("../models/Client");
-const emailService = require("../../client/TheArchWay/src/services/emailService");
-const bcrypt = require("bcrypt");
+import Client from "../models/Client.js";
+import emailService from "../services/emailService.js";
+import bcrypt from "bcrypt";
 
 // desc Get all clients
 // route GET /clients
@@ -63,7 +63,7 @@ const createNewClient = async (req, res) => {
     });
     res.status(201).json({ message: `New client ${username} created!` });
   } else {
-    res.status(400).json({ message: "Invalid client data recieved" });
+    res.status(400).json({ message: "Invalid client data received" });
   }
 };
 
@@ -152,4 +152,4 @@ const deleteClient = async (req, res) => {
   res.json(reply);
 };
 
-module.exports = { getAllClients, createNewClient, updateClient, deleteClient };
+export { getAllClients, createNewClient, updateClient, deleteClient };

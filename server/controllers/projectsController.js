@@ -1,5 +1,5 @@
-const Project = require("../models/Project");
-const emailService = require("../../client/TheArchWay/src/services/emailService");
+import Project from "../models/Project.js";
+import emailService from "../services/emailService.js";
 
 // desc Get all projects
 // route GET /projects
@@ -50,14 +50,17 @@ const createNewProject = async (req, res) => {
 
   if (project) {
     setImmediate(() => {
-      emailService.sendAdminNotification("project", { name, number });
+      emailService.sendAdminNotification("project", {
+        name,
+        number,
+      });
     });
 
     res
       .status(201)
       .json({ message: `New project ${name} created with Number: ${number}!` });
   } else {
-    res.status(400).json({ message: "Invalid project data recieved" });
+    res.status(400).json({ message: "Invalid project data received" });
   }
 };
 
@@ -255,9 +258,4 @@ const deleteProject = async (req, res) => {
   res.json(reply);
 };
 
-module.exports = {
-  getAllProjects,
-  createNewProject,
-  updateProject,
-  deleteProject,
-};
+export { getAllProjects, createNewProject, updateProject, deleteProject };

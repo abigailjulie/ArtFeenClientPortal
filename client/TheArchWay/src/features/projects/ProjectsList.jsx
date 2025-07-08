@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Loader from "../../components/Loader";
 import Project from "./Project";
+import * as bootstrap from "bootstrap";
 import { useProjectList } from "../../hooks/projects/useProjectsList";
 import { SORT_OPTIONS } from "../../config/sorting";
 import "../../components/projects/TableStyles.css";
