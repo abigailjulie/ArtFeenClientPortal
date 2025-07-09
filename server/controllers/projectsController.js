@@ -1,4 +1,5 @@
 import Project from "../models/Project.js";
+import Client from "../models/Client.js";
 import emailService from "../services/emailService.js";
 
 // desc Get all projects
@@ -49,10 +50,12 @@ const createNewProject = async (req, res) => {
   const project = await Project.create(projectObject);
 
   if (project) {
+    const clientInfo = await Client.findById(client).select("username").lean();
+
     setImmediate(() => {
       emailService.sendAdminNotification("project", {
         name,
-        number,
+        username: clientInfo?.username || "Unknown Client",
       });
     });
 

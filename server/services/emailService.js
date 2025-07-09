@@ -24,15 +24,11 @@ class EmailService {
     try {
       const templateParams = {
         type: type.charAt(0).toUpperCase() + type.slice(1),
-        name: data.name || "Not provided",
-        email: data.email || "Not provided",
-        company: data.company?.name || data.company || "Not provided",
-        number: data.number || "Not provided",
+        projectName: data.projectName || data.name || "Not provided",
+        username: data.username || "Not provided",
         to_email: this.adminEmail || "Not provided",
         timestamp: formatDateTime(new Date().toISOString()) || "Not provided",
       };
-
-      console.log("🚀 templateParams", templateParams);
 
       const result = await emailjs.send(
         this.serviceId,
