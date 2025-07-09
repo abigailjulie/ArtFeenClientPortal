@@ -1,7 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const projectsController = require("../controllers/projectsController");
-const verifyJWT = require("../middleware/verifyJWT");
+import projectsController from "../controllers/projectsController.js";
+import verifyJWT from "../middleware/verifyJWT.js";
 
 router.use(verifyJWT);
 
@@ -12,4 +12,4 @@ router
   .patch(projectsController.updateProject)
   .delete(projectsController.deleteProject);
 
-module.exports = router;
+export default router;

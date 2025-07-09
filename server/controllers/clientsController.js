@@ -1,5 +1,6 @@
 import Client from "../models/Client.js";
-import emailService from "../services/emailService.js";
+import EmailService from "../services/emailService.js";
+const emailService = new EmailService();
 import bcrypt from "bcrypt";
 
 // desc Get all clients
@@ -152,4 +153,4 @@ const deleteClient = async (req, res) => {
   res.json(reply);
 };
 
-export { getAllClients, createNewClient, updateClient, deleteClient };
+export default { getAllClients, createNewClient, updateClient, deleteClient };

@@ -1,7 +1,7 @@
-const Client = require("../models/Client");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const errorHandler = require("../middleware/errorHandler");
+import Client from "../models/Client.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import errorHandler from "../middleware/errorHandler.js";
 
 // desc Login
 // route POST /auth
@@ -108,7 +108,7 @@ const logout = (req, res) => {
   res.json({ message: "Cookie cleared" });
 };
 
-module.exports = {
+export default {
   login,
   refresh,
   logout,

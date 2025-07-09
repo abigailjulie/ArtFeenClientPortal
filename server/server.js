@@ -1,16 +1,27 @@
-require("dotenv").config();
-require("express-async-errors");
-const express = require("express");
+import dotenv from "dotenv";
+dotenv.config();
+
+import "express-async-errors";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import { logger, logEvents } from "./middleware/logger.js";
+import errorHandler from "./middleware/errorHandler.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import corsOptions from "./config/corsOptions.js";
+import connectDB from "./config/dbConnect.js";
+import mongoose from "mongoose";
+
+import authRoutes from "./routes/authRoutes.js";
+import clientRoutes from "./routes/clientRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+
 const app = express();
-const path = require("path");
-const { logger, logEvents } = require("./middleware/logger");
-const errorHandler = require("./middleware/errorHandler");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const corsOptions = require("./config/corsOptions");
-const connectDB = require("./config/dbConnect");
-const mongoose = require("mongoose");
 const PORT = process.env.PORT || 5000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 connectDB();
 
@@ -24,11 +35,11 @@ app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "../public")));
 
-app.use("/auth", require("./routes/authRoutes"));
+app.use("/auth", authRoutes);
 
-app.use("/clients", require("./routes/clientRoutes"));
+app.use("/clients", clientRoutes);
 
-app.use("/projects", require("./routes/projectRoutes"));
+app.use("/projects", projectRoutes);
 
 app.all("*", (req, res) => {
   res.status(404);

@@ -261,4 +261,9 @@ const deleteProject = async (req, res) => {
   res.json(reply);
 };
 
-export { getAllProjects, createNewProject, updateProject, deleteProject };
+export default {
+  getAllProjects,
+  createNewProject,
+  updateProject,
+  deleteProject,
+};

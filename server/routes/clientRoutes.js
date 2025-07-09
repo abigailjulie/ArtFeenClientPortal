@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const clientsController = require("../controllers/clientsController");
-const signUpLimiter = require("../middleware/signUpLimiter");
-const verifyJWT = require("../middleware/verifyJWT");
+import clientsController from "../controllers/clientsController.js";
+import signUpLimiter from "../middleware/signUpLimiter.js";
+import verifyJWT from "../middleware/verifyJWT.js";
 
 router.post("/", signUpLimiter, clientsController.createNewClient);
 
@@ -14,4 +14,4 @@ router
   .patch(clientsController.updateClient)
   .delete(clientsController.deleteClient);
 
-module.exports = router;
+export default router;

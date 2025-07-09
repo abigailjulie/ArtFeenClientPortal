@@ -1,7 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config();
 import emailjs from "@emailjs/nodejs";
 import { formatDateTime } from "../utils/dateUtils.js";
 
-class EmailService {
+export default class EmailService {
   constructor() {
     this.serviceId = process.env.EMAILJS_SERVICE_ID;
     this.adminEmail = process.env.ADMIN_EMAIL;
@@ -13,6 +15,12 @@ class EmailService {
 
   initializeEmailJS() {
     if (!this.serviceId || !this.publicKey || !this.privateKey) {
+      console.log(
+        "ENV vars:",
+        process.env.EMAILJS_SERVICE_ID,
+        process.env.EMAILJS_PUBLIC_KEY,
+        process.env.EMAILJS_PRIVATE_KEY
+      );
       console.error("❌ Missing required EmailJS environment variables");
       throw new Error("EmailJS configuration incomplete");
     }
@@ -112,5 +120,3 @@ class EmailService {
     return this.getDefaultWelcomeMessage();
   }
 }
-
-export default new EmailService();

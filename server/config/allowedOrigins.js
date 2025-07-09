@@ -7,4 +7,4 @@ const allowedOrigins = [
   "https://thearchway.vercel.app",
 ];
 
-module.exports = allowedOrigins;
+export default allowedOrigins;
