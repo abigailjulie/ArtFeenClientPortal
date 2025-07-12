@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import emailjs from "@emailjs/nodejs";
 import { formatDateTime } from "../utils/dateUtils.js";
+import AIService from "./AIService.js";
 
 export default class EmailService {
   constructor() {
@@ -10,22 +11,23 @@ export default class EmailService {
     this.publicKey = process.env.EMAILJS_PUBLIC_KEY;
     this.privateKey = process.env.EMAILJS_PRIVATE_KEY;
 
+    this.aiService = new AIService();
+
     this.initializeEmailJS();
   }
 
   initializeEmailJS() {
-    if (!this.serviceId || !this.publicKey || !this.privateKey) {
-      console.log(
-        "ENV vars:",
-        process.env.EMAILJS_SERVICE_ID,
-        process.env.EMAILJS_PUBLIC_KEY,
-        process.env.EMAILJS_PRIVATE_KEY
-      );
-      console.error("❌ Missing required EmailJS environment variables");
+    if (
+      !this.serviceId ||
+      !this.publicKey ||
+      !this.privateKey ||
+      !this.adminEmail
+    ) {
+      console.error("Missing required EmailJS environment variables");
       throw new Error("EmailJS configuration incomplete");
     }
 
-    console.log("✅ EmailJS service initialized");
+    console.log("EmailJS service initialized");
   }
 
   async sendAdminNotification(type, data) {
@@ -34,7 +36,7 @@ export default class EmailService {
         type: type.charAt(0).toUpperCase() + type.slice(1),
         projectName: data.projectName || data.name || "Not provided",
         username: data.username || "Not provided",
-        to_email: this.adminEmail || "Not provided",
+        to_email: this.adminEmail,
         timestamp: formatDateTime(new Date().toISOString()) || "Not provided",
       };
 
@@ -48,13 +50,13 @@ export default class EmailService {
         }
       );
 
-      console.log(`✅ Admin notification sent for new ${type}:`, {
+      console.log(`Admin notification sent for new ${type}:`, {
         status: result.status,
-        text: result.text,
       });
       return result;
     } catch (error) {
-      console.error(`❌ Failed to send Admin notification:`, {
+      console.error(`Failed to send Admin notification:`, {
+        type,
         error: error.message,
         status: error.status,
         text: error.text,
@@ -64,21 +66,33 @@ export default class EmailService {
     }
   }
 
-  async sendClientWelcomeEmail(clientData, customMessage = null) {
+  async sendClientWelcomeEmail(clientData, useAI = true) {
     if (!clientData.email) {
-      console.log("⚠️  No email provided for client welcome");
+      console.log("No email provided for client welcome");
       return null;
     }
 
     try {
+      let welcomeMessage;
+
+      if (useAI) {
+        console.log("Generating AI welcome message...");
+        welcomeMessage = await this.aiService.generateWelcomeMessage(
+          clientData
+        );
+      } else {
+        welcomeMessage = this.aiService.getDefaultWelcomeMessage();
+      }
+
       const templateParams = {
-        client_name: clientData.username,
+        client_name: clientData.username || "Valued Client",
         client_email: clientData.email,
         company_name:
           clientData.company?.name || clientData.company || "your organization",
         login_url: process.env.CLIENT_LOGIN_URL,
-        custom_message: customMessage || this.getDefaultWelcomeMessage(),
-        timestamp: new Date().toLocaleString(),
+        custom_message:
+          welcomeMessage || this.aiService.getDefaultWelcomeMessage(),
+        timestamp: formatDateTime(new Date().toISOString()),
       };
 
       const result = await emailjs.send(
@@ -91,14 +105,13 @@ export default class EmailService {
         }
       );
 
-      console.log("✅ Welcome email sent to client:", {
+      console.log("AI-generated welcome email sent to client:", {
         email: clientData.email,
         status: result.status,
-        text: result.text,
       });
       return result;
     } catch (error) {
-      console.error("❌ Failed to send welcome email:", {
+      console.error("Failed to send welcome email:", {
         email: clientData.email,
         error: error.message,
         status: error.status,
@@ -107,16 +120,5 @@ export default class EmailService {
 
       return null;
     }
-  }
-
-  getDefaultWelcomeMessage() {
-    return `Welcome to our platform! Your account has been successfully created and you can now access all our services. If you have any questions, our support team is here to help.`;
-  }
-
-  // Future: AI-generated welcome message
-  async generateWelcomeMessage(clientData) {
-    // This is where you'd integrate with Hugging Face later
-    // For now, return default message
-    return this.getDefaultWelcomeMessage();
   }
 }
