@@ -9,9 +9,6 @@ export default function NewClient() {
 
   return (
     <div style={isPublicRoute ? publicStyle : undefined}>
-      {state?.isError && (
-        <p className="text-danger">{state.error?.data?.message}</p>
-      )}
       <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
         New Client
       </h2>

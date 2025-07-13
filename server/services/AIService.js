@@ -3,24 +3,25 @@ dotenv.config();
 
 export default class AIService {
   constructor() {
-    this.huggingFaceToken = process.env.HUGGING_FACE_TOKEN;
-    this.apiUrl = "https://api-inference.huggingface.co/models";
+    this.geminiApiKey = process.env.GEMINI_API_KEY;
+    this.apiUrl =
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
   }
 
   async generateWelcomeMessage(clientData) {
-    if (!this.huggingFaceToken) {
-      console.log("No Hugging Face token provided, using default message");
+    if (!this.geminiApiKey) {
+      console.log("No Gemini api key provided, using default message");
       return this.getDefaultWelcomeMessage();
     }
 
     try {
       const prompt = this.buildOnboardingPrompt(clientData);
 
-      const aiMessage = await this.callHuggingFaceAPI(prompt);
+      const aiMessage = await this.callGeminiAPI(prompt);
 
       return aiMessage || this.getDefaultWelcomeMessage();
     } catch (error) {
-      console.log("AI message generation failed:", error.message);
+      console.log("Gemini API failed:", error.message);
 
       return this.getDefaultWelcomeMessage();
     }
@@ -36,11 +37,15 @@ export default class AIService {
     
     Write a brief welcome message for ${username} from ${companyName} who just created an account on The ArchWay, a project management portal.
 
+    The greeting line ("Welcome to The ArchWay, ${username}") is already included in the email template. Do not repeat it.
+
+    Your task is to write a follow-up message explaining what the user should do next.
+
     Requirements:
-    - Welcome them professionally
     - Mention their next step: create their first project using "New Project" button at the top of the dashboard
-    - List required info: project name, address, telephone
-    - Mention they can track progress and budgets
+    - Mention they'll need: project name, project address, and telephone number
+    - Let them know that features like budget tracking and progress updates will become available once the project is created and their profile has been updated by an administrator
+    - Use correct grammar and punctuation
     - Keep it to 3-4 short sentences
     - Use a professional, welcoming tone
     
@@ -49,63 +54,42 @@ export default class AIService {
     Output only the message text — no headings, formatting, or commentary.`;
   }
 
-  async callHuggingFaceAPI(prompt) {
-    const models = [
-      "microsoft/DialoGPT-large",
-      "facebook/blenderbot-1B-distill",
-      "gpt2-medium",
-    ];
-
-    for (const model of models) {
-      try {
-        const response = await fetch(`${this.apiUrl}/${model}`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${this.huggingFaceToken}`,
-            "Content-Type": "application/json",
+  async callGeminiAPI(prompt) {
+    const response = await fetch(`${this.apiUrl}?key=${this.geminiApiKey}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
           },
-          body: JSON.stringify({
-            inputs: prompt,
-            parameters: {
-              max_new_tokens: 150,
-              temperature: 0.6,
-              do_sample: true,
-              return_full_text: false,
-              pad_token_id: 50256,
-            },
-          }),
-        });
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 150,
+        },
+      }),
+    });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.warn(`Model ${model} failed:`, {
-            status: response.status,
-            error: errorText,
-          });
-          continue;
-        }
-
-        const result = await response.json();
-
-        if (Array.isArray(result) && result.length > 0) {
-          let generatedText = result[0].generated_text?.trim();
-
-          if (generatedText) {
-            generatedText = this.cleanGeneratedText(generatedText);
-
-            if (generatedText.length > 30 && generatedText.length < 500) {
-              return generatedText;
-            }
-          }
-        }
-      } catch (error) {
-        console.warn(`Failed to call model ${model}:`, {
-          error: error.message,
-          model,
-        });
-        continue;
-      }
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
+
+    const result = await response.json();
+
+    if (result.candidates && result.candidates.length > 0) {
+      const generatedText = result.candidates[0].content.parts[0].text.trim();
+      return this.cleanGeneratedText(generatedText);
+    }
+
     return null;
   }
 
