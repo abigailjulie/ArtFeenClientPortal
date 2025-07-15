@@ -1,21 +1,7 @@
-import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "./authApiSlice";
-import PulseLoader from "react-spinners/PulseLoader";
+import { Link } from "react-router-dom";
 import LoginForm from "../../components/login/LoginForm";
 
 export default function Login() {
-  const errRef = useRef();
-  const [errMsg, setErrMsg] = useState("");
-
-  const navigate = useNavigate();
-
-  const [login, { isLoading }] = useLoginMutation();
-
-  const errClass = errMsg ? "errmsg" : "offscreen";
-
-  if (isLoading) return <PulseLoader color={"var(--Forest)"} />;
-
   return (
     <section className="h-100 d-flex flex-column justify-content-center align-items-center">
       <header>
@@ -24,10 +10,6 @@ export default function Login() {
       </header>
 
       <main className="w-75">
-        <p ref={errRef} className={errClass} aria-live="assertive">
-          {errMsg}
-        </p>
-
         <LoginForm />
       </main>
 

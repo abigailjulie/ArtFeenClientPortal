@@ -1,9 +1,7 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { faEdit, faProjectDiagram } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useGetClientsQuery } from "../clients/clientsApiSlice";
-import { useGetProjectsQuery } from "./projectsApiSlice";
+import { useGetClientsQuery } from "./clientsApiSlice";
+import { useGetProjectsQuery } from "../projects/projectsApiSlice";
 import { showToast } from "../../utils/showToast";
 import useAuth from "../../hooks/useAuth";
 import Loader from "../../components/Loader";

@@ -1,62 +1,80 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../features/auth/authSlice";
 import { useLoginMutation } from "../../features/auth/authApiSlice";
+import { useGetClientsQuery } from "../../features/clients/clientsApiSlice";
+import { showToast } from "../../utils/showToast";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import usePersist from "../../hooks/usePersist";
+import Loader from "../Loader";
 
 export default function LoginForm() {
   const clientRef = useRef();
-  const errRef = useRef();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errMsg, setErrMsg] = useState("");
   const [persist, setPersist] = usePersist();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading: loginLoading }] = useLoginMutation();
+
+  const { client, isLoading: clientLoading } = useGetClientsQuery(
+    "clientsList",
+    {
+      selectFromResult: ({ data, isLoading }) => ({
+        isLoading,
+        client: data?.ids
+          .map((id) => data.entities[id])
+          .find((c) => c.username === username),
+      }),
+      skip: !isRedirecting,
+    }
+  );
 
   useEffect(() => {
     clientRef.current.focus();
   }, []);
 
   useEffect(() => {
-    setErrMsg("");
-  }, [username, password]);
+    if (isRedirecting && !clientLoading && client) {
+      navigate(`/dash/clients/${client._id}/projects`);
+    }
+  }, [isRedirecting, client, clientLoading, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const { accessToken } = await login({ username, password }).unwrap();
       dispatch(setCredentials({ accessToken }));
-      setUsername("");
-      setPassword("");
-      navigate("/dash");
+      setIsRedirecting(true);
     } catch (error) {
+      let message;
       if (!error.status) {
-        setErrMsg("No Server Response");
+        message = "No Server Response";
       } else if (error.status === 400) {
-        setErrMsg("Missing Username or Password");
+        message = "Missing Username or Password";
       } else if (error.status === 401) {
-        setErrMsg("Unauthorized");
+        message = "Unauthorized";
       } else {
-        setErrMsg(error?.data?.message);
+        message = error?.data?.message || "Login Failed";
       }
-      if (errRef.current) {
-        errRef.current.focus();
-      }
+
+      showToast.error(message);
+      setIsRedirecting(false);
     }
   };
 
   const handleClientInput = (e) => setUsername(e.target.value);
   const handlePwdInput = (e) => setPassword(e.target.value);
   const handleToggle = () => setPersist((prev) => !prev);
+
+  if (loginLoading || (isRedirecting && clientLoading)) return <Loader />;
 
   return (
     <Form onSubmit={handleSubmit}>

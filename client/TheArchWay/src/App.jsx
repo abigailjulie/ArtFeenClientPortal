@@ -1,9 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-import AdminWelcome from "./features/admin/AdminWelcome";
-import Public from "./components/Public";
 import DashLayout from "./features/clients/DashLayout";
-import ClientProfile from "./features/projects/ClientProfile";
+import ClientProfile from "./features/clients/ClientProfile";
 import Login from "./features/auth/Login";
 import Welcome from "./features/auth/Welcome";
 import ClientsList from "./features/clients/ClientsList";
@@ -18,7 +16,6 @@ import RequireAuth from "./features/auth/RequireAuth";
 import { ROLES } from "./config/roles";
 import useTitle from "./hooks/useTitle";
 import Prefetch from "./features/auth/Prefetch";
-import EditAdminCredentials from "./features/admin/EditAdminCredentials";
 import ToastConfig from "./utils/ToastConfig";
 import "./index.css";
 
@@ -39,11 +36,6 @@ export default function App() {
             >
               <Route element={<Prefetch />}>
                 <Route path="dash" element={<DashLayout />}>
-                  <Route index element={<Public />} />
-                  <Route path="admin" element={<AdminWelcome />}>
-                    <Route path="edit" element={<EditAdminCredentials />} />
-                  </Route>
-
                   <Route path="clients">
                     <Route index element={<ClientsList />} />
                     <Route path="new" element={<NewClient />} />
@@ -59,19 +51,6 @@ export default function App() {
                           <Route path="edit" element={<EditProject />} />
                         </Route>
                       </Route>
-                    </Route>
-                  </Route>
-
-                  <Route
-                    element={
-                      <RequireAuth
-                        allowedRoles={[ROLES.Admin, ROLES.Founder]}
-                      />
-                    }
-                  >
-                    <Route path="projects">
-                      <Route index element={<ProjectsList />} />
-                      <Route path=":projectId" element={<EditProject />} />
                     </Route>
                   </Route>
                 </Route>

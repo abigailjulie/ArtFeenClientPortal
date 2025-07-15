@@ -3,13 +3,7 @@ import ProjectTickSelector from "./ProjectTickSelector";
 import FormSelect from "../FormSelect";
 import { isValidCurrency } from "../../utils/FormatCurrency";
 
-export default function ProjectStatusSection({
-  state,
-  actions,
-  fields,
-  clients,
-  clicked,
-}) {
+export default function ProjectStatusSection({ state, actions, clients }) {
   const clientOptions = clients.map((client) => ({
     value: client.id,
     label: client.username,

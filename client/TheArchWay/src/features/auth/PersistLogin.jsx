@@ -38,7 +38,7 @@ export default function PersistLogin() {
   } else if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center">
-        <PulseLoader color={"var(--Forest)"} />;
+        <PulseLoader color={"var(--Forest)"} />
       </div>
     );
   } else if (isError) {

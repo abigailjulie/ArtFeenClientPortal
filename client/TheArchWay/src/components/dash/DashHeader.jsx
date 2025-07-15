@@ -33,8 +33,6 @@ export default function DashHeader() {
 
   const {
     client,
-    clients,
-    projects,
     clientsProjects,
     selectedProject,
     selectedProjectId,
