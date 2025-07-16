@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useAddNewProjectMutation } from "./projectsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Col, Form, Row } from "react-bootstrap";
 import { showToast } from "../../utils/showToast";
 import Loader from "../../components/Loader";
+import DynButton from "../../components/DynButton";
 
 export default function NewProjectForm({ clientId }) {
   const [addNewProject, { isLoading, isSuccess, isError, error }] =
@@ -107,15 +107,13 @@ export default function NewProjectForm({ clientId }) {
         </Row>
 
         <div className="d-flex justify-content-center mt-3">
-          <Button
-            className="btn"
-            title="Save"
-            type="button"
+          <DynButton
+            title="Save Project"
+            icon={faSave}
             onClick={onSaveProjectClicked}
             disabled={!canSave}
-          >
-            <FontAwesomeIcon icon={faSave} />
-          </Button>
+            show={true}
+          />
         </div>
       </form>
     </div>

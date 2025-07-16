@@ -1,12 +1,12 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { Col, Form, Button } from "react-bootstrap";
+import { Col, Form } from "react-bootstrap";
 import { ROLES } from "../../config/roles";
 import ClientInfoSection from "../../components/client/ClientInfoSection";
 import CompanyInfoSection from "../../components/client/CompanyInfoSection";
+import DynButton from "../../components/DynButton";
 
 export default function EditClientForm({ state, validation, clicked }) {
-  const { roles, active, isFounder, canSave } = state;
+  const { roles, active, isFounder, isAdmin, canSave } = state;
   const {
     onRolesChanged,
     onActiveChanged,
@@ -68,25 +68,21 @@ export default function EditClientForm({ state, validation, clicked }) {
         />
 
         <div className="d-flex justify-content-center gap-2 mt-3">
-          {isFounder && (
-            <Button
-              className="btn"
-              title="Delete"
-              type="button"
-              onClick={onDeleteClientClicked}
-            >
-              <FontAwesomeIcon icon={faTrashCan} />
-            </Button>
-          )}
+          <DynButton
+            icon={faTrashCan}
+            variant="charcoal"
+            title="Delete Client"
+            show={isAdmin || isFounder}
+            onClick={onDeleteClientClicked}
+          />
 
-          <Button
-            title="Save"
-            type="button"
+          <DynButton
+            icon={faSave}
+            title="Save Client"
             onClick={onSaveClientClicked}
             disabled={!canSave}
-          >
-            <FontAwesomeIcon icon={faSave} />
-          </Button>
+            show={true}
+          />
         </div>
       </Form>
     </div>

@@ -1,9 +1,9 @@
 import CompanyInfoSection from "../../components/client/CompanyInfoSection";
 import ClientInfoSection from "../../components/client/ClientInfoSection";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { Col, Form, Row, Button } from "react-bootstrap";
+import DynButton from "../../components/DynButton";
 import useAuth from "../../hooks/useAuth";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { Col, Form, Row } from "react-bootstrap";
 
 export default function NewClientForm({ state, validation, clicked }) {
   const { roles, canSave, options } = state;
@@ -43,15 +43,13 @@ export default function NewClientForm({ state, validation, clicked }) {
         />
 
         <div className="d-flex justify-content-center mt-3">
-          <Button
-            className="btn"
-            title="Save"
-            type="button"
+          <DynButton
+            icon={faSave}
+            title="Save Client"
             onClick={onSaveClientClicked}
             disabled={!canSave}
-          >
-            <FontAwesomeIcon icon={faSave} />
-          </Button>
+            show={true}
+          />
         </div>
       </Form>
     </>

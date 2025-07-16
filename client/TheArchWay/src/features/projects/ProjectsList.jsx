@@ -6,6 +6,7 @@ import { useProjectList } from "../../hooks/projects/useProjectsList";
 import { SORT_OPTIONS } from "../../config/sorting";
 import "../../components/projects/TableStyles.css";
 import { showToast } from "../../utils/showToast";
+import DynButton from "../../components/DynButton";
 
 export default function ProjectsList() {
   const { sortedIds, isLoading, isSuccess, isError, error, sortBy, setSortBy } =
@@ -63,22 +64,19 @@ export default function ProjectsList() {
                   className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
                   scope="col"
                 >
-                  <button
-                    type="button"
-                    className="btn btn-link fs-3 text-decoration-none"
+                  <DynButton
+                    className="p-1 px-2 fs-4"
+                    title="Click to sort by creation date"
                     onClick={() => setSortBy(SORT_OPTIONS.CREATED)}
-                    data-bs-toggle="popover"
-                    data-bs-trigger="hover focus"
-                    data-bs-content="Click to sort by creation date"
-                    data-bs-placement="top"
-                    tabIndex="0"
-                    style={{
-                      color:
-                        sortBy === SORT_OPTIONS.CREATED ? "#0d6efd" : "inherit",
-                    }}
+                    variant={
+                      sortBy === SORT_OPTIONS.CREATED
+                        ? "forest"
+                        : "outline-forest"
+                    }
+                    show={true}
                   >
                     Created
-                  </button>
+                  </DynButton>
                 </th>
                 <th
                   className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
@@ -93,22 +91,19 @@ export default function ProjectsList() {
                   className="fs-3 ps-3 pb-3 d-none d-md-table-cell"
                   scope="col"
                 >
-                  <button
-                    type="button"
-                    className="btn btn-link p-0 fs-3 text-decoration-none"
+                  <DynButton
+                    className="p-1 px-2 fs-4"
                     onClick={() => setSortBy(SORT_OPTIONS.OWNER)}
-                    data-bs-toggle="popover"
-                    data-bs-trigger="hover focus"
-                    data-bs-content="Click to sort by owner"
-                    data-bs-placement="top"
-                    tabIndex="0"
-                    style={{
-                      color:
-                        sortBy === SORT_OPTIONS.OWNER ? "#0d6efd" : "inherit",
-                    }}
+                    title="Click to sort by owner"
+                    variant={
+                      sortBy === SORT_OPTIONS.OWNER
+                        ? "forest"
+                        : "outline-forest"
+                    }
+                    show={true}
                   >
                     Owner
-                  </button>
+                  </DynButton>
                 </th>
                 <th className="fs-3 ps-3 pb-3" scope="col">
                   Profile

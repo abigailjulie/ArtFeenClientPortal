@@ -9,7 +9,7 @@ export default function ProjectStepper({ activeStep, maxStep = 7 }) {
         style={{ height: "2rem" }}
       >
         <div
-          className="salmon position-absolute top-0 start-0"
+          className="color position-absolute top-0 start-0"
           style={{
             height: "100%",
             width: `${(activeStep / maxStep) * 100}%`,

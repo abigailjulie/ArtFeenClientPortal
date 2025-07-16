@@ -89,8 +89,9 @@ body > :not(.carousel) {
 
 :root {
   /* Primary */
-  --Salmon: rgb(255, 126, 112);
   --Forest: rgb(48, 69, 41);
+  --Charcoal: rgb(66, 68, 70);
+  --Test: rgb(46, 50, 51);
   /* Neutral */
   --White: rgb(250, 249, 246);
   --Black-75opacity: rgba(0, 0, 0, 0.75);
@@ -135,4 +136,57 @@ html {
   padding: 0;
   display: flex;
   flex-direction: column;
+}
+
+.forest {
+  background-color: var(--Forest) !important;
+  border: none !important;
+  min-width: 6rem;
+}
+
+.forest:hover {
+  background-color: rgba(48, 69, 41, 0.8) !important;
+  border: none !important;
+}
+
+.forest:disabled {
+  background-color: rgba(48, 69, 41, 0.6) !important;
+  border: none !important;
+  opacity: 0.8;
+}
+
+.outline-forest {
+  background-color: transparent !important;
+  color: var(--Forest) !important;
+  border: 2px solid var(--Forest) !important;
+  min-width: 6rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.outline-forest:hover {
+  background-color: rgba(48, 69, 41, 0.1) !important;
+  color: var(--Forest) !important;
+}
+
+.outline-forest:disabled {
+  border-color: rgba(48, 69, 41, 0.5) !important;
+  color: rgba(48, 69, 41, 0.5) !important;
+}
+
+.charcoal {
+  background-color: var(--Charcoal) !important;
+  border: none !important;
+  color: var(--White) !important;
+  min-width: 6rem;
+}
+
+.charcoal:hover {
+  background-color: rgba(66, 68, 70, 0.8) !important;
+  border: none !important;
+}
+
+.charcoal:disabled {
+  background-color: rgba(66, 68, 70, 0.6) !important;
+  border: none !important;
+  opacity: 0.8;
 }

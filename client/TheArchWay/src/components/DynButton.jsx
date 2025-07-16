@@ -6,15 +6,27 @@ export default function DynButton({
   title,
   onClick,
   show = false,
-  className = "forest",
+  variant = "forest",
   disabled = false,
   type = "button",
+  className = "",
   children,
 }) {
   if (!show) return null;
+
+  const variantClasses = {
+    forest: "forest",
+    charcoal: "charcoal",
+    "outline-forest": "outline-forest",
+  };
+
+  const btnClass = `btn ${
+    variantClasses[variant] || variantClasses.forest
+  } ${className}`.trim();
+
   return (
     <Button
-      className={className}
+      className={btnClass}
       title={title}
       onClick={onClick}
       disabled={disabled}

@@ -1,8 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import ProjectInfoSection from "../../components/projects/ProjectInfoSection";
 import ProjectStatusSection from "../../components/projects/ProjectStatusSection";
+import DynButton from "../../components/DynButton";
 
 export default function EditProjectForm({
   state,
@@ -16,18 +16,16 @@ export default function EditProjectForm({
   const { onSaveProjectClicked, onDeleteProjectClicked } = actions;
 
   let deleteBtn = null;
-  if (isAdmin || isFounder) {
-    deleteBtn = (
-      <Button
-        type="button"
-        className="btn ms-2"
-        title="Delete"
-        onClick={onDeleteProjectClicked}
-      >
-        <FontAwesomeIcon icon={faTrashCan} />
-      </Button>
-    );
-  }
+  deleteBtn = (
+    <DynButton
+      icon={faTrashCan}
+      className="btn ms-2"
+      title="Delete Project"
+      variant="charcoal"
+      onClick={onDeleteProjectClicked}
+      show={isAdmin || isFounder}
+    />
+  );
 
   return (
     <div className="container-md">
@@ -57,15 +55,13 @@ export default function EditProjectForm({
         </div>
 
         <div className="text-center">
-          <Button
+          <DynButton
             type="submit"
-            className="btn"
-            title="Save"
+            icon={faSave}
+            title="Save Project"
             disabled={!canSave}
-          >
-            <FontAwesomeIcon icon={faSave} />
-          </Button>
-
+            show={true}
+          />
           {deleteBtn}
         </div>
       </Form>

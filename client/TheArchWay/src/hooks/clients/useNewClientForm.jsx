@@ -2,7 +2,13 @@ import { useState, useEffect } from "react";
 import { useAddNewClientMutation } from "../../features/clients/clientsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { ROLES } from "../../config/roles";
-import { CLIENT_REGEX, PWD_REGEX, STATE_REGEX } from "../../utils/regex";
+import {
+  CLIENT_REGEX,
+  PWD_REGEX,
+  STATE_REGEX,
+  PHONE_REGEX,
+  EMAIL_REGEX,
+} from "../../utils/regex";
 import { showToast } from "../../utils/showToast";
 
 export default function useNewClientForm() {
@@ -17,7 +23,9 @@ export default function useNewClientForm() {
   const [validPassword, setValidPassword] = useState(false);
   const [roles, setRoles] = useState(["Client"]);
   const [telephone, setTelephone] = useState("");
+  const [validTelephone, setValidTelephone] = useState(false);
   const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
@@ -38,6 +46,14 @@ export default function useNewClientForm() {
   useEffect(() => {
     setValidStateCode(STATE_REGEX.test(stateCode));
   }, [stateCode]);
+
+  useEffect(() => {
+    setValidEmail(EMAIL_REGEX.test(email));
+  }, [email]);
+
+  useEffect(() => {
+    setValidTelephone(PHONE_REGEX.test(telephone));
+  }, [telephone]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -182,6 +198,12 @@ export default function useNewClientForm() {
       onCompanyNumberChanged,
       onSaveClientClicked,
     },
-    validation: { validUsername, validPassword, validStateCode },
+    validation: {
+      validUsername,
+      validPassword,
+      validStateCode,
+      validEmail,
+      validTelephone,
+    },
   };
 }
