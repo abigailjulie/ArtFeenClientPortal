@@ -26,7 +26,7 @@ export default function CompanyInfoSection({
     onStateCodeChanged,
     onZipChanged,
   } = clicked;
-  const { validStateCode } = validation;
+  const { validStateCode, validCompanyNumber } = validation;
 
   return (
     <>
@@ -150,8 +150,12 @@ export default function CompanyInfoSection({
             placeholder="Company Number"
             value={companyNumber}
             onChange={onCompanyNumberChanged}
+            isInvalid={companyNumber && !validCompanyNumber}
             required
           />
+          <Form.Control.Feedback type="invalid" className="px-2 mt-2" muted>
+            Enter a valid phone number in the format 123-456-7890.
+          </Form.Control.Feedback>
         </Col>
       </Row>
     </>

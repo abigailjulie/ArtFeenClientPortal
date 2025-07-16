@@ -5,12 +5,12 @@ import { setCredentials } from "../../features/auth/authSlice";
 import { useLoginMutation } from "../../features/auth/authApiSlice";
 import { useGetClientsQuery } from "../../features/clients/clientsApiSlice";
 import { showToast } from "../../utils/showToast";
-import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import usePersist from "../../hooks/usePersist";
 import Loader from "../Loader";
+import DynButton from "../DynButton";
 
 export default function LoginForm() {
   const clientRef = useRef();
@@ -122,7 +122,9 @@ export default function LoginForm() {
           />
         </Col>
         <Col xs="auto" className="my-1 ms-auto">
-          <Button type="submit">Sign In</Button>
+          <DynButton type="submit" show={true}>
+            Sign In
+          </DynButton>
         </Col>
       </Row>
     </Form>

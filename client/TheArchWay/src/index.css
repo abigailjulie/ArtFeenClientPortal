@@ -91,7 +91,6 @@ body > :not(.carousel) {
   /* Primary */
   --Forest: rgb(48, 69, 41);
   --Charcoal: rgb(66, 68, 70);
-  --Test: rgb(46, 50, 51);
   /* Neutral */
   --White: rgb(250, 249, 246);
   --Black-75opacity: rgba(0, 0, 0, 0.75);

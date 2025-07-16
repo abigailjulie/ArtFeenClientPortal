@@ -34,6 +34,7 @@ export default function useNewClientForm() {
   const [validStateCode, setValidStateCode] = useState(false);
   const [zip, setZip] = useState("");
   const [companyNumber, setCompanyNumber] = useState("");
+  const [validCompanyNumber, setValidCompanyNumber] = useState(false);
 
   useEffect(() => {
     setValidUsername(CLIENT_REGEX.test(username));
@@ -54,6 +55,10 @@ export default function useNewClientForm() {
   useEffect(() => {
     setValidTelephone(PHONE_REGEX.test(telephone));
   }, [telephone]);
+
+  useEffect(() => {
+    setValidCompanyNumber(PHONE_REGEX.test(companyNumber));
+  }, [companyNumber]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -204,6 +209,7 @@ export default function useNewClientForm() {
       validStateCode,
       validEmail,
       validTelephone,
+      validCompanyNumber,
     },
   };
 }
