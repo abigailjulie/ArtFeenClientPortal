@@ -21,7 +21,7 @@ export default function ClientInfoSection({ state, validation, clicked }) {
           <Form.Control
             type="text"
             id="username"
-            value={username}
+            value={username ?? ""}
             placeholder="Username"
             onChange={onUsernameChanged}
             isInvalid={username && !validUsername}
@@ -43,7 +43,7 @@ export default function ClientInfoSection({ state, validation, clicked }) {
             id="password"
             type="password"
             placeholder="Password"
-            value={password}
+            value={password ?? ""}
             onChange={onPasswordChanged}
             isInvalid={password && !validPassword}
             required
@@ -64,7 +64,7 @@ export default function ClientInfoSection({ state, validation, clicked }) {
             id="telephone"
             type="text"
             placeholder="Telephone"
-            value={telephone}
+            value={telephone ?? ""}
             onChange={onTelephoneChanged}
             isInvalid={telephone && !validTelephone}
             required
@@ -82,7 +82,7 @@ export default function ClientInfoSection({ state, validation, clicked }) {
             id="email"
             type="email"
             placeholder="Email"
-            value={email}
+            value={email ?? ""}
             onChange={onEmailChanged}
             isInvalid={email && !validEmail}
             required

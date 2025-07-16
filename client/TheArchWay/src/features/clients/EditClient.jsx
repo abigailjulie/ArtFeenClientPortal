@@ -6,6 +6,7 @@ import {
   selectClientById,
 } from "../clients/clientsApiSlice";
 import { useSelector } from "react-redux";
+import { showToast } from "../../utils/showToast";
 import Loader from "../../components/Loader";
 
 export default function EditClient() {
@@ -15,16 +16,17 @@ export default function EditClient() {
 
   const { state, validation, clicked } = useEditClientForm({ client });
 
+  useEffect(() => {
+    if (isError) {
+      showToast.error(error?.data?.message || "Failed to fetch client.");
+    }
+  }, [isError, error]);
+
   if (isLoading) return <Loader />;
-  if (isError) return <p className="errmsg">{error?.data?.message}</p>;
   if (!client) return <p>Client not found</p>;
 
   return (
     <div className="mb-5">
-      {state?.errorMessage && (
-        <p className="text-danger">{state.errorMessage}</p>
-      )}
-
       <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
         Edit Client
       </h2>

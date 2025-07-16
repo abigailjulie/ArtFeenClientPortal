@@ -12,11 +12,12 @@ import { useGetProjectsQuery } from "../../features/projects/projectsApiSlice";
 import { useDashNavigation } from "../../hooks/dash/useDashNavigation";
 import { useDashHeader } from "../../hooks/dash/useDashHeader";
 import { DASH_REGEX, PROJECTS_REGEX, CLIENTS_REGEX } from "../../utils/regex";
+import { showToast } from "../../utils/showToast";
 import useAuth from "../../hooks/useAuth";
 import Loader from "../Loader";
 import DynButton from "../DynButton";
-import "./DashHeader.css";
 import DashProjectInfo from "./DashProjectInfo";
+import "./DashHeader.css";
 
 export default function DashHeader() {
   const { username, isAdmin, isFounder, status } = useAuth() || {};
@@ -26,10 +27,16 @@ export default function DashHeader() {
     data: clientsData,
     isLoading: clientsLoading,
     isSuccess: clientsSuccess,
+    isError: clientsError,
+    error: clientsErrorData,
   } = useGetClientsQuery("clientsList");
 
-  const { data: projectsData, isSuccess: projectsSuccess } =
-    useGetProjectsQuery("projectsList");
+  const {
+    data: projectsData,
+    isSuccess: projectsSuccess,
+    isError: projectsError,
+    error: projectsErrorData,
+  } = useGetProjectsQuery("projectsList");
 
   const {
     client,
@@ -50,9 +57,24 @@ export default function DashHeader() {
     onNewClientClicked,
     onProjectsClicked,
     onClientsClicked,
-    handleGoHome,
     onLogoutClicked,
   } = useDashNavigation(client);
+
+  useEffect(() => {
+    if (clientsError) {
+      const message =
+        clientsErrorData?.data?.message || "Failed to load clients";
+      showToast.error(message);
+    }
+  }, [clientsError, clientsErrorData]);
+
+  useEffect(() => {
+    if (projectsError) {
+      const message =
+        projectsErrorData?.data?.message || "Failed to load projects";
+      showToast.error(message);
+    }
+  }, [projectsError, projectsErrorData]);
 
   useEffect(() => {
     if (clientsProjects?.length > 0 && selectedProjectId === null) {
@@ -60,7 +82,7 @@ export default function DashHeader() {
     }
   }, [clientsProjects, selectedProjectId]);
 
-  let dashClass = null;
+  let dashClass = "";
   if (
     !DASH_REGEX.test(pathname) &&
     !PROJECTS_REGEX.test(pathname) &&
@@ -129,47 +151,45 @@ export default function DashHeader() {
   }
 
   return (
-    <>
-      <header className="dash-header pt-3 bg-white">
-        <main
-          className={`d-flex flex-column flex-md-row justify-content-between ms-4 dash-container ${dashClass}`}
-        >
-          <div>
-            <div className="d-flex flex-row align-items-center">
-              <p className="mb-0">
-                <strong>
-                  <Link
-                    className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
-                    to={`/dash/clients/${client?._id}`}
-                  >
-                    {username}
-                  </Link>
-                </strong>
-                <span className="mx-2">X</span>
+    <header className="dash-header pt-3 bg-white">
+      <main
+        className={`d-flex flex-column flex-md-row justify-content-between ms-4 dash-container ${dashClass}`}
+      >
+        <div>
+          <div className="d-flex flex-row align-items-center">
+            <p className="mb-0">
+              <strong>
                 <Link
                   className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
-                  to="/dash"
+                  to={`/dash/clients/${client?._id}`}
                 >
-                  The ArchWay
+                  {username}
                 </Link>
-              </p>
-            </div>
-
-            {!isAdmin && !isFounder ? (
-              <DashProjectInfo
-                selectedProject={selectedProject}
-                clientsProjects={clientsProjects}
-                selectedProjectId={selectedProjectId}
-                setSelectedProjectId={setSelectedProjectId}
-              />
-            ) : (
-              <p>Admin View</p>
-            )}
+              </strong>
+              <span className="mx-2">X</span>
+              <Link
+                className="link-dark link-underline link-underline-opacity-0 link-opacity-50-hover"
+                to="/dash"
+              >
+                The ArchWay
+              </Link>
+            </p>
           </div>
 
-          <nav className="d-flex flex-column me-4">{btnContent}</nav>
-        </main>
-      </header>
-    </>
+          {!isAdmin && !isFounder ? (
+            <DashProjectInfo
+              selectedProject={selectedProject}
+              clientsProjects={clientsProjects}
+              selectedProjectId={selectedProjectId}
+              setSelectedProjectId={setSelectedProjectId}
+            />
+          ) : (
+            <p>Admin View</p>
+          )}
+        </div>
+
+        <nav className="d-flex flex-column me-4">{btnContent}</nav>
+      </main>
+    </header>
   );
 }

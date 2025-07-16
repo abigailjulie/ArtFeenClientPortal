@@ -18,7 +18,7 @@ export default function ProjectPhaseBudget({
         onChange={(e) => onChange(Number(e.target.value))}
         className="form-control form-control-sm"
         style={{ width: "100px", fontSize: "14px" }}
-        placeholder={placeholder}
+        placeholder={value === "Pending Admin" ? "Pending Admin" : placeholder}
       />
     );
   }

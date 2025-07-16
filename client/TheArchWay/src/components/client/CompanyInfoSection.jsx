@@ -41,7 +41,7 @@ export default function CompanyInfoSection({
             id="companyName"
             type="text"
             placeholder="Company Name"
-            value={companyName}
+            value={companyName ?? ""}
             onChange={onCompanyNameChanged}
             required
           />
@@ -58,7 +58,7 @@ export default function CompanyInfoSection({
               id="companyAddress"
               type="text"
               placeholder="Company Address"
-              value={companyAddress}
+              value={companyAddress ?? ""}
               onChange={onCompanyAddressChanged}
               required
             />
@@ -72,7 +72,7 @@ export default function CompanyInfoSection({
                 <Form.Label visuallyHidden>Address</Form.Label>
                 <Form.Control
                   placeholder="Street Address"
-                  value={address1}
+                  value={address1 ?? ""}
                   onChange={onAddress1Changed}
                   required
                 />
@@ -83,7 +83,7 @@ export default function CompanyInfoSection({
                 <Form.Label visuallyHidden>Address 2</Form.Label>
                 <Form.Control
                   placeholder="Apartment, studio, or floor"
-                  value={address2}
+                  value={address2 ?? ""}
                   onChange={onAddress2Changed}
                 />
               </Form.Group>
@@ -96,7 +96,7 @@ export default function CompanyInfoSection({
                 <Form.Label visuallyHidden>City</Form.Label>
                 <Form.Control
                   placeholder="City"
-                  value={city}
+                  value={city ?? ""}
                   onChange={onCityChanged}
                   required
                 />
@@ -108,7 +108,7 @@ export default function CompanyInfoSection({
                 <Form.Label visuallyHidden>State</Form.Label>
                 <Form.Control
                   placeholder="State"
-                  value={stateCode}
+                  value={stateCode ?? ""}
                   onChange={onStateCodeChanged}
                   isInvalid={stateCode && !validStateCode}
                   required
@@ -129,7 +129,7 @@ export default function CompanyInfoSection({
                 <Form.Label visuallyHidden>Zip</Form.Label>
                 <Form.Control
                   placeholder="Zip Code"
-                  value={zip}
+                  value={zip ?? ""}
                   onChange={onZipChanged}
                   required
                 />
@@ -148,7 +148,7 @@ export default function CompanyInfoSection({
             id="companyNumber"
             type="text"
             placeholder="Company Number"
-            value={companyNumber}
+            value={companyNumber ?? ""}
             onChange={onCompanyNumberChanged}
             isInvalid={companyNumber && !validCompanyNumber}
             required

@@ -6,17 +6,23 @@ import emailService from "../services/emailService.js";
 // route GET /projects
 // access Private
 const getAllProjects = async (req, res) => {
-  const projects = await Project.find().populate("client", "username").lean();
-  if (!projects?.length) {
-    return res.status(400).json({ message: "No projects found" });
+  try {
+    const projects = await Project.find().populate("client", "username").lean();
+    if (!projects?.length) {
+      return res.status(400).json({ message: "No projects found" });
+    }
+
+    const projectsWithConvertedMaps = projects.map((project) => ({
+      ...project,
+      phaseBudgets: project.phaseBudgets || {},
+    }));
+
+    res.json(projectsWithConvertedMaps);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching projects", error: error.message });
   }
-
-  const projectsWithConvertedMaps = projects.map((project) => ({
-    ...project,
-    phaseBudgets: project.phaseBudgets || {},
-  }));
-
-  res.json(projectsWithConvertedMaps);
 };
 
 // desc Create new project
@@ -251,7 +257,7 @@ const deleteProject = async (req, res) => {
   const project = await Project.findById(id).exec();
 
   if (!project) {
-    return res.status(409).json({ message: "Project not found" });
+    return res.status(404).json({ message: "Project not found" });
   }
 
   await Project.deleteOne({ _id: id });

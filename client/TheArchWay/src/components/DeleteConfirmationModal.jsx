@@ -1,4 +1,5 @@
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
+import DynButton from "./DynButton";
 
 export default function DeleteConfirmationModal({
   show,
@@ -18,12 +19,17 @@ export default function DeleteConfirmationModal({
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <DynButton show={true} title="Cancel editing" onClick={handleClose}>
           Cancel
-        </Button>
-        <Button variant="danger" onClick={handleConfirm}>
+        </DynButton>
+        <DynButton
+          show={true}
+          variant="charcoal"
+          title="Delete Project"
+          onClick={handleConfirm}
+        >
           Delete
-        </Button>
+        </DynButton>
       </Modal.Footer>
     </Modal>
   );

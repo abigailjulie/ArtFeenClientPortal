@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { showToast } from "../../utils/showToast";
+import { useUpdateProjectMutation } from "../../features/projects/projectsApiSlice";
 import ProjectPercentageCell from "./ProjectPercentageCell";
 import ProjectPhaseBudget from "./ProjectPhaseBudget";
 import useAuth from "../../hooks/useAuth";
-import { showToast } from "../../utils/showToast";
-import { useUpdateProjectMutation } from "../../features/projects/projectsApiSlice";
+import DynButton from "../DynButton";
+import Loader from "../Loader";
 
 export default function ProjectPercentage({
   phaseBudgets = {},
@@ -14,7 +16,15 @@ export default function ProjectPercentage({
   const [localPhaseBudgets, setLocalPhaseBudgets] = useState(
     JSON.parse(JSON.stringify(phaseBudgets))
   );
-  const [updateProject, { isLoading }] = useUpdateProjectMutation();
+  const [
+    updateProject,
+    {
+      isLoading: updateLoading,
+      isSuccess: updateSuccess,
+      isError: updateError,
+      error: updateErrorData,
+    },
+  ] = useUpdateProjectMutation();
 
   const { isAdmin, isFounder } = useAuth();
   const canEdit = isAdmin || isFounder;
@@ -22,6 +32,27 @@ export default function ProjectPercentage({
   useEffect(() => {
     setLocalPhaseBudgets(JSON.parse(JSON.stringify(phaseBudgets)));
   }, [phaseBudgets]);
+
+  useEffect(() => {
+    if (updateSuccess) {
+      showToast.success("Phase budgets updated successfully");
+      setIsEditing(false);
+
+      if (onSave) {
+        onSave(localPhaseBudgets);
+      }
+    }
+  }, [updateSuccess, localPhaseBudgets, onSave]);
+
+  useEffect(() => {
+    if (updateError) {
+      const message =
+        updateErrorData?.data?.message ||
+        updateErrorData?.message ||
+        "Failed to update phase budgets";
+      showToast.error(message);
+    }
+  }, [updateError, updateErrorData]);
 
   const getDisplayValue = (phaseName, fieldType) => {
     const value = localPhaseBudgets[phaseName]?.[fieldType];
@@ -47,11 +78,10 @@ export default function ProjectPercentage({
         id: projectId,
         phaseBudgets: localPhaseBudgets,
       }).unwrap();
-
-      showToast.success("Phase budgets updated successfully");
-      setIsEditing(false);
     } catch (error) {
-      showToast.error("Failed to update phase budgets: ", error);
+      showToast.error(
+        `Failed to update phase budgets: ${error.message || error}`
+      );
     }
   };
 
@@ -74,6 +104,10 @@ export default function ProjectPercentage({
     { name: "Construction Administration", num: "6", percentage: "95%" },
     { name: "Project Close-out", num: "7", percentage: "100%" },
   ];
+
+  if (updateLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -121,25 +155,28 @@ export default function ProjectPercentage({
             <button
               className="btn btn-sm btn-success"
               onClick={handleSave}
-              disabled={isLoading}
+              disabled={updateLoading}
             >
-              {isLoading ? "Saving..." : "Save"}
+              {updateLoading ? "Saving..." : "Save"}
             </button>
             <button
               className="btn btn-sm btn-secondary"
               onClick={handleCancel}
-              disabled={isLoading}
+              disabled={updateLoading}
             >
               Cancel
             </button>
           </div>
         ) : (
-          <button
-            className="btn btn-sm btn-outline-dark mt-3 ms-auto d-block"
+          <DynButton
             onClick={handleEdit}
+            show={true}
+            className="mt-3 ms-auto d-block"
+            variant="outline-forest"
+            title="Enable editing"
           >
             Edit Phase Budgets
-          </button>
+          </DynButton>
         ))}
     </>
   );

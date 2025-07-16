@@ -83,6 +83,33 @@ export default function useEditProject({ project }) {
   ] = useDeleteProjectMutation();
 
   useEffect(() => {
+    if (isUpdateError && updateError) {
+      const errorMessage =
+        updateError?.data?.message ||
+        updateError?.message ||
+        "Failed to update project";
+      showToast.error(errorMessage);
+    }
+  }, [isUpdateError, updateError]);
+
+  useEffect(() => {
+    if (isDelError && delError) {
+      const errorMessage =
+        delError?.data?.message ||
+        delError?.message ||
+        "Failed to delete project";
+      showToast.error(errorMessage);
+    }
+  }, [isDelError, delError]);
+
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      showToast.success("Project updated successfully!");
+      clearDraft();
+    }
+  });
+
+  useEffect(() => {
     if (project && project.id) {
       const draftKey = getDraftKey(project.id);
 

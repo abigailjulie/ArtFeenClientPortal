@@ -22,24 +22,57 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [login, { isLoading: loginLoading }] = useLoginMutation();
+  const [
+    login,
+    { isLoading: loginLoading, isError: loginError, error: loginErrorData },
+  ] = useLoginMutation();
 
-  const { client, isLoading: clientLoading } = useGetClientsQuery(
-    "clientsList",
-    {
-      selectFromResult: ({ data, isLoading }) => ({
-        isLoading,
-        client: data?.ids
-          .map((id) => data.entities[id])
-          .find((c) => c.username === username),
-      }),
-      skip: !isRedirecting,
-    }
-  );
+  const {
+    client,
+    isLoading: clientLoading,
+    isError: clientError,
+    error: clientErrorData,
+  } = useGetClientsQuery("clientsList", {
+    selectFromResult: ({ data, isLoading, isError, error }) => ({
+      isLoading,
+      isError,
+      error,
+      client: data?.ids
+        .map((id) => data.entities[id])
+        .find((c) => c.username === username),
+    }),
+    skip: !isRedirecting,
+  });
 
   useEffect(() => {
     clientRef.current.focus();
   }, []);
+
+  useEffect(() => {
+    if (clientError) {
+      const message =
+        clientErrorData?.data?.message || "Failed to load client data";
+      showToast.error(message);
+      setIsRedirecting(false);
+    }
+  }, [clientError, clientErrorData]);
+
+  useEffect(() => {
+    if (loginError) {
+      let message;
+      if (!loginErrorData.status) {
+        message = "No Server Response";
+      } else if (loginErrorData.status === 400) {
+        message = "Missing Username or Password";
+      } else if (loginErrorData.status === 401) {
+        message = "Unauthorized";
+      } else {
+        message = loginErrorData?.data?.message || "Login Failed";
+      }
+      showToast.error(message);
+      setIsRedirecting(false);
+    }
+  }, [loginError, loginErrorData]);
 
   useEffect(() => {
     if (isRedirecting && !clientLoading && client) {
@@ -54,24 +87,12 @@ export default function LoginForm() {
       dispatch(setCredentials({ accessToken }));
       setIsRedirecting(true);
     } catch (error) {
-      let message;
-      if (!error.status) {
-        message = "No Server Response";
-      } else if (error.status === 400) {
-        message = "Missing Username or Password";
-      } else if (error.status === 401) {
-        message = "Unauthorized";
-      } else {
-        message = error?.data?.message || "Login Failed";
-      }
-
-      showToast.error(message);
       setIsRedirecting(false);
     }
   };
 
-  const handleClientInput = (e) => setUsername(e.target.value);
-  const handlePwdInput = (e) => setPassword(e.target.value);
+  const handleClientInput = (e) => setUsername(e.target.value.trim());
+  const handlePwdInput = (e) => setPassword(e.target.value.trim());
   const handleToggle = () => setPersist((prev) => !prev);
 
   if (loginLoading || (isRedirecting && clientLoading)) return <Loader />;

@@ -40,12 +40,7 @@ export default function useEditClientForm({ client }) {
     client?.company.telephone ?? ""
   );
 
-  const { isLoading: isUpdateLoading } = updateState;
-  const { isLoading: isDeleteLoading } = deleteState;
-  const isLoading = isUpdateLoading || isDeleteLoading;
-
-  const { isSuccess } = updateState;
-  const { isSuccess: isDelSuccess } = deleteState;
+  const isLoading = updateState.isLoading || deleteState.isLoading;
 
   const company = {
     name: companyName,
@@ -177,13 +172,29 @@ export default function useEditClientForm({ client }) {
   }, [email]);
 
   useEffect(() => {
-    if (isSuccess || isDelSuccess) {
+    if (updateState.isError) {
+      const message =
+        updateState.error?.data?.message || "Failed to update client.";
+      showToast.error(message);
+    }
+  }, [updateState.isError, updateState.error]);
+
+  useEffect(() => {
+    if (deleteState.isError) {
+      const message =
+        deleteState.error?.data?.message || "Failed to delete client.";
+      showToast.error(message);
+    }
+  }, [deleteState.isError, deleteState.error]);
+
+  useEffect(() => {
+    if (updateState.isSuccess || deleteState.isSuccess) {
       setUsername("");
       setPassword("");
       setRoles([]);
       navigate("/dash/clients");
     }
-  }, [isSuccess, isDelSuccess, navigate]);
+  }, [updateState.isSuccess, deleteState.isSuccess, navigate]);
 
   return {
     state: {
@@ -196,10 +207,9 @@ export default function useEditClientForm({ client }) {
       companyName,
       companyAddress,
       companyNumber,
-      updateState,
-      deleteState,
       isFounder,
       canSave,
+      isLoading,
     },
     clicked: {
       onUsernameChanged,
