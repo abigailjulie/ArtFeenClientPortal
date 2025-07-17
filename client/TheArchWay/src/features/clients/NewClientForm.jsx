@@ -6,10 +6,14 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { Col, Form, Row } from "react-bootstrap";
 
 export default function NewClientForm({ state, validation, clicked }) {
-  const { roles, canSave, options } = state;
+  const { roles, canSave, options, isLoading } = state;
   const { onRolesChanged, onSaveClientClicked } = clicked;
 
   const { isFounder } = useAuth();
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>

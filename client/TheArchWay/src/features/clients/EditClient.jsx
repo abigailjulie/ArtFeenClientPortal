@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import EditClientForm from "./EditClientForm";
 import useEditClientForm from "../../hooks/clients/useEditClientForm";
 import { useParams } from "react-router-dom";
@@ -18,7 +19,7 @@ export default function EditClient() {
 
   useEffect(() => {
     if (isError) {
-      showToast.error(error?.data?.message || "Failed to fetch client.");
+      showToast.error(error?.data?.message || "Failed to fetch client data.");
     }
   }, [isError, error]);
 

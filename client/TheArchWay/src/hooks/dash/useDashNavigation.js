@@ -12,7 +12,7 @@ export const useDashNavigation = (client) => {
     if (client?._id) {
       navigate(`/dash/clients/${client._id}/projects/new`);
     } else {
-      console.error("Client ID not found for user:", client?.username);
+      showToast.error("Client ID not found, unable to create project.");
     }
   };
 
@@ -37,7 +37,7 @@ export const useDashNavigation = (client) => {
       navigate("/", { replace: true });
     } catch (error) {
       const message = error?.data?.message || "Logout failed.";
-      showToast.error(message);
+      showToast.error(message, { toastId: "logout-error" });
     }
   };
 

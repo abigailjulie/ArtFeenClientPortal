@@ -1,5 +1,6 @@
 import { apiSlice } from "../../app/api/apiSlice";
 import { logOut, setCredentials } from "./authSlice";
+import { showToast } from "../../utils/showToast";
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,6 +10,15 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: { ...credentials },
       }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          showToast.error(
+            error?.data?.message || "Login failed. Please try again."
+          );
+        }
+      },
     }),
     sendLogout: builder.mutation({
       query: () => ({
@@ -23,7 +33,9 @@ export const authApiSlice = apiSlice.injectEndpoints({
             dispatch(apiSlice.util.resetApiState());
           }, 1000);
         } catch (error) {
-          console.log(error);
+          showToast.error(
+            error?.data?.message || "Logout failed. Please try again."
+          );
         }
       },
     }),
@@ -38,7 +50,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
           const { accessToken } = data;
           dispatch(setCredentials({ accessToken }));
         } catch (error) {
-          console.log(error);
+          showToast.error("Session refresh failed. Please log in again.");
         }
       },
     }),

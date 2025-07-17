@@ -1,6 +1,7 @@
 import Project from "../models/Project.js";
 import Client from "../models/Client.js";
-import emailService from "../services/emailService.js";
+import EmailService from "../services/emailService.js";
+const emailService = new EmailService();
 
 // desc Get all projects
 // route GET /projects
@@ -9,7 +10,7 @@ const getAllProjects = async (req, res) => {
   try {
     const projects = await Project.find().populate("client", "username").lean();
     if (!projects?.length) {
-      return res.status(400).json({ message: "No projects found" });
+      return res.status(404).json({ message: "No projects found" });
     }
 
     const projectsWithConvertedMaps = projects.map((project) => ({
@@ -19,9 +20,10 @@ const getAllProjects = async (req, res) => {
 
     res.json(projectsWithConvertedMaps);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching projects", error: error.message });
+    res.status(500).json({
+      message: "Server error while fetching projects",
+      error: error.message,
+    });
   }
 };
 
@@ -29,47 +31,54 @@ const getAllProjects = async (req, res) => {
 // route POST /projects
 // access Private
 const createNewProject = async (req, res) => {
-  const { name, address, telephone, client, number } = req.body;
-  if (!name || !address || !client || !telephone || !number) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+  try {
+    const { name, address, telephone, client, number } = req.body;
+    if (!name || !address || !client || !telephone || !number) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-  const duplicate = await Project.findOne({ $or: [{ name }, { number }] })
-    .collation({ locale: "en", strength: 2 })
-    .lean()
-    .exec();
+    const duplicate = await Project.findOne({ $or: [{ name }, { number }] })
+      .collation({ locale: "en", strength: 2 })
+      .lean()
+      .exec();
 
-  if (duplicate) {
-    return res
-      .status(409)
-      .json({ message: "Duplicate project name or number" });
-  }
+    if (duplicate) {
+      return res
+        .status(409)
+        .json({ message: "Duplicate project name or number" });
+    }
 
-  const projectObject = {
-    name,
-    address,
-    client,
-    telephone,
-    number,
-  };
+    const projectObject = {
+      name,
+      address,
+      client,
+      telephone,
+      number,
+    };
 
-  const project = await Project.create(projectObject);
+    const project = await Project.create(projectObject);
 
-  if (project) {
-    const clientInfo = await Client.findById(client).select("username").lean();
+    if (project) {
+      const clientInfo = await Client.findById(client)
+        .select("username")
+        .lean();
 
-    setImmediate(() => {
-      emailService.sendAdminNotification("project", {
-        name,
-        username: clientInfo?.username || "Unknown Client",
+      setImmediate(() => {
+        emailService.sendAdminNotification("project", {
+          name,
+          username: clientInfo?.username || "Unknown Client",
+        });
       });
-    });
 
-    res
-      .status(201)
-      .json({ message: `New project ${name} created with Number: ${number}!` });
-  } else {
-    res.status(400).json({ message: "Invalid project data received" });
+      res
+        .status(201)
+        .json({ message: `Project ${name} created with Number: ${number}!` });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error while creating project",
+      error: error.message,
+    });
   }
 };
 
@@ -77,168 +86,124 @@ const createNewProject = async (req, res) => {
 // route PATCH /projects
 // access Private
 const updateProject = async (req, res) => {
-  const {
-    id,
-    name,
-    number,
-    address,
-    telephone,
-    status,
-    client,
-    timeline,
-    finances,
-    phase,
-    phaseBudgets,
-  } = req.body;
+  try {
+    const {
+      id,
+      name,
+      number,
+      address,
+      telephone,
+      status,
+      client,
+      timeline,
+      finances,
+      phase,
+      phaseBudgets,
+    } = req.body;
 
-  if (!id) {
-    return res.status(400).json({ message: "Project ID is required" });
-  }
+    if (!id) {
+      return res.status(400).json({ message: "Project ID is required" });
+    }
 
-  const project = await Project.findById(id).exec();
+    const project = await Project.findById(id).exec();
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
 
-  if (!project) {
-    return res.status(404).json({ message: "Project not found" });
-  }
+    if (name && name !== project.name) {
+      const duplicate = await Project.findOne({ name })
+        .collation({ locale: "en", strength: 2 })
+        .lean()
+        .exec();
 
-  if (name && name !== project.name) {
-    const duplicate = await Project.findOne({ name })
-      .collation({ locale: "en", strength: 2 })
-      .lean()
-      .exec();
+      if (duplicate && duplicate._id.toString() !== id) {
+        return res.status(409).json({ message: "Project name already exists" });
+      }
+    }
 
-    if (duplicate && duplicate?._id.toString() !== id) {
-      return res.status(409).json({ message: "Duplicate project name" });
-    }
-  }
+    if (number && number !== project.number) {
+      const duplicateNumber = await Project.findOne({ number })
+        .collation({ locale: "en", strength: 2 })
+        .lean()
+        .exec();
 
-  if (number && number !== project.number) {
-    const duplicateNumber = await Project.findOne({ number })
-      .collation({ locale: "en", strength: 2 })
-      .lean()
-      .exec();
+      if (duplicateNumber && duplicateNumber._id.toString() !== id) {
+        return res
+          .status(409)
+          .json({ message: "Project number already exists" });
+      }
+    }
 
-    if (duplicateNumber && duplicateNumber._id.toString() !== id) {
-      return res.status(409).json({ message: "Duplicate project number" });
-    }
-  }
+    if (name) project.name = name;
+    if (client && client?.toString() !== project.client.toString())
+      project.client = client;
+    if (number) project.number = number;
+    if (address) project.address = address;
+    if (telephone) project.telephone = telephone;
+    if (status) project.status = status;
 
-  if (name && name !== project.name) project.name = name;
-  if (client && client?.toString() !== project.client.toString())
-    project.client = client;
-  if (number && number !== project.number) project.number = number;
-  if (address && address !== project.address) project.address = address;
-  if (telephone && telephone !== project.telephone)
-    project.telephone = telephone;
-  if (status && status !== project.status) project.status = status;
+    if (timeline) {
+      if (timeline.currentTick !== undefined)
+        project.timeline.currentTick = timeline.currentTick;
+      if (timeline.expectedCompletionDate !== undefined)
+        project.timeline.expectedCompletionDate =
+          timeline.expectedCompletionDate;
+    }
 
-  if (timeline) {
-    if (
-      timeline.currentTick !== undefined &&
-      timeline.currentTick !== project.timeline.currentTick
-    ) {
-      project.timeline.currentTick = timeline.currentTick;
+    if (finances) {
+      if (finances.currentTick !== undefined)
+        project.finances.currentTick = finances.currentTick;
+      if (finances.budget !== undefined)
+        project.finances.budget = finances.budget;
+      if (finances.spent !== undefined) project.finances.spent = finances.spent;
     }
-    if (
-      timeline.expectedCompletionDate !== undefined &&
-      timeline.expectedCompletionDate !==
-        project.timeline.expectedCompletionDate
-    ) {
-      project.timeline.expectedCompletionDate = timeline.expectedCompletionDate;
-    }
-  }
-  if (finances) {
-    if (
-      finances.currentTick !== undefined &&
-      finances.currentTick !== project.finances.currentTick
-    ) {
-      project.finances.currentTick = finances.currentTick;
-    }
-    if (
-      finances.budget !== undefined &&
-      finances.budget !== project.finances.budget
-    ) {
-      project.finances.budget = finances.budget;
-    }
-    if (
-      finances.spent !== undefined &&
-      finances.spent !== project.finances.spent
-    ) {
-      project.finances.spent = finances.spent;
-    }
-  }
 
-  if (phase) {
-    if (phase.name && phase.name !== project.phase.name) {
-      project.phase.name = phase.name;
+    if (phase) {
+      if (phase.name) project.phase.name = phase.name;
+      if (phase.currentTick !== undefined)
+        project.phase.currentTick = phase.currentTick;
+      if (phase.budget !== undefined) project.phase.budget = phase.budget;
+      if (phase.spent !== undefined) project.phase.spent = phase.spent;
     }
-    if (
-      phase.currentTick !== undefined &&
-      phase.currentTick !== project.phase.currentTick
-    ) {
-      project.phase.currentTick = phase.currentTick;
-    }
-    if (phase.budget !== undefined && phase.budget !== project.phase.budget) {
-      project.phase.budget = phase.budget;
-    }
-    if (phase.spent !== undefined && phase.spent !== project.phase.spent) {
-      project.phase.spent = phase.spent;
-    }
-  }
 
-  if (phaseBudgets) {
-    try {
+    if (phaseBudgets) {
       for (const [phaseName, phaseData] of Object.entries(phaseBudgets)) {
         if (phaseData.budget !== undefined && phaseData.budget < 0) {
           return res.status(400).json({
-            message: `Budget cannot be negative for phase: ${phaseName}`,
+            message: `Budget cannot be negative for phase "${phaseName}"`,
           });
         }
 
         if (phaseData.spent !== undefined && phaseData.spent < 0) {
           return res.status(400).json({
-            message: `Spent amount cannot be negative for phase: ${phaseName}`,
+            message: `Spent amount cannot be negative for phase "${phaseName}"`,
           });
         }
 
-        const currentPhaseData = project.phaseBudgets.get(phaseName) || {
+        const current = project.phaseBudgets.get(phaseName) || {
           budget: 0,
           spent: 0,
           number: 0,
         };
 
         project.phaseBudgets.set(phaseName, {
-          budget:
-            phaseData.budget !== undefined
-              ? phaseData.budget
-              : currentPhaseData.budget,
-          spent:
-            phaseData.spent !== undefined
-              ? phaseData.spent
-              : currentPhaseData.spent,
-          number:
-            phaseData.number !== undefined
-              ? phaseData.number
-              : currentPhaseData.number,
+          budget: phaseData.budget ?? current.budget,
+          spent: phaseData.spent ?? current.spent,
+          number: phaseData.number ?? current.number,
         });
       }
       project.markModified("phaseBudgets");
-    } catch (error) {
-      return res.status(400).json({
-        message: "Invalid phase budget data",
-        error: error.message,
-      });
     }
-  }
-  try {
+
     const updatedProject = await project.save();
+
     res.json({
-      message: `${updatedProject.name} updated`,
+      message: `Project "${updatedProject.name}" updated successfully`,
       project: updatedProject,
     });
   } catch (error) {
-    return res.status(500).json({
-      message: "Error updating project",
+    res.status(500).json({
+      message: "Server error while updating project",
       error: error.message,
     });
   }
@@ -248,23 +213,30 @@ const updateProject = async (req, res) => {
 // route DELETE /projects
 // access Private
 const deleteProject = async (req, res) => {
-  const { id } = req.body;
+  try {
+    const { id } = req.body;
 
-  if (!id) {
-    return res.status(409).json({ message: "Project ID Required" });
+    if (!id) {
+      return res.status(409).json({ message: "Project ID Required" });
+    }
+
+    const project = await Project.findById(id).exec();
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    await Project.deleteOne({ _id: id });
+
+    res.json({
+      message: `Project "${project.name}" deleted successfully`,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error while deleting project",
+      error: error.message,
+    });
   }
-
-  const project = await Project.findById(id).exec();
-
-  if (!project) {
-    return res.status(404).json({ message: "Project not found" });
-  }
-
-  await Project.deleteOne({ _id: id });
-
-  const reply = `Project ${project.name} with ID ${project._id} deleted`;
-
-  res.json(reply);
 };
 
 export default {

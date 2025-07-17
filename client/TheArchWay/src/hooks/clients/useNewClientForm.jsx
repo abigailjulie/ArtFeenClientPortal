@@ -12,7 +12,7 @@ import {
 import { showToast } from "../../utils/showToast";
 
 export default function useNewClientForm() {
-  const [addNewClient, { isLoading, isSuccess, isError, error }] =
+  const [addNewClient, { isLoading, isSuccess, isError, error, reset }] =
     useAddNewClientMutation();
 
   const navigate = useNavigate();
@@ -61,10 +61,13 @@ export default function useNewClientForm() {
   }, [companyNumber]);
 
   useEffect(() => {
-    if (isSuccess) {
-      navigate(`/dash/clients`);
+    if (isError && error?.data?.message) {
+      showToast.error(error.data.message, {
+        toastId: "create-client-error",
+      });
+      reset();
     }
-  }, [isSuccess, navigate]);
+  }, [isError, error, reset]);
 
   const formatAddress = () => {
     const base = `${address1.trim()}`;
@@ -74,7 +77,7 @@ export default function useNewClientForm() {
   };
 
   const onUsernameChanged = (e) => {
-    setUsername(e.target.value);
+    setUsername(e.target.value.trim());
   };
 
   const onPasswordChanged = (e) => {
@@ -136,28 +139,34 @@ export default function useNewClientForm() {
 
   const onSaveClientClicked = async (e) => {
     e.preventDefault();
-    if (canSave) {
-      try {
-        const formattedAddress = formatAddress();
-        const result = await addNewClient({
-          username,
-          password,
-          roles,
-          email,
-          telephone,
-          company: {
-            name: companyName,
-            address: formattedAddress,
-            telephone: companyNumber,
-          },
-        }).unwrap();
 
-        showToast.success(result?.message || `Client ${username} created!`);
-      } catch (error) {
-        showToast.error(
-          error?.data?.message || "Form is incomplete or contains invalid data."
-        );
-      }
+    if (!canSave) {
+      showToast.error("Please complete all required fields before saving.", {
+        toastId: "submit-client-fail",
+      });
+      return;
+    }
+
+    try {
+      const formattedAddress = formatAddress();
+      const result = await addNewClient({
+        username,
+        password,
+        roles,
+        email,
+        telephone,
+        company: {
+          name: companyName,
+          address: formattedAddress,
+          telephone: companyNumber,
+        },
+      }).unwrap();
+
+      showToast.success(result?.message || `Client ${username} created!`);
+    } catch (error) {
+      const message =
+        error?.data?.message || "Form is incomplete or contains invalid data.";
+      showToast.error(message, { toastId: "submit-client-error" });
     }
   };
 

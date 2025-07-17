@@ -189,3 +189,18 @@ html {
   border: none !important;
   opacity: 0.8;
 }
+
+.Toastify__toast--success {
+  background-color: var(--Forest) !important;
+  color: var(--White) !important;
+}
+
+.Toastify__toast--error {
+  background-color: crimson !important;
+  color: var(--White) !important;
+}
+
+.Toastify__toast--info {
+  background-color: var(--Charcoal) !important;
+  color: var(--White) !important;
+}

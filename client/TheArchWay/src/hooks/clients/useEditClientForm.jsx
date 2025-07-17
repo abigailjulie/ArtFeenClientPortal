@@ -15,32 +15,30 @@ import { showToast } from "../../utils/showToast";
 
 export default function useEditClientForm({ client }) {
   const [updateClient, updateState] = useUpdateClientMutation();
-
   const [deleteClient, deleteState] = useDeleteClientMutation();
 
   const { isFounder } = useAuth();
 
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState(client?.username);
+  const [username, setUsername] = useState(client?.username || "");
   const [validUsername, setValidUsername] = useState(false);
   const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
-  const [roles, setRoles] = useState(client?.roles);
-  const [active, setActive] = useState(client?.active);
-  const [email, setEmail] = useState(client?.email ?? "");
+  const [roles, setRoles] = useState(client?.roles || []);
+  const [active, setActive] = useState(client?.active || false);
+  const [email, setEmail] = useState(client?.email || "");
   const [validEmail, setValidEmail] = useState(false);
-  const [telephone, setTelephone] = useState(client?.telephone ?? "");
+  const [telephone, setTelephone] = useState(client?.telephone || "");
   const [validTelephone, setValidTelephone] = useState(false);
-  const [companyName, setCompanyName] = useState(client?.company.name ?? "");
+  const [companyName, setCompanyName] = useState(client?.company.name || "");
   const [companyAddress, setCompanyAddress] = useState(
-    client?.company.address ?? ""
+    client?.company.address || ""
   );
   const [companyNumber, setCompanyNumber] = useState(
-    client?.company.telephone ?? ""
+    client?.company.telephone || ""
   );
-
-  const isLoading = updateState.isLoading || deleteState.isLoading;
+  const [validCompanyNumber, setValidCompanyNumber] = useState(false);
 
   const company = {
     name: companyName,
@@ -90,53 +88,35 @@ export default function useEditClientForm({ client }) {
 
   const onSaveClientClicked = async (e) => {
     e.preventDefault();
+
+    const updateData = {
+      id: client.id,
+      username,
+      roles,
+      active,
+      email,
+      telephone,
+      company,
+    };
+
     if (password) {
-      try {
-        const result = await updateClient({
-          id: client.id,
-          username,
-          password,
-          roles,
-          active,
-          email,
-          telephone,
-          company,
-        }).unwrap();
+      updateData.password = password;
+    }
 
-        showToast.success(
-          result?.message || `${username} updated successfully!`
-        );
-      } catch (error) {
-        showToast.error(
-          error?.data?.message || "Update failed. Please check the input."
-        );
-      }
-    } else {
-      try {
-        const result = await updateClient({
-          id: client.id,
-          username,
-          roles,
-          active,
-          email,
-          telephone,
-          company,
-        }).unwrap();
+    try {
+      const result = await updateClient(updateData).unwrap();
 
-        showToast.success(
-          result?.message || `${username} updated successfully!`
-        );
-      } catch (error) {
-        showToast.error(
-          error?.data?.message || "Update failed. Please check the input."
-        );
-      }
+      showToast.success(result?.message || `${username} updated successfully!`);
+    } catch (error) {
+      showToast.error(
+        error?.data?.message || "Update failed. Please check the input."
+      );
     }
   };
 
   const onDeleteClientClicked = async () => {
     try {
-      const result = await deleteClient({ id: client.id });
+      const result = await deleteClient({ id: client.id }).unwrap();
       showToast.success(result?.message || `${username} deleted successfully!`);
     } catch (error) {
       showToast.error(
@@ -150,9 +130,14 @@ export default function useEditClientForm({ client }) {
     canSave =
       [roles, validUsername, validEmail, validTelephone, validPassword].every(
         Boolean
-      ) && !isLoading;
+      ) &&
+      !updateState.isLoading &&
+      !deleteState.isLoading;
   } else {
-    canSave = [roles, validUsername].every(Boolean) && !isLoading;
+    canSave =
+      [roles, validUsername].every(Boolean) &&
+      !updateState.isLoading &&
+      !deleteState.isLoading;
   }
 
   useEffect(() => {
@@ -172,6 +157,10 @@ export default function useEditClientForm({ client }) {
   }, [email]);
 
   useEffect(() => {
+    setValidCompanyNumber(PHONE_REGEX.test(companyNumber));
+  }, [companyNumber]);
+
+  useEffect(() => {
     if (updateState.isError) {
       const message =
         updateState.error?.data?.message || "Failed to update client.";
@@ -180,18 +169,7 @@ export default function useEditClientForm({ client }) {
   }, [updateState.isError, updateState.error]);
 
   useEffect(() => {
-    if (deleteState.isError) {
-      const message =
-        deleteState.error?.data?.message || "Failed to delete client.";
-      showToast.error(message);
-    }
-  }, [deleteState.isError, deleteState.error]);
-
-  useEffect(() => {
     if (updateState.isSuccess || deleteState.isSuccess) {
-      setUsername("");
-      setPassword("");
-      setRoles([]);
       navigate("/dash/clients");
     }
   }, [updateState.isSuccess, deleteState.isSuccess, navigate]);
@@ -209,7 +187,9 @@ export default function useEditClientForm({ client }) {
       companyNumber,
       isFounder,
       canSave,
-      isLoading,
+      isLoading: updateState.isLoading || deleteState.isLoading,
+      isUpdateLoading: updateState.isLoading,
+      isDeleteLoading: deleteState.isLoading,
     },
     clicked: {
       onUsernameChanged,
@@ -224,6 +204,12 @@ export default function useEditClientForm({ client }) {
       onSaveClientClicked,
       onDeleteClientClicked,
     },
-    validation: { validUsername, validPassword, validTelephone, validEmail },
+    validation: {
+      validUsername,
+      validPassword,
+      validTelephone,
+      validEmail,
+      validCompanyNumber,
+    },
   };
 }

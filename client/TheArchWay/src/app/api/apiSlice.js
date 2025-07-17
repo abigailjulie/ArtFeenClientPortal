@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logOut, setCredentials } from "../../features/auth/authSlice";
+import { showToast } from "../../utils/showToast";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:5000",
@@ -19,8 +20,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401 || result?.error?.status === 403) {
-    console.log("sending refresh token");
-
     const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
 
     if (refreshResult?.data) {
@@ -30,6 +29,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logOut());
+      showToast.error("Session expired. Please log in again.");
     }
   }
 

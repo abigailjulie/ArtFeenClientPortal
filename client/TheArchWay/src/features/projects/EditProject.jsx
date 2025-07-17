@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useGetClientsQuery } from "../clients/clientsApiSlice";
 import { useGetProjectsQuery } from "./projectsApiSlice";
-import useAuth from "../../hooks/useAuth";
 import Loader from "../../components/Loader";
 import EditProjectForm from "./EditProjectForm";
 import useEditProject from "../../hooks/projects/useEditProject";
@@ -9,8 +8,6 @@ import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 export default function EditProject() {
   const { projectId } = useParams();
-
-  const { username, isAdmin, isFounder } = useAuth();
 
   const {
     project,

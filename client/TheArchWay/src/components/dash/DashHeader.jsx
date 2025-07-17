@@ -33,6 +33,7 @@ export default function DashHeader() {
 
   const {
     data: projectsData,
+    isLoading: projectsLoading,
     isSuccess: projectsSuccess,
     isError: projectsError,
     error: projectsErrorData,
@@ -64,7 +65,7 @@ export default function DashHeader() {
     if (clientsError) {
       const message =
         clientsErrorData?.data?.message || "Failed to load clients";
-      showToast.error(message);
+      showToast.error(message, { toastId: "clients-error" });
     }
   }, [clientsError, clientsErrorData]);
 
@@ -72,7 +73,7 @@ export default function DashHeader() {
     if (projectsError) {
       const message =
         projectsErrorData?.data?.message || "Failed to load projects";
-      showToast.error(message);
+      showToast.error(message, { toastId: "projects-error" });
     }
   }, [projectsError, projectsErrorData]);
 
@@ -80,7 +81,7 @@ export default function DashHeader() {
     if (clientsProjects?.length > 0 && selectedProjectId === null) {
       setSelectedProjectId(clientsProjects[0]._id);
     }
-  }, [clientsProjects, selectedProjectId]);
+  }, [clientsProjects, selectedProjectId, setSelectedProjectId]);
 
   let dashClass = "";
   if (
@@ -92,7 +93,7 @@ export default function DashHeader() {
   }
 
   let btnContent;
-  if (clientsLoading || !clientsSuccess || !projectsSuccess) {
+  if (clientsLoading || projectsLoading) {
     btnContent = <Loader />;
   } else {
     btnContent = (

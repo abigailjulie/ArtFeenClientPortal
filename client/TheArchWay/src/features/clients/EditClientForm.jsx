@@ -6,7 +6,16 @@ import CompanyInfoSection from "../../components/client/CompanyInfoSection";
 import DynButton from "../../components/DynButton";
 
 export default function EditClientForm({ state, validation, clicked }) {
-  const { roles, active, isFounder, isAdmin, canSave } = state;
+  const {
+    roles,
+    active,
+    isFounder,
+    isAdmin,
+    canSave,
+    isUpdateLoading,
+    isDeleteLoading,
+    isLoading,
+  } = state;
   const {
     onRolesChanged,
     onActiveChanged,
@@ -74,6 +83,8 @@ export default function EditClientForm({ state, validation, clicked }) {
             title="Delete Client"
             show={isAdmin || isFounder}
             onClick={onDeleteClientClicked}
+            disabled={isLoading}
+            loading={isDeleteLoading}
           />
 
           <DynButton
@@ -81,6 +92,7 @@ export default function EditClientForm({ state, validation, clicked }) {
             title="Save Client"
             onClick={onSaveClientClicked}
             disabled={!canSave}
+            loading={isUpdateLoading}
             show={true}
           />
         </div>
