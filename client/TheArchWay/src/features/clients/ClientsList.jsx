@@ -1,9 +1,11 @@
 import { useGetClientsQuery } from "./clientsApiSlice";
 import Loader from "../../components/Loader";
 import Client from "./Client";
+import useTitle from "../../hooks/useTitle";
 import "../../components/projects/TableStyles.css";
 
 export default function ClientsList() {
+  useTitle("The ArchWay | Clients");
   const {
     data: clients,
     isLoading,

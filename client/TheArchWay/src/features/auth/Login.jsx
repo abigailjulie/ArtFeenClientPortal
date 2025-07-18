@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import LoginForm from "../../components/login/LoginForm";
+import useTitle from "../../hooks/useTitle";
 
 export default function Login() {
+  useTitle("The ArchWay | Login");
   return (
     <section className="h-100 d-flex flex-column justify-content-center align-items-center">
       <header>

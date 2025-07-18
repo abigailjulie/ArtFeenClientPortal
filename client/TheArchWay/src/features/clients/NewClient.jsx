@@ -1,7 +1,9 @@
 import useNewClientForm from "../../hooks/clients/useNewClientForm";
 import NewClientForm from "../clients/NewClientForm";
+import useTitle from "../../hooks/useTitle";
 
 export default function NewClient() {
+  useTitle("The ArchWay | Register");
   const { state, validation, clicked } = useNewClientForm();
 
   const isPublicRoute = location.pathname === "/register";

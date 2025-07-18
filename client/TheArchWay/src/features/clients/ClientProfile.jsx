@@ -3,10 +3,12 @@ import { useEffect } from "react";
 import { useGetClientsQuery } from "./clientsApiSlice";
 import { useGetProjectsQuery } from "../projects/projectsApiSlice";
 import { showToast } from "../../utils/showToast";
-import useAuth from "../../hooks/useAuth";
+import useTitle from "../../hooks/useTitle";
 import Loader from "../../components/Loader";
 
 export default function ClientProfile() {
+  useTitle("The ArchWay | Client Profile");
+
   const { clientId } = useParams();
   const navigate = useNavigate();
 

@@ -1,7 +1,8 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import useTitle from "../../hooks/useTitle";
 
 export default function Welcome() {
+  useTitle("The ArchWay | Welcome");
   return (
     <section
       className="h-100 d-flex flex-column justify-content-center align-items-center"

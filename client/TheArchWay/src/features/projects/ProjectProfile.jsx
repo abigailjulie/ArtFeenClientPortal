@@ -3,9 +3,12 @@ import { useEffect } from "react";
 import { useGetProjectsQuery } from "./projectsApiSlice";
 import { showToast } from "../../utils/showToast";
 import Loader from "../../components/Loader";
+import useTitle from "../../hooks/useTitle";
 import ProjectStatus from "./ProjectStatus";
 
 export default function ProjectProfile() {
+  useTitle("The ArchWay | Project Profile");
+
   const { projectId } = useParams();
 
   const { project, isLoading, isError, error } = useGetProjectsQuery(

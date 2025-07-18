@@ -1,14 +1,17 @@
 import { useEffect } from "react";
+import { useProjectList } from "../../hooks/projects/useProjectsList";
+import { SORT_OPTIONS } from "../../config/sorting";
+import { showToast } from "../../utils/showToast";
 import Loader from "../../components/Loader";
 import Project from "./Project";
 import * as bootstrap from "bootstrap";
-import { useProjectList } from "../../hooks/projects/useProjectsList";
-import { SORT_OPTIONS } from "../../config/sorting";
-import "../../components/projects/TableStyles.css";
-import { showToast } from "../../utils/showToast";
 import DynButton from "../../components/DynButton";
+import useTitle from "../../hooks/useTitle";
+import "../../components/projects/TableStyles.css";
 
 export default function ProjectsList() {
+  useTitle("The ArchWay | Projects");
+
   const { sortedIds, isLoading, isSuccess, isError, error, sortBy, setSortBy } =
     useProjectList();
 

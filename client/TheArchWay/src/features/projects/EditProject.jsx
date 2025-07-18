@@ -6,8 +6,11 @@ import Loader from "../../components/Loader";
 import EditProjectForm from "./EditProjectForm";
 import useEditProject from "../../hooks/projects/useEditProject";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
+import useTitle from "../../hooks/useTitle";
 
 export default function EditProject() {
+  useTitle("The ArchWay | Edit Project");
+
   const { projectId } = useParams();
 
   const {
