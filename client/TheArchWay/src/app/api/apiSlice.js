@@ -29,7 +29,9 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logOut());
-      showToast.error("Session expired. Please log in again.");
+      showToast.error("Session expired. Please log in again.", {
+        toastId: "session-expired",
+      });
     }
   }
 

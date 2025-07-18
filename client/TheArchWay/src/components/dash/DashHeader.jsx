@@ -125,7 +125,7 @@ export default function DashHeader() {
           className="forest mb-2"
           title="View Projects"
           onClick={onProjectsClicked}
-          show={pathname.includes("/dash")}
+          show={CLIENTS_REGEX.test(pathname)}
         />
 
         <DynButton

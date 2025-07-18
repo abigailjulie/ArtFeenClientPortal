@@ -19,7 +19,9 @@ export default function EditClient() {
 
   useEffect(() => {
     if (isError) {
-      showToast.error(error?.data?.message || "Failed to fetch client data.");
+      showToast.error(error?.data?.message || "Failed to fetch client data.", {
+        toastId: "client-data-error",
+      });
     }
   }, [isError, error]);
 

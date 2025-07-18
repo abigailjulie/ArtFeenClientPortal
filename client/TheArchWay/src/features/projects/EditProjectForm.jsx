@@ -11,8 +11,7 @@ export default function EditProjectForm({
   clicked,
   fields,
 }) {
-  const { isLoading, created, updated, isAdmin, isFounder, canSave, hasDraft } =
-    state;
+  const { created, updated, isAdmin, isFounder, canSave, hasDraft } = state;
   const { onSaveProjectClicked, onDeleteProjectClicked } = actions;
 
   let deleteBtn = null;

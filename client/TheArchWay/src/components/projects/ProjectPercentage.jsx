@@ -35,7 +35,9 @@ export default function ProjectPercentage({
 
   useEffect(() => {
     if (updateSuccess) {
-      showToast.success("Phase budgets updated successfully");
+      showToast.success("Phase budgets updated successfully", {
+        toastId: "phase-budgets-success",
+      });
       setIsEditing(false);
 
       if (onSave) {
@@ -50,7 +52,9 @@ export default function ProjectPercentage({
         updateErrorData?.data?.message ||
         updateErrorData?.message ||
         "Failed to update phase budgets";
-      showToast.error(message);
+      showToast.error(message, {
+        toastId: "project-budgets-error",
+      });
     }
   }, [updateError, updateErrorData]);
 
@@ -80,7 +84,10 @@ export default function ProjectPercentage({
       }).unwrap();
     } catch (error) {
       showToast.error(
-        `Failed to update phase budgets: ${error.message || error}`
+        `Failed to update phase budgets: ${error.message || error}`,
+        {
+          toastId: "phase-budget-error",
+        }
       );
     }
   };

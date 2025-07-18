@@ -52,27 +52,12 @@ export default function LoginForm() {
     if (clientError) {
       const message =
         clientErrorData?.data?.message || "Failed to load client data";
-      showToast.error(message);
+      showToast.error(message, {
+        toastId: "client-data-error",
+      });
       setIsRedirecting(false);
     }
   }, [clientError, clientErrorData]);
-
-  useEffect(() => {
-    if (loginError) {
-      let message;
-      if (!loginErrorData.status) {
-        message = "No Server Response";
-      } else if (loginErrorData.status === 400) {
-        message = "Missing Username or Password";
-      } else if (loginErrorData.status === 401) {
-        message = "Unauthorized";
-      } else {
-        message = loginErrorData?.data?.message || "Login Failed";
-      }
-      showToast.error(message);
-      setIsRedirecting(false);
-    }
-  }, [loginError, loginErrorData]);
 
   useEffect(() => {
     if (isRedirecting && !clientLoading && client) {
@@ -87,6 +72,17 @@ export default function LoginForm() {
       dispatch(setCredentials({ accessToken }));
       setIsRedirecting(true);
     } catch (error) {
+      let message;
+      if (!error.status) {
+        message = "No Server Response";
+      } else if (error.status === 400) {
+        message = "Missing Username or Password";
+      } else if (error.status === 401) {
+        message = "Unauthorized";
+      } else {
+        message = error?.data?.message || "Login Failed";
+      }
+      showToast.error(message, { toastId: "login-error" });
       setIsRedirecting(false);
     }
   };

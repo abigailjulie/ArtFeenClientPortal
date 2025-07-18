@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGetClientsQuery } from "../clients/clientsApiSlice";
 import { useGetProjectsQuery } from "./projectsApiSlice";
@@ -40,17 +41,39 @@ export default function EditProject() {
   const { state, actions, fields, clicked } = useEditProject({ project });
 
   if (isProjectLoading || isClientsLoading) return <Loader />;
+
+  useEffect(() => {
+    if (isProjectError) {
+      showToast.error(
+        projectError?.data?.message || "Failed to load project data",
+        {
+          toastId: "projects-error",
+        }
+      );
+    }
+  }, [isProjectError, projectError]);
+
+  useEffect(() => {
+    if (isClientsError) {
+      showToast.error(
+        clientsError?.data?.message || "Failed to load clients data",
+        {
+          toastId: "clients-error",
+        }
+      );
+    }
+  }, [isClientsError, clientsError]);
+
   if (isProjectError || isClientsError)
     return (
-      <p className="errmsg">
+      <p>
         {projectError?.data?.message ||
           clientsError?.data?.message ||
           "Error loading data"}
       </p>
     );
 
-  if (!project || !clients?.length)
-    return <p className="errmsg">Missing data</p>;
+  if (!project || !clients?.length) return <p>Missing data</p>;
 
   return (
     <div>

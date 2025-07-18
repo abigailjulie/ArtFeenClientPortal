@@ -15,7 +15,10 @@ export default function ProjectsList() {
   useEffect(() => {
     if (isError) {
       showToast.error(
-        error?.data?.message || "Failed to load projects, try again."
+        error?.data?.message || "Failed to load projects, try again.",
+        {
+          toastId: "project-data-error",
+        }
       );
     }
   }, [isError, error]);

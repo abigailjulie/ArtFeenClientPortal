@@ -103,13 +103,6 @@ export default function useEditProject({ project }) {
   }, [isDelError, delError]);
 
   useEffect(() => {
-    if (isUpdateSuccess) {
-      showToast.success("Project updated successfully!");
-      clearDraft();
-    }
-  });
-
-  useEffect(() => {
     if (project && project.id) {
       const draftKey = getDraftKey(project.id);
 
@@ -197,7 +190,9 @@ export default function useEditProject({ project }) {
       e.preventDefault();
 
       if (!canSave) {
-        showToast.error("Please fill in all required fields before saving.");
+        showToast.error("Please fill in all required fields before saving.", {
+          toastId: "save-validation-error",
+        });
         return;
       }
 
@@ -242,7 +237,8 @@ export default function useEditProject({ project }) {
 
         showToast.success(
           result?.message ||
-            `Project ${formData.projectName} updated successfully!`
+            `Project ${formData.projectName} updated successfully!`,
+          { toastId: "project-update-success" }
         );
 
         clearDraft();
@@ -258,7 +254,8 @@ export default function useEditProject({ project }) {
         showToast.error(
           error?.data?.message ||
             error?.message ||
-            "Failed to update project. Please try again."
+            "Failed to update project. Please try again.",
+          { toastId: "project-update-error" }
         );
       }
     },

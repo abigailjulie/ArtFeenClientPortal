@@ -9,7 +9,6 @@ import Loader from "../../components/Loader";
 export default function ClientProfile() {
   const { clientId } = useParams();
   const navigate = useNavigate();
-  const { username, isAdmin, isFounder } = useAuth() || {};
 
   const {
     data: clientData,
@@ -33,7 +32,7 @@ export default function ClientProfile() {
         clientErrorDetails?.data?.message ||
         clientErrorDetails?.message ||
         "Unable to load client information";
-      showToast.error(errorMessage);
+      showToast.error(errorMessage, { toastId: "client-profile-error" });
 
       setTimeout(() => {
         navigate("/dash");
@@ -43,13 +42,15 @@ export default function ClientProfile() {
 
   useEffect(() => {
     if (projectsError) {
-      showToast.error("Unable to load project information");
+      showToast.error("Unable to load project information", {
+        toastId: "client-projects-error",
+      });
     }
   }, [projectsError]);
 
   useEffect(() => {
     if (clientSuccess && !client) {
-      showToast.error("Client not found");
+      showToast.error("Client not found", { toastId: "client-not-found" });
       setTimeout(() => {
         navigate("/dash");
       }, 2000);

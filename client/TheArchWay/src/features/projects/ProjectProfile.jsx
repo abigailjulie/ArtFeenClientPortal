@@ -22,7 +22,9 @@ export default function ProjectProfile() {
 
   useEffect(() => {
     if (isError) {
-      showToast.error(error?.data?.message || "Project not found");
+      showToast.error(error?.data?.message || "Project not found", {
+        toastId: "project-profile-error",
+      });
     }
   }, [isError, error]);
 

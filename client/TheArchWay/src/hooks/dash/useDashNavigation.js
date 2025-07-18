@@ -12,7 +12,9 @@ export const useDashNavigation = (client) => {
     if (client?._id) {
       navigate(`/dash/clients/${client._id}/projects/new`);
     } else {
-      showToast.error("Client ID not found, unable to create project.");
+      showToast.error("Client ID not found, unable to create project.", {
+        toastId: "no-client-new-project",
+      });
     }
   };
 
@@ -21,8 +23,6 @@ export const useDashNavigation = (client) => {
   const onProjectsClicked = () => {
     if (client?._id) {
       navigate(`/dash/clients/${client._id}/projects`);
-    } else {
-      navigate("/dash/projects");
     }
   };
 

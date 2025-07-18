@@ -1,12 +1,10 @@
-import { useEffect, useMemo } from "react";
-import { toast } from "react-toastify";
+import { useMemo } from "react";
 import ProjectPercentage from "../../components/projects/ProjectPercentage";
 import ProjectBudgetDisplay from "../../components/projects/ProjectBudgetDisplay";
 import ProjectPhaseDisplay from "../../components/projects/ProjectPhaseDisplay";
 import ProjectTimelineDisplay from "../../components/projects/ProjectTimelineDisplay";
 import useEditProject from "../../hooks/projects/useEditProject";
 import Loader from "../../components/Loader";
-import { showToast } from "../../utils/showToast";
 import "./ProjectStatus.css";
 
 export default function ProjectStatus({ project }) {
@@ -14,11 +12,6 @@ export default function ProjectStatus({ project }) {
     state: {
       phaseBudgets,
       isProjectLoaded,
-      hasError,
-      isUpdateError,
-      isDelError,
-      updateError,
-      delError,
       budget,
       spent,
       financesTick,
@@ -63,20 +56,6 @@ export default function ProjectStatus({ project }) {
       timelineTick,
     ]
   );
-
-  useEffect(() => {
-    if (hasError) {
-      if (isUpdateError && updateError && !toast.isActive("updateError")) {
-        const message = updateError?.data?.message || "Update failed.";
-        showToast.error(message, { toastId: "updateError" });
-      }
-
-      if (isDelError && delError && !toast.isActive("delError")) {
-        const message = delError?.data?.message || "Delete failed.";
-        showToast.error(message, { toastId: "delError" });
-      }
-    }
-  }, [hasError, isUpdateError, updateError, isDelError, delError]);
 
   if (!isProjectLoaded) {
     return <Loader />;

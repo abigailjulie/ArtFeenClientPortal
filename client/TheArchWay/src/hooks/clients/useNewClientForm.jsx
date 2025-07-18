@@ -60,15 +60,6 @@ export default function useNewClientForm() {
     setValidCompanyNumber(PHONE_REGEX.test(companyNumber));
   }, [companyNumber]);
 
-  useEffect(() => {
-    if (isError && error?.data?.message) {
-      showToast.error(error.data.message, {
-        toastId: "create-client-error",
-      });
-      reset();
-    }
-  }, [isError, error, reset]);
-
   const formatAddress = () => {
     const base = `${address1.trim()}`;
     const line2 = address2.trim() && `${address2.trim()}`;
@@ -162,7 +153,9 @@ export default function useNewClientForm() {
         },
       }).unwrap();
 
-      showToast.success(result?.message || `Client ${username} created!`);
+      showToast.success(result?.message || `Client ${username} created!`, {
+        toastId: "submit-client-success",
+      });
     } catch (error) {
       const message =
         error?.data?.message || "Form is incomplete or contains invalid data.";

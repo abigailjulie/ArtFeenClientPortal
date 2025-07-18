@@ -106,10 +106,18 @@ export default function useEditClientForm({ client }) {
     try {
       const result = await updateClient(updateData).unwrap();
 
-      showToast.success(result?.message || `${username} updated successfully!`);
+      showToast.success(
+        result?.message || `${username} updated successfully!`,
+        {
+          toastId: "client-update-success",
+        }
+      );
     } catch (error) {
       showToast.error(
-        error?.data?.message || "Update failed. Please check the input."
+        error?.data?.message || "Update failed. Please check the input.",
+        {
+          toastId: "client-update-error",
+        }
       );
     }
   };
@@ -117,10 +125,18 @@ export default function useEditClientForm({ client }) {
   const onDeleteClientClicked = async () => {
     try {
       const result = await deleteClient({ id: client.id }).unwrap();
-      showToast.success(result?.message || `${username} deleted successfully!`);
+      showToast.success(
+        result?.message || `${username} deleted successfully!`,
+        {
+          toastId: "client-delete-success",
+        }
+      );
     } catch (error) {
       showToast.error(
-        error?.data?.message || "Delete failed. Please check the input."
+        error?.data?.message || "Delete failed. Please check the input.",
+        {
+          toastId: "client-delete-error",
+        }
       );
     }
   };
@@ -128,14 +144,27 @@ export default function useEditClientForm({ client }) {
   let canSave;
   if (password) {
     canSave =
-      [roles, validUsername, validEmail, validTelephone, validPassword].every(
-        Boolean
-      ) &&
+      [
+        roles.length > 0,
+        validUsername,
+        validEmail,
+        validTelephone,
+        validPassword,
+        companyName.trim(),
+        validCompanyNumber,
+      ].every(Boolean) &&
       !updateState.isLoading &&
       !deleteState.isLoading;
   } else {
     canSave =
-      [roles, validUsername].every(Boolean) &&
+      [
+        roles.length > 0,
+        validUsername,
+        validEmail,
+        validTelephone,
+        companyName.trim(),
+        validCompanyNumber,
+      ].every(Boolean) &&
       !updateState.isLoading &&
       !deleteState.isLoading;
   }
@@ -161,16 +190,12 @@ export default function useEditClientForm({ client }) {
   }, [companyNumber]);
 
   useEffect(() => {
-    if (updateState.isError) {
-      const message =
-        updateState.error?.data?.message || "Failed to update client.";
-      showToast.error(message);
-    }
-  }, [updateState.isError, updateState.error]);
-
-  useEffect(() => {
     if (updateState.isSuccess || deleteState.isSuccess) {
-      navigate("/dash/clients");
+      const timer = setTimeout(() => {
+        navigate("/dash/clients");
+      }, 1000);
+
+      return () => clearTimeout(timer);
     }
   }, [updateState.isSuccess, deleteState.isSuccess, navigate]);
 

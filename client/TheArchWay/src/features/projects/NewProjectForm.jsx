@@ -42,14 +42,17 @@ export default function NewProjectForm({ clientId }) {
         }).unwrap();
 
         showToast.success(
-          result?.message || `${projectName} added successfully!`
+          result?.message || `${projectName} added successfully!`,
+          { toastId: "project-create-success" }
         );
 
         setTimeout(() => {
           navigate(`/dash/clients/${clientId}/projects`);
         }, 500);
       } catch (error) {
-        showToast.error(error?.data?.message || "Please check the input.");
+        showToast.error(error?.data?.message || "Please check the input.", {
+          toastId: "project-create-error",
+        });
       }
     }
   };
