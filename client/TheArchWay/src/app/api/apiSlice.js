@@ -3,7 +3,7 @@ import { logOut, setCredentials } from "../../features/auth/authSlice";
 import { showToast } from "../../utils/showToast";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://thearchway.onrender.com",
+  baseUrl: "https://the-archway.onrender.com",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.token;
