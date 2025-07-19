@@ -13,6 +13,13 @@ const login = async (req, res) => {
     return res.status(400).json({ message: "All fields are required." });
   }
 
+  if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
+    console.error("JWT secrets not configured");
+    return res.status(500).json({ message: "Server configuration error" });
+  }
+
+  console.log("Looking for client:", username);
+
   const foundClient = await Client.findOne({ username }).exec();
 
   if (!foundClient || !foundClient.active) {
