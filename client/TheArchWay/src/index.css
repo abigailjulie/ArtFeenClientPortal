@@ -86,7 +86,7 @@ select {
 }
 
 body > :not(.carousel) {
-  padding: 2rem;
+  padding: 1rem;
 }
 
 :root {
@@ -102,12 +102,33 @@ body > :not(.carousel) {
   --Abigail-Designs-Heading-Font: "Oi", serif;
   --ft-Heading: "Playfair Display", serif;
   --ft-Body: "Lato", sans-serif;
-  --ft-Exlarge: 7rem;
-  --ft-large: 3rem;
-  --ft-medium: 2rem;
-  --ft-small: 0.7rem;
+  --ft-Exlarge: 2.5rem;
+  --ft-large: 2rem;
+  --ft-medium: 1.5rem;
+  --ft-small: 0.875rem;
   --line-height-min: 1;
-  --letter-spacing-mid: 0.2rem;
+  --letter-spacing-mid: 0.1rem;
+}
+
+/* Tablet breakpoint */
+@media (min-width: 768px) {
+  :root {
+    --ft-Exlarge: 4rem;
+    --ft-large: 3rem;
+    --ft-medium: 2rem;
+    --ft-small: 0.7rem;
+    --letter-spacing-mid: 0.2rem;
+  }
+}
+
+/* Desktop breakpoint */
+@media (min-width: 1024px) {
+  :root {
+    --ft-Exlarge: 7rem;
+    --ft-large: 3rem;
+    --ft-medium: 2rem;
+    --ft-small: 0.7rem;
+  }
 }
 
 html body {
@@ -126,6 +147,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 #root,
