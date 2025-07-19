@@ -11,7 +11,7 @@ export default function Login() {
         <p>A new way of connected clients to the architecture process.</p>
       </header>
 
-      <main className="w-100">
+      <main className="w-100 px-5">
         <LoginForm />
       </main>
 
