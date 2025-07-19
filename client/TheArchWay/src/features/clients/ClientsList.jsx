@@ -30,8 +30,8 @@ export default function ClientsList() {
       ids.map((clientId) => <Client key={clientId} clientId={clientId} />);
 
     return (
-      <div className="mx-5">
-        <section className="w-100 px-4 py-2">
+      <div className="px-3 px-md-5">
+        <section className="w-100 py-2">
           <table className="w-100 align-items-between table-spaced">
             <thead className="w-100">
               <tr>

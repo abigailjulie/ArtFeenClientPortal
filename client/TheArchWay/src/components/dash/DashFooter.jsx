@@ -4,7 +4,7 @@ import "./DashFooter.css";
 export default function DashFooter() {
   return (
     <footer className="bg-custom-dark-grey">
-      <section className="pt-5 mb-4 d-flex flex-column flex-md-row align-items-center justify-content-around">
+      <section className="pt-5 px-3 mb-4 d-flex flex-column flex-md-row align-items-center justify-content-around">
         <article className="mb-4 mb-md-0">
           <h2 className="abigail-designs-heading-font text-center mb-0">
             Abigail Designs
