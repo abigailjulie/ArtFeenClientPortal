@@ -11,10 +11,7 @@ export default function Welcome() {
         color: "var(--White)",
       }}
     >
-      <h1
-        className="text-white fw-bold"
-        style={{ fontSize: "var(--ft-Exlarge)" }}
-      >
+      <h1 className="text-white" style={{ fontSize: "var(--ft-Exlarge)" }}>
         The ArchWay
       </h1>
 
