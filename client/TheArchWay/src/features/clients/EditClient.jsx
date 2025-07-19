@@ -30,10 +30,7 @@ export default function EditClient() {
 
   return (
     <div className="mb-5">
-      <h2
-        className="text-center responsive-heading"
-        style={{ fontSize: "var(--ft-Exlarge)" }}
-      >
+      <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
         Edit Client
       </h2>
       <EditClientForm state={state} validation={validation} clicked={clicked} />

@@ -81,7 +81,7 @@ const Project = memo(function Project({ projectId }) {
             <FontAwesomeIcon icon={faChartPie} />
           </button>
         </td>
-        <td className="p-3 d-flex justify-content-center">
+        <td className="p-3">
           <button
             onClick={handleEdit}
             title="Edit Project"

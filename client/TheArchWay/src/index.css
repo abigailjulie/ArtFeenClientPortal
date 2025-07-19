@@ -226,20 +226,3 @@ html {
   background-color: var(--Charcoal) !important;
   color: var(--White) !important;
 }
-
-.responsive-heading {
-  font-size: var(--ft-Exlarge);
-  text-align: center;
-}
-
-@media (max-width: 768px) {
-  .responsive-heading {
-    font-size: var(--ft-large);
-  }
-}
-
-@media (max-width: 480px) {
-  .responsive-heading {
-    font-size: var(--ft-medium);
-  }
-}

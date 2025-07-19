@@ -11,7 +11,12 @@ export default function Welcome() {
         color: "var(--White)",
       }}
     >
-      <h1 className="text-white fw-bold responsive-heading">The ArchWay</h1>
+      <h1
+        className="text-white fw-bold"
+        style={{ fontSize: "var(--ft-Exlarge)" }}
+      >
+        The ArchWay
+      </h1>
 
       <p>One platform for architects and clients from concept to completion.</p>
 

@@ -7,7 +7,7 @@ export default function Login() {
   return (
     <section className="d-flex flex-column justify-content-center align-items-center min-vh-100 text-center px-3">
       <header>
-        <h1 className="responsive-heading">Login</h1>
+        <h1 style={{ fontSize: "var(--ft-Exlarge)" }}>Login</h1>
         <p>A new way of connected clients to the architecture process.</p>
       </header>
 
