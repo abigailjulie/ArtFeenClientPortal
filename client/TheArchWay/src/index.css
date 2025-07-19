@@ -135,8 +135,6 @@ html {
   width: 100%;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
 }
 
 .forest {
@@ -205,4 +203,21 @@ html {
 .Toastify__toast--info {
   background-color: var(--Charcoal) !important;
   color: var(--White) !important;
+}
+
+.responsive-heading {
+  font-size: var(--ft-Exlarge);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .responsive-heading {
+    font-size: var(--ft-large);
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-heading {
+    font-size: var(--ft-medium);
+  }
 }

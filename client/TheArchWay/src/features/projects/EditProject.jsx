@@ -80,7 +80,10 @@ export default function EditProject() {
 
   return (
     <div>
-      <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
+      <h2
+        className="text-center responsive-heading"
+        style={{ fontSize: "var(--ft-Exlarge)" }}
+      >
         Edit Project
       </h2>
       <EditProjectForm

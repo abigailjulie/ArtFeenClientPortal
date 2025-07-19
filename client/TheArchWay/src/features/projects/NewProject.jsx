@@ -18,7 +18,10 @@ export default function NewProject() {
 
   return (
     <>
-      <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
+      <h2
+        className="text-center responsive-heading"
+        style={{ fontSize: "var(--ft-Exlarge)" }}
+      >
         New Project
       </h2>
       <NewProjectForm clientId={client.id} />

@@ -11,7 +11,10 @@ export default function NewClient() {
 
   return (
     <div style={isPublicRoute ? publicStyle : undefined}>
-      <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
+      <h2
+        className="text-center responsive-heading"
+        style={{ fontSize: "var(--ft-Exlarge)" }}
+      >
         New Client
       </h2>
       <div className="container-md">

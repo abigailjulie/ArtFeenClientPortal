@@ -72,7 +72,10 @@ export default function ClientProfile() {
 
   return (
     <div className="container-md">
-      <h2 className="text-center" style={{ fontSize: "var(--ft-Exlarge)" }}>
+      <h2
+        className="text-center responsive-heading"
+        style={{ fontSize: "var(--ft-Exlarge)" }}
+      >
         Client Profile
       </h2>
 
