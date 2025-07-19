@@ -102,7 +102,7 @@ body > :not(.carousel) {
   --Abigail-Designs-Heading-Font: "Oi", serif;
   --ft-Heading: "Playfair Display", serif;
   --ft-Body: "Lato", sans-serif;
-  --ft-Exlarge: 2.5rem;
+  --ft-Exlarge: 5rem;
   --ft-large: 2rem;
   --ft-medium: 1.5rem;
   --ft-small: 0.875rem;
@@ -113,7 +113,7 @@ body > :not(.carousel) {
 /* Tablet breakpoint */
 @media (min-width: 768px) {
   :root {
-    --ft-Exlarge: 4rem;
+    --ft-Exlarge: 6rem;
     --ft-large: 3rem;
     --ft-medium: 2rem;
     --ft-small: 0.7rem;
