@@ -36,7 +36,7 @@ React • Redux Toolkit • Node.js • Express • MongoDB • Google Gemini AP
 
 ## Overview
 
-The ArchWay is a full-stack web application built to streamline the entire lifecycle of construction and architectural projects—from Predevelopment to Close-out. Designed for architectural firms, the platform centralizes project tracking, dynamic budgeting, role-based access, and AI-powered client communication.
+The ArchWay is a full-stack web application built to streamline the entire lifecycle of construction and architectural projects from Predevelopment to Close-out. Designed for architectural firms, the platform centralizes project tracking, dynamic budgeting, role-based access, and AI-powered client communication.
 
 🔧 Replaces fragmented spreadsheets and disjointed communication with a secure, scalable platform built specifically for the architecture and construction industry.
 
@@ -135,52 +135,52 @@ The ArchWay is a full-stack web application built to streamline the entire lifec
 
 Admin View
 
-![](client/TheArchWay/src/assets/project list-admin.JPG)
+![](client/TheArchWay/src/assets/project-list-admin.JPG)
 
 Client View
 
-![](client/TheArchWay/src/assets/Client Projects page.JPG)
+![](client/TheArchWay/src/assets/Client-Projects-page.JPG)
 
 Sorting Data
 
-![](client/TheArchWay/src/assets/sort by Owner.JPG)
-![](client/TheArchWay/src/assets/sort by Created.JPG)
+![](client/TheArchWay/src/assets/sort-by-Owner.JPG)
+![](client/TheArchWay/src/assets/sort-by-Created.JPG)
 
 ### Project Status
 
-![](client/TheArchWay/src/assets/project status.JPG)
+![](client/TheArchWay/src/assets/project-status.JPG)
 
 ### Client Profile
 
-![](client/TheArchWay/src/assets/Client Profile.JPG)
+![](client/TheArchWay/src/assets/Client-Profile.JPG)
 
 ### Links
 
 - [GitHub](https://github.com/abigailjulie/TheArchWay)
 - [Render](https://the-archway.onrender.com/)
 
-## My process
+### Try It Locally
 
-### Try it Locally
-
-# Clone the repo
+1. Clone the repo
 
 git clone https://github.com/your-username/archway-project.git
 cd archway-project
 
-# Install dependencies
+2. Install dependencies
 
 npm install
 
-# Set up .env file with MongoDB URI, JWT secret, etc.
+3. Set up .env file with MongoDB URI, JWT secret, etc.
 
-# Start the app
+4. Start the app
 
 npm run dev
 
+## My process
+
 ### What I learned
 
-I deepened my understanding of optimizing data fetching, security, and role-based access control in a full-stack environment. I focused on tailoring the user experience based on role, while clearly visualizing the three key pillars of architectural project management: budget, timeline, and project phase. I also integrated AI-powered workflows to reduce unnecessary communication and improve operational efficiency.
+I deepened my understanding of optimizing data fetching, security, and role-based access control in a full-stack environment. I focused on tailoring the user experience based on role, while clearly visualizing the three key pillars of architectural project management: budget, timeline, and project phase. I implemented AI-powered workflows to streamline communication and automate routine tasks, significantly improving operational efficiency.
 
 ### Continued development
 
